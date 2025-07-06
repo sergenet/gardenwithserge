@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garden with Serge</title>
+  <script type="module" crossorigin src="/assets/index-DohehYEb.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CRJkzOnf.css">
+  <style>
+    .membership-container {
+      max-width: 700px;
+      margin: 40px auto 0 auto;
+      padding: 24px;
+      background: #f8f8f8;
+      border-radius: 16px;
+    }
+    .plan-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .plan-col {
+      flex: 1;
+      min-width: 220px;
+    }
+    .stripe-btn {
+      background: #635bff;
+      color: #fff;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      width: 100%;
+      font-size: 1em;
+    }
+    h2, h3, h4 {
+      text-align: center;
+    }
+    h4 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Membership Payment Options -->
+  <div class="membership-container">
+    <h2>Choose Your Membership</h2>
+    
+    <!-- Basic Membership -->
+    <h3 style="margin-top:36px;">Basic Membership</h3>
+    <div class="plan-row">
+      <!-- Basic Monthly -->
+      <div class="plan-col">
+        <h4>Monthly</h4>
+        <!-- Stripe -->
+        <button class="stripe-btn" onclick="window.location.href='https://buy.stripe.com/4gM5kDdj3ahB8rr44B7Re00'">Pay with Stripe</button>
+        <!-- PayPal -->
+        <div id="paypal-button-container-P-59008482787162719NBUDZZA"></div>
+      </div>
+      <!-- Basic Yearly -->
+      <div class="plan-col">
+        <h4>Yearly</h4>
+        <!-- Stripe -->
+        <button class="stripe-btn" onclick="window.location.href='https://buy.stripe.com/6oU3cvgvf0H1233asZ7Re03'">Pay with Stripe</button>
+        <!-- PayPal -->
+        <div id="paypal-button-container-P-09S96113AN811444HNBUEAEI"></div>
+      </div>
+    </div>
+
+    <!-- Green Thumb Membership -->
+    <h3>Green Thumb Membership</h3>
+    <div class="plan-row">
+      <!-- Green Thumb Monthly -->
+      <div class="plan-col">
+        <h4>Monthly</h4>
+        <!-- Stripe -->
+        <button class="stripe-btn" onclick="window.location.href='https://buy.stripe.com/00wbJ1baVahBcHH0Sp7Re01'">Pay with Stripe</button>
+        <!-- PayPal -->
+        <div id="paypal-button-container-P-4L216790V73902328NBUECZQ"></div>
+      </div>
+      <!-- Green Thumb Yearly -->
+      <div class="plan-col">
+        <h4>Yearly</h4>
+        <!-- Stripe -->
+        <button class="stripe-btn" onclick="window.location.href='https://buy.stripe.com/3cI7sL6UFexRbDDfNj7Re02'">Pay with Stripe</button>
+        <!-- PayPal -->
+        <div id="paypal-button-container-P-7HG26175MM096980GNBUEH7Q"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stripe JS (needed for Stripe buttons, even if just redirecting) -->
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <!-- PayPal SDK (with your real client ID) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=Af36OdgpfA6uwWQk3vyITvNAophqT5PWhr15inTQ9mdn3Yat4l1kbEHug_afLKgVXA7BbWrnVSb2axm5&vault=true&intent=subscription"></script>
+  <script>
+    // Basic Monthly
+    paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-59008482787162719NBUDZZA' });
+      },
+      onApprove: function(data, actions) {
+        alert('Thank you for subscribing! PayPal Subscription ID: ' + data.subscriptionID);
+      }
+    }).render('#paypal-button-container-P-59008482787162719NBUDZZA');
+
+    // Basic Yearly
+    paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-09S96113AN811444HNBUEAEI' });
+      },
+      onApprove: function(data, actions) {
+        alert('Thank you for subscribing! PayPal Subscription ID: ' + data.subscriptionID);
+      }
+    }).render('#paypal-button-container-P-09S96113AN811444HNBUEAEI');
+
+    // Green Thumb Monthly
+    paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-4L216790V73902328NBUECZQ' });
+      },
+      onApprove: function(data, actions) {
+        alert('Thank you for subscribing! PayPal Subscription ID: ' + data.subscriptionID);
+      }
+    }).render('#paypal-button-container-P-4L216790V73902328NBUECZQ');
+
+    // Green Thumb Yearly
+    paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-7HG26175MM096980GNBUEH7Q' });
+      },
+      onApprove: function(data, actions) {
+        alert('Thank you for subscribing! PayPal Subscription ID: ' + data.subscriptionID);
+      }
+    }).render('#paypal-button-container-P-7HG26175MM096980GNBUEH7Q');
+  </script>
+</body>
+</html>
