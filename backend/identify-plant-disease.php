@@ -30,7 +30,7 @@ $prompts = [
 ];
 
 $prompt_text = isset($prompts[$language]) ? $prompts[$language] : $prompts['en'];
-$openai_api_key = '***REMOVED***GJ4gxsPs7bAHyy2cMl6TIdXmywZnKAyngMvZ-mo-j1ghZJAwPfZ0qDZMt1k8wF4RRZIrn7gqywT3BlbkFJIVRmW-6JjDs0EltZzQsUlPnV58EQ4i5-2URMSffHRRA1ukt_4XdGjqzqq718a8EDB67qDRw_sA';
+$openai_api_key = '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';
 
 $payload = json_encode([
     'model' => 'gpt-4o',
