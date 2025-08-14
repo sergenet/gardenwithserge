@@ -1,0 +1,12 @@
+# Secrets
+garden/.env
+garden/openai_gws.key
+
+# Vendor/build
+garden/vendor/
+garden/tmp/
+node_modules/
+
+# Logs & zips
+debug.log
+*.zip
