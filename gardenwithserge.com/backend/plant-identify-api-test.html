@@ -1,0 +1,8 @@
+<!doctype html>
+<meta charset="utf-8">
+<h3>API redirect test</h3>
+<form action="/api/plant-identify" method="POST" enctype="multipart/form-data">
+  <input type="file" name="image" accept="image/*" required>
+  <button type="submit">Send</button>
+</form>
+<p>Pick a small image (≤ 2 MB) and click Send. You should see JSON.</p>

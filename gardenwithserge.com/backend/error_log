@@ -1,0 +1,136 @@
+[11-Aug-2025 14:38:13 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "EALL" in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:4
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 4
+[11-Aug-2025 14:38:19 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "EALL" in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:4
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 4
+[11-Aug-2025 14:38:29 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "EALL" in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:4
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 4
+[11-Aug-2025 14:38:34 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "EALL" in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:4
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 4
+[11-Aug-2025 14:46:34 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(23): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 14:46:39 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(23): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 14:46:41 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(23): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 14:53:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/sergbcqk/gardenwithserge.com/backend/../../../garden/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 20
+[11-Aug-2025 14:53:46 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/sergbcqk/gardenwithserge.com/backend/../../../garden/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 20
+[11-Aug-2025 14:55:33 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/sergbcqk/gardenwithserge.com/backend/../../../garden/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php on line 20
+[11-Aug-2025 15:01:47 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 15:01:51 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 15:02:38 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:12:36 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:17:22 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:26:29 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:26:31 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:26:36 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30
+[11-Aug-2025 19:26:46 UTC] PHP Fatal error:  Uncaught Dotenv\Exception\InvalidFileException: Failed to parse dotenv file. Encountered an invalid name at [Stripe secret key]. in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php:30
+Stack trace:
+#0 /home/sergbcqk/garden/vendor/graham-campbell/result-type/src/Error.php(119): Dotenv\Parser\Parser::Dotenv\Parser\{closure}()
+#1 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php(31): GrahamCampbell\ResultType\Error->mapError()
+#2 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(222): Dotenv\Parser\Parser->parse()
+#3 /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Dotenv.php(237): Dotenv\Dotenv->load()
+#4 /home/sergbcqk/gardenwithserge.com/backend/plant-identify.php(21): Dotenv\Dotenv->safeLoad()
+#5 {main}
+  thrown in /home/sergbcqk/garden/vendor/vlucas/phpdotenv/src/Parser/Parser.php on line 30

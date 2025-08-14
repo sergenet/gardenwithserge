@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gardenwithserge.com/sitemap.xml

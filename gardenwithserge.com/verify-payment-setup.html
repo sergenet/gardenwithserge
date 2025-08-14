@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Setup Verification - Garden with Serge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="flex items-center mb-6">
+                <i data-lucide="settings" class="w-8 h-8 text-blue-600 mr-3"></i>
+                <h1 class="text-3xl font-bold text-gray-800">Payment Setup Verification</h1>
+            </div>
+            
+            <p class="text-gray-600 mb-8">This tool helps verify that your payment integration is properly configured.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Stripe Verification -->
+                <div class="border rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-purple-600 font-bold text-lg">S</span>
+                        </div>
+                        <h2 class="text-xl font-semibold">Stripe Configuration</h2>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center" id="stripe-loaded">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Loading Stripe SDK...</span>
+                        </div>
+                        <div class="flex items-center" id="stripe-key">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Checking publishable key...</span>
+                        </div>
+                        <div class="flex items-center" id="stripe-prices">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Validating price IDs...</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="testStripeCheckout()" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors" id="stripe-test-btn">
+                        Test Stripe Checkout
+                    </button>
+                </div>
+                
+                <!-- PayPal Verification -->
+                <div class="border rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-blue-600 font-bold text-lg">P</span>
+                        </div>
+                        <h2 class="text-xl font-semibold">PayPal Configuration</h2>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center" id="paypal-loaded">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Loading PayPal SDK...</span>
+                        </div>
+                        <div class="flex items-center" id="paypal-client">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Checking client ID...</span>
+                        </div>
+                        <div class="flex items-center" id="paypal-plans">
+                            <i data-lucide="clock" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Validating plan IDs...</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="testPayPalCheckout()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors" id="paypal-test-btn">
+                        Test PayPal Checkout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Configuration Status -->
+            <div class="mt-8 p-6 bg-gray-50 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4">Configuration Summary</h3>
+                <div id="config-summary" class="text-gray-600">
+                    Running verification tests...
+                </div>
+            </div>
+            
+            <!-- Test Results -->
+            <div class="mt-8" id="test-results" style="display: none;">
+                <h3 class="text-lg font-semibold mb-4">Test Results</h3>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-blue-800" id="test-message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Stripe and PayPal SDKs -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AQiGardenwithSerge_LiveClientId_Replace&vault=true&intent=subscription&currency=USD"></script>
+    
+    <!-- Include main app.js to access payment configuration -->
+    <script src="app.js"></script>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        let verificationResults = {
+            stripe: { loaded: false, key: false, prices: false },
+            paypal: { loaded: false, client: false, plans: false }
+        };
+
+        // Check Stripe configuration
+        function checkStripeConfig() {
+            // Check if Stripe SDK loaded
+            if (typeof Stripe !== 'undefined') {
+                updateStatus('stripe-loaded', true, 'Stripe SDK loaded successfully');
+                verificationResults.stripe.loaded = true;
+                
+                // Check if stripe instance exists (from app.js)
+                if (typeof stripe !== 'undefined' && stripe) {
+                    const key = stripe._keyMode;
+                    if (key) {
+                        updateStatus('stripe-key', true, `Stripe key configured (${key} mode)`);
+                        verificationResults.stripe.key = true;
+                    } else {
+                        updateStatus('stripe-key', false, 'Stripe publishable key not properly configured');
+                    }
+                } else {
+                    updateStatus('stripe-key', false, 'Stripe not initialized - check publishable key');
+                }
+                
+                // Check price IDs
+                if (typeof paymentConfig !== 'undefined') {
+                    const hasValidPrices = checkStripePrices();
+                    updateStatus('stripe-prices', hasValidPrices, 
+                        hasValidPrices ? 'All Stripe price IDs configured' : 'Some Stripe price IDs need updating');
+                    verificationResults.stripe.prices = hasValidPrices;
+                }
+            } else {
+                updateStatus('stripe-loaded', false, 'Stripe SDK failed to load');
+            }
+        }
+
+        // Check PayPal configuration
+        function checkPayPalConfig() {
+            // Check if PayPal SDK loaded
+            if (typeof paypal !== 'undefined') {
+                updateStatus('paypal-loaded', true, 'PayPal SDK loaded successfully');
+                verificationResults.paypal.loaded = true;
+                
+                // Check client ID (basic validation)
+                const script = document.querySelector('script[src*="paypal.com/sdk"]');
+                if (script && script.src.includes('client-id=')) {
+                    const clientId = script.src.match(/client-id=([^&]+)/)?.[1];
+                    if (clientId && clientId !== 'AQiGardenwithSerge_LiveClientId_Replace') {
+                        updateStatus('paypal-client', true, 'PayPal client ID configured');
+                        verificationResults.paypal.client = true;
+                    } else {
+                        updateStatus('paypal-client', false, 'PayPal client ID needs to be updated');
+                    }
+                } else {
+                    updateStatus('paypal-client', false, 'PayPal client ID not found');
+                }
+                
+                // Check plan IDs
+                if (typeof paymentConfig !== 'undefined') {
+                    const hasValidPlans = checkPayPalPlans();
+                    updateStatus('paypal-plans', hasValidPlans,
+                        hasValidPlans ? 'All PayPal plan IDs configured' : 'Some PayPal plan IDs need updating');
+                    verificationResults.paypal.plans = hasValidPlans;
+                }
+            } else {
+                updateStatus('paypal-loaded', false, 'PayPal SDK failed to load');
+            }
+        }
+
+        // Check if Stripe price IDs are properly configured
+        function checkStripePrices() {
+            const config = paymentConfig;
+            const defaultPrices = ['price_basic_monthly', 'price_basic_yearly', 'price_green_thumb_monthly', 'price_green_thumb_yearly'];
+            
+            for (const membershipType in config) {
+                for (const cycle in config[membershipType]) {
+                    const priceId = config[membershipType][cycle].stripePrice;
+                    if (defaultPrices.includes(priceId) || !priceId.startsWith('price_')) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Check if PayPal plan IDs are properly configured
+        function checkPayPalPlans() {
+            const config = paymentConfig;
+            const defaultPlans = ['plan_basic_monthly', 'plan_basic_yearly', 'plan_green_thumb_monthly', 'plan_green_thumb_yearly'];
+            
+            for (const membershipType in config) {
+                for (const cycle in config[membershipType]) {
+                    const planId = config[membershipType][cycle].paypalPlan;
+                    if (defaultPlans.includes(planId) || !planId.startsWith('P-')) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Update status indicator
+        function updateStatus(elementId, success, message) {
+            const element = document.getElementById(elementId);
+            const icon = element.querySelector('i');
+            const text = element.querySelector('span');
+            
+            if (success) {
+                icon.setAttribute('data-lucide', 'check-circle');
+                icon.className = 'w-5 h-5 text-green-500 mr-2';
+            } else {
+                icon.setAttribute('data-lucide', 'x-circle');
+                icon.className = 'w-5 h-5 text-red-500 mr-2';
+            }
+            
+            text.textContent = message;
+            lucide.createIcons();
+        }
+
+        // Generate configuration summary
+        function generateSummary() {
+            const summary = document.getElementById('config-summary');
+            const stripeReady = verificationResults.stripe.loaded && verificationResults.stripe.key && verificationResults.stripe.prices;
+            const paypalReady = verificationResults.paypal.loaded && verificationResults.paypal.client && verificationResults.paypal.plans;
+            
+            let html = '<div class="grid md:grid-cols-2 gap-4">';
+            
+            // Stripe summary
+            html += `<div class="flex items-center p-3 rounded ${stripeReady ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">`;
+            html += `<i data-lucide="${stripeReady ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 mr-2"></i>`;
+            html += `<span>Stripe: ${stripeReady ? 'Ready for live payments' : 'Needs configuration'}</span></div>`;
+            
+            // PayPal summary
+            html += `<div class="flex items-center p-3 rounded ${paypalReady ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">`;
+            html += `<i data-lucide="${paypalReady ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 mr-2"></i>`;
+            html += `<span>PayPal: ${paypalReady ? 'Ready for live payments' : 'Needs configuration'}</span></div>`;
+            
+            html += '</div>';
+            
+            if (stripeReady && paypalReady) {
+                html += '<div class="mt-4 p-3 bg-green-100 text-green-800 rounded flex items-center">';
+                html += '<i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>';
+                html += '<span class="font-semibold">🎉 Your payment system is ready for live transactions!</span></div>';
+            } else {
+                html += '<div class="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded flex items-center">';
+                html += '<i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i>';
+                html += '<span>Please complete the configuration steps in PAYMENT_SETUP_INSTRUCTIONS.md</span></div>';
+            }
+            
+            summary.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Test Stripe checkout
+        function testStripeCheckout() {
+            if (!stripe) {
+                showTestResult('Stripe not properly initialized. Check your publishable key.', false);
+                return;
+            }
+            
+            showTestResult('Testing Stripe checkout with Basic Monthly plan...', true);
+            
+            // Test with the basic monthly plan
+            const config = paymentConfig['basic']['monthly'];
+            stripe.redirectToCheckout({
+                lineItems: [{
+                    price: config.stripePrice,
+                    quantity: 1,
+                }],
+                mode: 'subscription',
+                successUrl: window.location.origin + '/payment-success.html?test=true',
+                cancelUrl: window.location.origin + '/payment-cancel.html?test=true',
+            }).then(function (result) {
+                if (result.error) {
+                    showTestResult('Stripe test failed: ' + result.error.message, false);
+                }
+            });
+        }
+
+        // Test PayPal checkout
+        function testPayPalCheckout() {
+            if (typeof paypal === 'undefined') {
+                showTestResult('PayPal SDK not loaded. Check your client ID.', false);
+                return;
+            }
+            
+            showTestResult('Testing PayPal checkout with Basic Monthly plan...', true);
+            
+            // Test with the basic monthly plan
+            const config = paymentConfig['basic']['monthly'];
+            
+            // This would normally create a subscription, but for testing we'll just validate
+            showTestResult('PayPal SDK loaded successfully. Plan ID: ' + config.paypalPlan, true);
+        }
+
+        // Show test result
+        function showTestResult(message, isSuccess) {
+            const resultsDiv = document.getElementById('test-results');
+            const messageDiv = document.getElementById('test-message');
+            
+            resultsDiv.style.display = 'block';
+            messageDiv.textContent = message;
+            
+            if (isSuccess) {
+                resultsDiv.className = 'mt-8';
+                resultsDiv.querySelector('div').className = 'bg-green-50 border border-green-200 rounded-lg p-4';
+                messageDiv.className = 'text-green-800';
+            } else {
+                resultsDiv.className = 'mt-8';
+                resultsDiv.querySelector('div').className = 'bg-red-50 border border-red-200 rounded-lg p-4';
+                messageDiv.className = 'text-red-800';
+            }
+        }
+
+        // Run verification when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                checkStripeConfig();
+                checkPayPalConfig();
+                generateSummary();
+            }, 1000); // Wait for SDKs to load
+        });
+    </script>
+</body>
+</html>

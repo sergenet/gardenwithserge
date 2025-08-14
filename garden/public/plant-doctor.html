@@ -1,0 +1,98 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plant Doctor</title>
+  <style>
+    #result, #analysis, #confirm-block { display: none; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <h2>Plant Doctor</h2>
+  <input type="file" id="plant-image" accept="image/*">
+  <button id="identify-btn">Identify Plant</button>
+
+  <div id="result">
+    <h3>Plant Identity</h3>
+    <p><b>Name:</b> <span id="plant-name"></span></p>
+    <p><b>Scientific Name:</b> <span id="plant-scientific"></span></p>
+    <p><b>Confidence:</b> <span id="plant-confidence"></span>%</p>
+    <div id="confirm-block">
+      <button id="confirm-btn">Yes, analyze health</button>
+      <button id="cancel-btn">No, upload another</button>
+    </div>
+  </div>
+
+  <div id="analysis">
+    <h3>Disease Analysis</h3>
+    <p><b>Health Status:</b> <span id="health-status"></span></p>
+    <p><b>Analysis:</b> <span id="disease-analysis"></span></p>
+    <ul id="recommendations"></ul>
+    <button onclick="location.reload()">Start Over</button>
+  </div>
+
+  <script>
+    let uploadedFile, plantData;
+
+    document.getElementById('identify-btn').onclick = async function() {
+      const fileInput = document.getElementById('plant-image');
+      if (!fileInput.files.length) { alert('Please upload an image.'); return; }
+      uploadedFile = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append('image', uploadedFile);
+
+      document.getElementById('identify-btn').disabled = true;
+      document.getElementById('identify-btn').innerText = 'Identifying...';
+
+      const res = await fetch('/api/plant-identify', { method: 'POST', body: formData });
+      document.getElementById('identify-btn').disabled = false;
+      document.getElementById('identify-btn').innerText = 'Identify Plant';
+
+      if (!res.ok) { alert('Failed to identify plant.'); return; }
+      plantData = await res.json();
+
+      document.getElementById('plant-name').innerText = plantData.plantName || 'Unknown';
+      document.getElementById('plant-scientific').innerText = plantData.scientificName || 'Unknown';
+      document.getElementById('plant-confidence').innerText = plantData.confidence !== undefined ? (plantData.confidence * 100).toFixed(1) : 'N/A';
+
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('confirm-block').style.display = 'block';
+    };
+
+    document.getElementById('confirm-btn').onclick = async function() {
+      const formData = new FormData();
+      formData.append('image', uploadedFile);
+      formData.append('plantName', plantData.plantName || '');
+      formData.append('scientificName', plantData.scientificName || '');
+
+      document.getElementById('confirm-btn').disabled = true;
+      document.getElementById('confirm-btn').innerText = 'Analyzing...';
+
+      const res = await fetch('/api/plant-analyze', { method: 'POST', body: formData });
+      document.getElementById('confirm-btn').disabled = false;
+      document.getElementById('confirm-btn').innerText = 'Yes, analyze health';
+
+      if (!res.ok) { alert('Failed to analyze plant health.'); return; }
+      const analysis = await res.json();
+
+      document.getElementById('health-status').innerText = analysis.healthStatus || 'Unknown';
+      document.getElementById('disease-analysis').innerText = analysis.diseaseAnalysis || '';
+      const ul = document.getElementById('recommendations');
+      ul.innerHTML = '';
+      (analysis.careRecommendations || []).forEach(rec => {
+        const li = document.createElement('li');
+        li.innerText = rec;
+        ul.appendChild(li);
+      });
+
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('analysis').style.display = 'block';
+    };
+
+    document.getElementById('cancel-btn').onclick = function() {
+      location.reload();
+    };
+  </script>
+</body>
+</html>

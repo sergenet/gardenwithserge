@@ -1,0 +1,695 @@
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module 'express'
+Require stack:
+- /home/sergbcqk/garden/server.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:1:17)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/sergbcqk/garden/server.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v18.20.8
+node:internal/modules/cjs/loader:1143
+  throw err;
+  ^
+
+Error: Cannot find module 'express'
+Require stack:
+- /home/sergbcqk/garden/server.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:1:17)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/sergbcqk/garden/server.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v18.20.8
+/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74
+            throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
+            ^
+
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
+    at new OpenAI (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74:19)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:11:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74
+            throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
+            ^
+
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
+    at new OpenAI (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74:19)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:11:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74
+            throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
+            ^
+
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
+    at new OpenAI (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74:19)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:11:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74
+            throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
+            ^
+
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
+    at new OpenAI (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74:19)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:11:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74
+            throw new Errors.OpenAIError("The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).");
+            ^
+
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
+    at new OpenAI (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/index.js:74:19)
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:11:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '965a5f19ddc7dbae-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Sun, 27 Jul 2025 07:19:58 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '38',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=SiwFy3QPlM9aZoRlkq3T5t9GIOWLZjhwBfwa9BQq8E8-1753600798-1.0.1.1-jU4PJFwDOtBA9QLNRiTG_FJjFr_de8HGx91PjljF.ur8LCWUF3nFotgTspMyYWRZZnHF77dcmL0Yx7OMfHkhQqSoLN5ffas7eMoAcqYgbms; path=/; expires=Sun, 27-Jul-25 07:49:58 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=SdDoVGC89e11o8KAof0pkKQ6RE8LPkTA1X4Ybu52eQw-1753600798374-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '42',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': '686c8719-6525-4681-93e2-48b5104ba330'
+  },
+  request_id: '686c8719-6525-4681-93e2-48b5104ba330',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '965a61ad1cac2aaf-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Sun, 27 Jul 2025 07:21:44 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '87',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=LU46K7qsK_SEpFUr2UGQfLKFMJHhN3G_wbICbxEqqCs-1753600904-1.0.1.1-_wKfBqOKd4eBa2M_ksIBJEo50WzgYRkpiZf1AqXXpzIN3Y.7ue6Mz8FHaVkmw7IuZDIMTCnLqXySQGWfwgw.UzGKYWxGMjp8LO3iV227V5w; path=/; expires=Sun, 27-Jul-25 07:51:44 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=gRK2TQbIx9J8v.ZE4NMnc1QV0QNSeQqmnY1tz.WbnDs-1753600904026-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '81',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': 'req_4a1b964bb5375b68585396d938d077ab'
+  },
+  request_id: 'req_4a1b964bb5375b68585396d938d077ab',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '965e6552cece5233-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Sun, 27 Jul 2025 19:03:17 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '44',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=lOQQ4eSFC21olkZZ1Lyt9.xznwYcTz.uTAKfTHMFc3k-1753642997-1.0.1.1-DWipxtX1C.PYtdtHtSNfy4XJxc7NMV1M43vPzueHKvXt4aGxtuiI64U2JZ1wSS0TUcg1_OQNMGQhKATwWnQRCFE9pYztSFC9DWaUdE_Afr4; path=/; expires=Sun, 27-Jul-25 19:33:17 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=CZTU7RciuttQ8zVXwe0ZK40160LVZOfeARwkoaqmOJ4-1753642997609-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '35',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': '0971ae5d-ced3-41eb-bffe-647c44108a85'
+  },
+  request_id: '0971ae5d-ced3-41eb-bffe-647c44108a85',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '965eda85bbee7ca1-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Sun, 27 Jul 2025 20:23:18 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '132',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=PXzMPGWoHJl7MZAUkOiBATs3ztRyPygPPND7EbRws8g-1753647798-1.0.1.1-LTyqvPc5BRnZ6GchMvB9XRr53xUFcdTgvjQGHqw1a6CRqL_8us_GVWyXe92VWS8miK5zWyoHp7aN6yVI83KKrveS6cRIvxtR89gi4pyfk4w; path=/; expires=Sun, 27-Jul-25 20:53:18 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=S6JIHe2eSpe2kIk5crw_YeHzhrEOgNTsYH8au1hplOE-1753647798826-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '106',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': 'f0acfa29-0d69-4f3a-a1e1-5e6e04fbe18f'
+  },
+  request_id: 'f0acfa29-0d69-4f3a-a1e1-5e6e04fbe18f',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '965edbe859e0e57c-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Sun, 27 Jul 2025 20:24:14 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '70',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=UqgDvnGm67oTKqvrINaM0dPBmu3lHM4nT7QAqlUx0GE-1753647854-1.0.1.1-h4O09bmL31kaQsU_uTNKMLGDsxNEeVuBS7YukD2VIx9vMbjnIX26XXPZGPEOcSI0m1AhAI3QVxg9UzqRbBauzsLTPW7.an3Pd_lOeRPdgPs; path=/; expires=Sun, 27-Jul-25 20:54:14 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=qX_JB2vrri4O357eEYHG4etkkGDjlVqZkMZYx5dqTaQ-1753647854952-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '65',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': '922aa340-4cc5-4bee-aee1-fee1077d6668'
+  },
+  request_id: '922aa340-4cc5-4bee-aee1-fee1077d6668',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '96614dadce152eae-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Mon, 28 Jul 2025 03:31:26 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '95',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=lfq9Nw9BpU8mc7FpP5GlUeK8I0FgqwAmQj0MZfcq16E-1753673486-1.0.1.1-.nREpp7LWtRgKBde2ZrLTrDsWZGWyBwV78wMCpYtkMEHSy5VfiX.Tzrsqc1kixrAyyk98npg5nyGd8kdrJCnY89EmmCqeffhNUBcJHldxv0; path=/; expires=Mon, 28-Jul-25 04:01:26 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=aVjnnpqz0YxZrGk6zM_K30s1UkveF3n_9wkqknozfsk-1753673486686-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '91',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': 'f97f7b5e-4e53-425e-b87e-0d6c0659ddc9'
+  },
+  request_id: 'f97f7b5e-4e53-425e-b87e-0d6c0659ddc9',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+BadRequestError: 400 Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.
+    at APIError.generate (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:302:33)
+    at OpenAI.makeRequest (/home/sergbcqk/nodevenv/garden/18/lib/node_modules/openai/core.js:346:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/sergbcqk/garden/server.js:55:28 {
+  status: 400,
+  headers: {
+    'access-control-expose-headers': 'X-Request-ID',
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '96615b646b47c798-LAX',
+    connection: 'keep-alive',
+    'content-length': '250',
+    'content-type': 'application/json',
+    date: 'Mon, 28 Jul 2025 03:40:48 GMT',
+    'openai-organization': 'user-skydfwmk85c67jnz3hon20yh',
+    'openai-processing-ms': '129',
+    'openai-project': 'proj_QGCyVUEw3NSEdL1Hhd4thJ3s',
+    'openai-version': '2020-10-01',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=6THC0o8O5u0pYMptAUIFLS_QYe2_G_Iei5NzlMzHq8E-1753674048-1.0.1.1-jOtZ5gQbaqy15oGsqN3GL5P2xA7muEGHrjfPxJAFXFrME0K7eSyyDC3A702tIDtfcQVfi5hSEFk3wGZ3vEW9IU5k4CF2NA1VtrtNtPgKD7A; path=/; expires=Mon, 28-Jul-25 04:10:48 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=rpAeHgvpCDfoeWkQj.1wX_O7VyTf_DleXIYOMuLmPCc-1753674048515-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    'x-content-type-options': 'nosniff',
+    'x-envoy-upstream-service-time': '116',
+    'x-ratelimit-limit-requests': '500',
+    'x-ratelimit-limit-tokens': '30000',
+    'x-ratelimit-remaining-requests': '499',
+    'x-ratelimit-remaining-tokens': '29944',
+    'x-ratelimit-reset-requests': '120ms',
+    'x-ratelimit-reset-tokens': '112ms',
+    'x-request-id': '86797068-62ac-496f-983e-8042b84cff35'
+  },
+  request_id: '86797068-62ac-496f-983e-8042b84cff35',
+  error: {
+    message: "Invalid type for 'messages[1].content[1].image_url': expected an object, but got a string instead.",
+    type: 'invalid_request_error',
+    param: 'messages[1].content[1].image_url',
+    code: 'invalid_type'
+  },
+  code: 'invalid_type',
+  param: 'messages[1].content[1].image_url',
+  type: 'invalid_request_error'
+}
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:6
+fs.appendFileSync(path.join(__dirname, 'debug.log'), "Server.js started at " + new Date().toISOString() + "\n");
+                  ^
+
+ReferenceError: Cannot access 'path' before initialization
+    at Object.<anonymous> (/home/sergbcqk/garden/server.js:6:19)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:69
+        });
+        ^
+
+SyntaxError: Missing catch or finally after try
+    at internalCompileFunction (node:internal/vm:76:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1283:20)
+    at Module._compile (node:internal/modules/cjs/loader:1328:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:69
+        });
+        ^
+
+SyntaxError: Missing catch or finally after try
+    at internalCompileFunction (node:internal/vm:76:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1283:20)
+    at Module._compile (node:internal/modules/cjs/loader:1328:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+/home/sergbcqk/garden/server.js:69
+        });
+        ^
+
+SyntaxError: Missing catch or finally after try
+    at internalCompileFunction (node:internal/vm:76:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1283:20)
+    at Module._compile (node:internal/modules/cjs/loader:1328:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+    at Object.<anonymous> (/usr/local/lsws/fcgi-bin/lsnode.js:16:1)
+
+Node.js v18.20.8
+Error: ENOENT: no such file or directory, stat '/home/sergbcqk/garden/public/index.html'

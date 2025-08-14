@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Garden with Serge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .success-animation {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .checkmark {
+            animation: checkmark 0.6s ease-in-out 0.9s both;
+        }
+        
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 50;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-teal-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto">
+            <!-- Success Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 text-center success-animation">
+                <!-- Success Icon -->
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-green-600 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="50">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                
+                <!-- Success Message -->
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">Payment Successful!</h1>
+                <p class="text-lg text-gray-600 mb-8">Thank you for subscribing to Garden with Serge. Your membership is now active!</p>
+                
+                <!-- Membership Details -->
+                <div class="bg-green-50 rounded-lg p-6 mb-8">
+                    <h2 class="text-xl font-semibold text-green-800 mb-3">Membership Details</h2>
+                    <div class="text-left space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Plan:</span>
+                            <span class="font-medium text-gray-800" id="membership-plan">Loading...</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Billing:</span>
+                            <span class="font-medium text-gray-800" id="billing-cycle">Loading...</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Status:</span>
+                            <span class="font-medium text-green-600">Active</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- What's Next -->
+                <div class="text-left mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">What's Next?</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">A confirmation email has been sent to your email address</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="leaf" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Start using the AI Plant Doctor with unlimited analyses</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="book-open" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Access exclusive gardening guides and seasonal tips</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="users" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Join our premium community of garden enthusiasts</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html" class="px-8 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors inline-flex items-center justify-center">
+                        <i data-lucide="home" class="w-5 h-5 mr-2"></i>
+                        Back to Garden
+                    </a>
+                    <a href="mailto:support@gardenwithserge.com" class="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors inline-flex items-center justify-center">
+                        <i data-lucide="help-circle" class="w-5 h-5 mr-2"></i>
+                        Get Support
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Additional Info -->
+            <div class="mt-8 text-center text-sm text-gray-500">
+                <p>Need help? Contact us at <a href="mailto:support@gardenwithserge.com" class="text-green-600 hover:underline">support@gardenwithserge.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Get URL parameters
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                type: urlParams.get('type'),
+                cycle: urlParams.get('cycle'),
+                provider: urlParams.get('provider'),
+                sessionId: urlParams.get('session_id')
+            };
+        }
+        
+        // Display membership details
+        function displayMembershipDetails() {
+            const params = getUrlParams();
+            const planElement = document.getElementById('membership-plan');
+            const cycleElement = document.getElementById('billing-cycle');
+            
+            if (params.type && params.cycle) {
+                const planNames = {
+                    'basic': 'Basic Membership',
+                    'green-thumb': 'Green Thumb Membership'
+                };
+                
+                const cycleNames = {
+                    'monthly': 'Monthly',
+                    'yearly': 'Yearly'
+                };
+                
+                planElement.textContent = planNames[params.type] || 'Premium Membership';
+                cycleElement.textContent = cycleNames[params.cycle] || 'Subscription';
+            } else {
+                planElement.textContent = 'Premium Membership';
+                cycleElement.textContent = 'Subscription';
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayMembershipDetails();
+        });
+    </script>
+</body>
+</html>

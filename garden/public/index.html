@@ -1,0 +1,1680 @@
+<!-- This is garden/public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- SEO: Meta Description and Canonical -->
+<meta name="description" content="Get instant, expert plant disease diagnosis with our free AI tool. Explore garden guides, plant care tips, and join our gardening community.">
+<link rel="canonical" href="https://gardenwithserge.com/">
+
+<!-- Social Sharing: Open Graph & Twitter -->
+<meta property="og:title" content="Garden with Serge - Multi-Language Gardening">
+<meta property="og:description" content="Free AI Plant Doctor, expert gardening guides, tips, and a global gardening community.">
+<meta property="og:image" content="https://gardenwithserge.com/hero-garden-pathway.jpg">
+<meta property="og:url" content="https://gardenwithserge.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Garden with Serge - Multi-Language Gardening">
+<meta name="twitter:description" content="Free AI Plant Doctor, expert gardening guides, tips, and a global gardening community.">
+<meta name="twitter:image" content="https://gardenwithserge.com/hero-garden-pathway.jpg">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden with Serge - Multi-Language Gardening</title>
+    
+    <!-- Google Analytics 4 - Private Visitor Tracking -->
+    <!-- Tracking ID: G-52BQHQ8HL1 - Garden with Serge Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2HEWWETS7Y"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2HEWWETS7Y');
+    </script>
+    <!-- End Google Analytics -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Modern Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=Af36OdgpfA6uwWQk3vyITvNAophqT5PWhr15inTQ9mdn3Yat4l1kbEHug_afLKgVXA7BbWrnVSb2axm5&vault=true&intent=subscription" data-namespace="paypal_sdk"></script>
+    <style>
+        /* Enhanced mobile-first responsive design with forced mobile behavior */
+        .font-serif { font-family: Georgia, serif; }
+        .scroll-smooth { scroll-behavior: smooth; }
+        
+        /* Force mobile navigation behavior */
+        .desktop-nav {
+            display: none !important;
+        }
+        
+        @media (min-width: 1024px) {
+            .desktop-nav {
+                display: flex !important;
+            }
+            .mobile-menu-btn {
+                display: none !important;
+            }
+        }
+        
+        /* Ensure language switcher is always visible */
+        .language-dropdown {
+            display: block !important;
+        }
+        
+        /* Force mobile menu overlay behavior */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+        }
+        
+        .mobile-menu-overlay.show {
+            display: block;
+        }
+        
+        /* Ensure proper mobile viewport */
+        @media (max-width: 1023px) {
+            body {
+                overflow-x: hidden;
+            }
+            
+            .container-mobile {
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+        }
+        
+        /* RTL Support */
+        [dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+        [dir="rtl"] .flex { flex-direction: row-reverse; }
+        [dir="rtl"] .space-x-4 > * + * { margin-left: 0; margin-right: 1rem; }
+        
+        /* Enhanced Language dropdown for mobile */
+        .language-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            right: 0;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-item {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-radius: 6px;
+            margin: 4px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Mobile-optimized touch targets */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* Mobile navigation overlay */
+        .mobile-nav-overlay {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        
+        /* Mobile-first grid layouts */
+        .mobile-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .mobile-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .mobile-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Enhanced mobile hero section */
+        .hero-mobile {
+            padding: 2rem 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-mobile {
+                padding: 5rem 2rem;
+            }
+        }
+        
+        /* Mobile-optimized statistics */
+        .stats-mobile {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-mobile {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Mobile-optimized cards */
+        .card-mobile {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Fix mobile horizontal scrolling */
+        .container-mobile {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        
+        /* Enhanced membership cards for mobile */
+        .membership-card-mobile {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .membership-card-mobile {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Modern Payment Button Styles */
+        .split-payment-button {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .split-payment-button:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-half {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .payment-half:hover {
+            transform: translateY(-2px);
+        }
+
+        .paypal-half {
+            background: linear-gradient(135deg, #0070ba, #003087);
+            color: white;
+        }
+
+        .paypal-half:hover {
+            background: linear-gradient(135deg, #005ea6, #002970);
+        }
+
+        .stripe-half {
+            background: linear-gradient(135deg, #635bff, #4c44ff);
+            color: white;
+        }
+
+        .stripe-half:hover {
+            background: linear-gradient(135deg, #524ce6, #4039e6);
+        }
+
+        .price-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .payment-loading {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .membership-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 2px solid #10b981;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .membership-card:hover {
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .membership-card.featured {
+            border-color: #10b981;
+            position: relative;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .save-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 12px;
+        }
+    </style>
+</head>
+<body class="scroll-smooth container-mobile" dir="ltr">
+    <!-- Enhanced Mobile-First Navigation Header -->
+    <header class="bg-white shadow-sm border-b border-green-100 sticky top-0 z-50">
+        <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <button onclick="scrollToSection('home')" class="text-lg sm:text-2xl font-serif font-bold text-green-800 hover:text-green-900 transition-colors touch-target">
+                        Garden with Serge
+                    </button>
+                </div>
+
+                <!-- Mobile-first controls -->
+                <div class="mobile-controls flex items-center space-x-2">
+                    <!-- Language Switcher - Enhanced for mobile -->
+                    <div class="language-dropdown">
+                        <button onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 px-3 py-2 mr-2 text-sm font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600 transition-colors touch-target">
+                            <span id="current-flag">🇺🇸</span>
+                            <span id="current-language" class="hidden sm:inline">EN</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                        <div id="language-dropdown" class="dropdown-content">
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('en', '🇺🇸', 'EN')">🇺🇸 English</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('es', '🇪🇸', 'ES')">🇪🇸 Español</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('fr', '🇫🇷', 'FR')">🇫🇷 Français</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('de', '🇩🇪', 'DE')">🇩🇪 Deutsch</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('el', '🇬🇷', 'EL')">🇬🇷 Ελληνικά</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('ru', '🇷🇺', 'RU')">🇷🇺 Русский</a>
+                            <a href="#" class="dropdown-item" onclick="changeLanguage('ar', '🇸🇦', 'AR')">🇸🇦 العربية</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu hamburger button -->
+                    <button onclick="toggleMobileMenu()" class="mobile-menu-btn p-2 text-gray-600 hover:text-green-600 touch-target">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+
+<!-- Desktop Navigation -->
+<div class="desktop-nav lg:flex lg:items-center lg:space-x-2">
+    <button onclick="scrollToSection('garden-guides')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-indigo-500 hover:bg-indigo-600">
+        <span id="nav-garden-guides">Garden Guides</span>
+    </button>
+    <button onclick="scrollToSection('garden-styles')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-blue-500 hover:bg-blue-600">
+        <span id="nav-garden-styles">Garden Styles</span>
+    </button>
+    <button onclick="scrollToSection('plant-care')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-yellow-500 hover:bg-yellow-600">
+        <span id="nav-plant-care">Plant Care</span>
+    </button>
+    <button onclick="scrollToSection('seasonal-tips')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-purple-500 hover:bg-purple-600">
+        <span id="nav-seasonal-tips">Seasonal Tips</span>
+    </button>
+    <button onclick="scrollToSection('membership')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-teal-500 hover:bg-teal-600">
+        <span id="nav-membership">Membership</span>
+    </button>
+    <button onclick="scrollToSection('newsletter')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-pink-500 hover:bg-pink-600">
+        <span id="nav-newsletter">Newsletter</span>
+    </button>
+    <button onclick="scrollToSection('plant-doctor')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-purple-600 hover:bg-purple-700">
+        <span id="nav-plant-doctor">Plant Dr.</span>
+    </button>
+    <button onclick="scrollToSection('home')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-green-500 hover:bg-green-600">
+        <span id="nav-home">Home</span>
+    </button>
+    <button onclick="window.location.href='login.php'" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-orange-500 hover:bg-orange-600">
+    <span id="nav-member-login">Member Login</span>
+	</button>
+</div>
+
+<!-- Mobile Navigation -->
+<div id="mobile-menu" class="mobile-menu-overlay">
+    <div class="flex flex-col h-full p-4 space-y-4">
+        <button onclick="scrollToSection('garden-guides')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-indigo-500 hover:bg-indigo-600 touch-target">
+            <span id="mobile-nav-garden-guides">Garden Guides</span>
+        </button>
+        <button onclick="scrollToSection('garden-styles')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-blue-500 hover:bg-blue-600 touch-target">
+            <span id="mobile-nav-garden-styles">Garden Styles</span>
+        </button>
+        <button onclick="scrollToSection('plant-care')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-yellow-500 hover:bg-yellow-600 touch-target">
+            <span id="mobile-nav-plant-care">Plant Care</span>
+        </button>
+        <button onclick="scrollToSection('seasonal-tips')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-purple-500 hover:bg-purple-600 touch-target">
+            <span id="mobile-nav-seasonal-tips">Seasonal Tips</span>
+        </button>
+        <button onclick="scrollToSection('membership')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-teal-500 hover:bg-teal-600 touch-target">
+            <span id="mobile-nav-membership">Membership</span>
+        </button>
+        <button onclick="scrollToSection('newsletter')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-pink-500 hover:bg-pink-600 touch-target">
+            <span id="mobile-nav-newsletter">Newsletter</span>
+        </button>
+        <button onclick="scrollToSection('plant-doctor')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-purple-600 hover:bg-purple-700 touch-target">
+            <span id="mobile-nav-plant-doctor">Plant Dr.</span>
+        </button>
+        <button onclick="scrollToSection('home')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-green-500 hover:bg-green-600 touch-target">
+            <span id="mobile-nav-home">Home</span>
+        </button>
+        <button onclick="window.location.href='login.php'" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-orange-500 hover:bg-orange-600 touch-target">
+                        <span id="mobile-nav-member-login">Member Login</span>
+        </button>
+    </div>
+</div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Enhanced Mobile-First Hero Section -->
+        <section id="home" class="hero-mobile overflow-hidden" style="background-color: #F5F5DC;">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    <!-- Left Content -->
+                    <div class="text-center lg:text-left">
+                        <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-green-800 mb-4 lg:mb-6">
+                            Free AI Plant Doctor - Instant Disease Diagnosis
+                        </h1>
+                        <p id="hero-description" class="text-base sm:text-lg text-gray-700 mb-6 lg:mb-8">
+                            Get instant, accurate plant disease diagnosis powered by AI. Upload a photo and receive expert analysis within seconds.
+                        </p>
+                        
+                        <!--
+<div class="flex items-center justify-center lg:justify-start space-x-2 mb-6 lg:mb-8">
+    <i data-lucide="award" class="h-5 w-5 sm:h-6 sm:w-6 text-green-600"></i>
+    <span class="bg-green-600 text-white px-3 sm:px-4 py-2 rounded-full text-sm font-medium">
+        <span id="partnership-badge">Professional Partnership Program</span>
+    </span>
+</div>
+-->
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="scrollToSection('plant-doctor')" class="bg-green-600 text-white px-6 sm:px-8 py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 shadow-lg touch-target">
+                                <i data-lucide="camera" class="h-5 w-5 sm:h-6 sm:w-6"></i>
+                                <span id="btn-try-plant-doctor">Try Plant Doctor Free</span>
+                            </button>
+                            <button onclick="scrollToSection('garden-guides')" class="bg-white text-green-600 border-2 border-green-600 px-6 sm:px-8 py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-green-50 transition-colors flex items-center justify-center space-x-2 shadow-lg touch-target">
+                                <i data-lucide="book-open" class="h-5 w-5 sm:h-6 sm:w-6"></i>
+                                <span id="btn-explore-guides">Explore Garden Guides</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Image - Mobile optimized -->
+                    <div class="relative order-first lg:order-last">
+                        <img src="hero-garden-pathway.jpg" alt="Beautiful garden pathway with flowering bushes" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg shadow-xl">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Mobile-First Statistics Section -->
+        <section class="py-8 sm:py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="stats-mobile text-center">
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">1000+</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-plants-diagnosed">Plants Diagnosed</div>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">98%</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-accuracy">Accuracy Rate</div>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">24/7</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-available">Available</div>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">
+                            <span id="free-analysis-counter"></span>
+                        </div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-analysis">Plant Analysis</div>
+                        <div id="analysis-counter-stats" class="text-sm mt-1">
+                            <span class="text-green-600 font-semibold">3 of 3 left</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Essential Garden Guides Section -->
+        <section id="garden-guides" class="py-12 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-8 lg:mb-12">
+                    <h2 id="garden-guides-title" class="text-3xl sm:text-4xl font-serif font-bold text-green-800 mb-4">
+                        Essential Garden Guides
+                    </h2>
+                    <p id="garden-guides-intro" class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                        Comprehensive guides to help you succeed in every aspect of gardening, from basic techniques to advanced methods.
+                    </p>
+                </div>
+
+                <!-- Garden Guides Grid - Mobile First -->
+                <div class="mobile-grid">
+                    <!-- Soil Preparation Guide -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <i data-lucide="spade" class="h-6 w-6 text-yellow-600"></i>
+                                </div>
+                                <h3 id="soil-guide-title" class="text-xl font-bold text-gray-900">Soil Preparation</h3>
+                            </div>
+                            <p id="soil-guide-desc" class="text-gray-600 mb-4">
+                                Learn the fundamentals of healthy soil for thriving plants.
+                            </p>
+                            <div class="border-l-4 border-yellow-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="soil-guide-tips">Key Steps:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="soil-tip-1">• Test soil pH and nutrients</li>
+                                    <li id="soil-tip-2">• Add organic compost annually</li>
+                                    <li id="soil-tip-3">• Ensure proper drainage</li>
+                                    <li id="soil-tip-4">• Remove weeds and debris</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Composting Guide -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i data-lucide="recycle" class="h-6 w-6 text-green-600"></i>
+                                </div>
+                                <h3 id="composting-guide-title" class="text-xl font-bold text-gray-900">Composting Basics</h3>
+                            </div>
+                            <p id="composting-guide-desc" class="text-gray-600 mb-4">
+                                Create nutrient-rich compost for your garden naturally.
+                            </p>
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="composting-guide-tips">Essential Methods:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="composting-tip-1">• Balance green and brown materials</li>
+                                    <li id="composting-tip-2">• Turn pile every 2-3 weeks</li>
+                                    <li id="composting-tip-3">• Maintain proper moisture</li>
+                                    <li id="composting-tip-4">• Monitor temperature levels</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pruning Guide -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i data-lucide="scissors" class="h-6 w-6 text-purple-600"></i>
+                                </div>
+                                <h3 id="pruning-guide-title" class="text-xl font-bold text-gray-900">Pruning Techniques</h3>
+                            </div>
+                            <p id="pruning-guide-desc" class="text-gray-600 mb-4">
+                                Master proper pruning for healthier, more productive plants.
+                            </p>
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="pruning-guide-tips">Best Practices:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="pruning-tip-1">• Use clean, sharp tools</li>
+                                    <li id="pruning-tip-2">• Prune at the right season</li>
+                                    <li id="pruning-tip-3">• Remove dead and diseased wood</li>
+                                    <li id="pruning-tip-4">• Make clean, angled cuts</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Mobile-First Garden Styles Section -->
+        <section id="garden-styles" class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-8 lg:mb-12">
+                    <h2 id="garden-styles-title" class="text-3xl sm:text-4xl font-serif font-bold text-green-800 mb-4">
+                        Discover Garden Styles
+                    </h2>
+                    <p id="garden-styles-intro" class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                        Explore different gardening approaches and find the perfect style for your space, climate, and lifestyle.
+                    </p>
+                </div>
+
+                <!-- Garden Types Grid - Mobile First -->
+                <div class="mobile-grid">
+                    <!-- Container Gardening -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="container-gardening.jpg" alt="Container Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i data-lucide="droplets" class="h-6 w-6 text-blue-600"></i>
+                                </div>
+                                <h3 id="container-gardening-title" class="text-xl font-bold text-gray-900">Container Gardening</h3>
+                            </div>
+                            <p id="container-gardening-desc" class="text-gray-600 mb-4">
+                                Perfect for small spaces, patios, and beginners. Grow amazing plants in pots, planters, and containers.
+                            </p>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="container-guidelines">Essential Guidelines:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="container-tip-1">• Choose containers with drainage holes</li>
+                                    <li id="container-tip-2">• Use quality potting mix, not garden soil</li>
+                                    <li id="container-tip-3">• Water more frequently than ground plants</li>
+                                    <li id="container-tip-4">• Consider plant size at maturity</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="container-gardening-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="container-best-plants-title" class="font-semibold text-gray-900 mb-2">Best Plants for Containers:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="container-herbs">• Herbs: Basil, rosemary, thyme, parsley</li>
+                                        <li id="container-vegetables">• Vegetables: Tomatoes, peppers, lettuce, beans</li>
+                                        <li id="container-flowers">• Flowers: Petunias, marigolds, pansies</li>
+                                        <li id="container-fruits">• Fruits: Strawberries, dwarf citrus trees</li>
+                                    </ul>
+                                    <h5 id="container-types-title" class="font-semibold text-gray-900 mb-2 mt-4">Container Types:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="container-terracotta">• Terra cotta: Good drainage, classic look</li>
+                                        <li id="container-plastic">• Plastic: Lightweight, retains moisture</li>
+                                        <li id="container-ceramic">• Ceramic: Beautiful but heavy</li>
+                                        <li id="container-wood">• Wood: Natural look, good insulation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="container-gardening-expand-btn" onclick="expandGardenStyle('container-gardening')" class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vertical Gardening -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="vertical-gardening.jpg" alt="Vertical Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-orange-100 p-3 rounded-lg">
+                                    <i data-lucide="trending-up" class="h-6 w-6 text-orange-600"></i>
+                                </div>
+                                <h3 id="vertical-gardening-title" class="text-xl font-bold text-gray-900">Vertical Gardening</h3>
+                            </div>
+                            <p id="vertical-gardening-desc" class="text-gray-600 mb-4">
+                                Maximize your growing space by going vertical. Perfect for urban environments and small areas.
+                            </p>
+                            <div class="border-l-4 border-orange-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="vertical-principles">Key Principles:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="vertical-tip-1">• Ensure proper structural support</li>
+                                    <li id="vertical-tip-2">• Plan for adequate lighting</li>
+                                    <li id="vertical-tip-3">• Install efficient irrigation systems</li>
+                                    <li id="vertical-tip-4">• Choose lightweight growing medium</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="vertical-gardening-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="vertical-systems-title" class="font-semibold text-gray-900 mb-2">Vertical System Types:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="vertical-living-walls">• Living walls: Soil-based growing systems</li>
+                                        <li id="vertical-hydroponic-towers">• Hydroponic towers: Soilless vertical systems</li>
+                                        <li id="vertical-pocket-planters">• Pocket planters: Fabric or plastic pouches</li>
+                                        <li id="vertical-trellis-systems">• Trellis systems: Support for climbing plants</li>
+                                    </ul>
+                                    <h5 id="vertical-perfect-plants-title" class="font-semibold text-gray-900 mb-2 mt-4">Perfect Plants:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="vertical-climbing-vines">• Climbing vines: Peas, beans, cucumbers</li>
+                                        <li id="vertical-trailing-plants">• Trailing plants: Strawberries, nasturtiums</li>
+                                        <li id="vertical-compact-vegetables">• Compact vegetables: Lettuce, spinach, herbs</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="vertical-gardening-expand-btn" onclick="expandGardenStyle('vertical-gardening')" class="mt-4 text-orange-600 hover:text-orange-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hydroponic Gardening -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="hydroponic-gardening.jpg" alt="Hydroponic Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i data-lucide="sprout" class="h-6 w-6 text-green-600"></i>
+                                </div>
+                                <h3 id="hydroponic-gardening-title" class="text-xl font-bold text-gray-900">Hydroponic Gardening</h3>
+                            </div>
+                            <p id="hydroponic-gardening-desc" class="text-gray-600 mb-4">
+                                Soil-free growing using nutrient-rich water solutions. Fast growth and high yields year-round.
+                            </p>
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="hydroponic-getting-started">Getting Started:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="hydroponic-tip-1">• Start with simple systems like DWC</li>
+                                    <li id="hydroponic-tip-2">• Monitor pH and nutrient levels</li>
+                                    <li id="hydroponic-tip-3">• Provide adequate grow lighting</li>
+                                    <li id="hydroponic-tip-4">• Begin with leafy greens and herbs</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="hydroponic-gardening-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="hydroponic-systems-title" class="font-semibold text-gray-900 mb-2">System Types:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="hydroponic-dwc">• DWC (Deep Water Culture): Roots in nutrient solution</li>
+                                        <li id="hydroponic-nft">• NFT (Nutrient Film Technique): Thin film of nutrients</li>
+                                        <li id="hydroponic-ebb-flow">• Ebb and Flow: Periodic flooding system</li>
+                                        <li id="hydroponic-aeroponic">• Aeroponic: Roots suspended in air, misted</li>
+                                    </ul>
+                                    <h5 id="hydroponic-equipment-title" class="font-semibold text-gray-900 mb-2 mt-4">Equipment Needed:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="hydroponic-containers">• Growing containers and growing medium</li>
+                                        <li id="hydroponic-pumps">• Water and air pumps</li>
+                                        <li id="hydroponic-testing">• pH and nutrient testing kits</li>
+                                        <li id="hydroponic-lights">• LED grow lights for indoor systems</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="hydroponic-gardening-expand-btn" onclick="expandGardenStyle('hydroponic-gardening')" class="mt-4 text-green-600 hover:text-green-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Permaculture -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="permaculture-gardening.jpg" alt="Permaculture Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i data-lucide="globe" class="h-6 w-6 text-purple-600"></i>
+                                </div>
+                                <h3 id="permaculture-title" class="text-xl font-bold text-gray-900">Permaculture</h3>
+                            </div>
+                            <p id="permaculture-desc" class="text-gray-600 mb-4">
+                                Sustainable design principles that work with nature to create productive, self-maintaining systems.
+                            </p>
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="permaculture-principles">Core Principles:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="permaculture-tip-1">• Care for the earth and people</li>
+                                    <li id="permaculture-tip-2">• Design for energy efficiency</li>
+                                    <li id="permaculture-tip-3">• Use renewable resources</li>
+                                    <li id="permaculture-tip-4">• Create beneficial relationships</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="permaculture-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="permaculture-design-title" class="font-semibold text-gray-900 mb-2">Design Elements:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="permaculture-food-forests">• Food forests: Multi-layered growing systems</li>
+                                        <li id="permaculture-water-harvesting">• Water harvesting: Rain collection and management</li>
+                                        <li id="permaculture-companion-planting">• Companion planting: Mutually beneficial plants</li>
+                                        <li id="permaculture-pest-management">• Natural pest management: Ecological balance</li>
+                                    </ul>
+                                    <h5 id="permaculture-benefits-title" class="font-semibold text-gray-900 mb-2 mt-4">Benefits:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="permaculture-low-maintenance">• Reduced maintenance over time</li>
+                                        <li id="permaculture-soil-health">• Improved soil health and biodiversity</li>
+                                        <li id="permaculture-resilient">• Resilient to climate variations</li>
+                                        <li id="permaculture-productive">• Produces food, medicine, and materials</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="permaculture-expand-btn" onclick="expandGardenStyle('permaculture')" class="mt-4 text-purple-600 hover:text-purple-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Shade Gardens -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="shade-garden.jpg" alt="Shade Gardens" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-indigo-100 p-3 rounded-lg">
+                                    <i data-lucide="cloud" class="h-6 w-6 text-indigo-600"></i>
+                                </div>
+                                <h3 id="shade-gardens-title" class="text-xl font-bold text-gray-900">Shade Gardens</h3>
+                            </div>
+                            <p id="shade-gardens-desc" class="text-gray-600 mb-4">
+                                Transform shady areas into lush, beautiful gardens with the right plant selection and design.
+                            </p>
+                            <div class="border-l-4 border-indigo-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="shade-types">Shade Types:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="shade-tip-1">• Partial shade: 3-6 hours sunlight</li>
+                                    <li id="shade-tip-2">• Full shade: Less than 3 hours</li>
+                                    <li id="shade-tip-3">• Dappled shade: Filtered sunlight</li>
+                                    <li id="shade-tip-4">• Choose shade-loving plants</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="shade-gardens-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="shade-plants-title" class="font-semibold text-gray-900 mb-2">Shade-Loving Plants:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="shade-hostas">• Hostas: Dramatic foliage in many varieties</li>
+                                        <li id="shade-ferns">• Ferns: Ancient, elegant texture plants</li>
+                                        <li id="shade-impatiens">• Impatiens: Colorful annual flowers</li>
+                                        <li id="shade-astilbe">• Astilbe: Feathery plumes of flowers</li>
+                                        <li id="shade-heuchera">• Heuchera: Colorful foliage perennials</li>
+                                    </ul>
+                                    <h5 id="shade-design-title" class="font-semibold text-gray-900 mb-2 mt-4">Design Tips:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="shade-light-plants">• Use light-colored plants to brighten dark areas</li>
+                                        <li id="shade-paths-seating">• Add paths and seating for enjoyment</li>
+                                        <li id="shade-layer-height">• Layer plants by height for depth</li>
+                                        <li id="shade-fragrant-plants">• Include fragrant plants for sensory appeal</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="shade-gardens-expand-btn" onclick="expandGardenStyle('shade-gardens')" class="mt-4 text-indigo-600 hover:text-indigo-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Indoor Gardening -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="indoor-gardening.jpg" alt="Indoor Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-teal-100 p-3 rounded-lg">
+                                    <i data-lucide="home" class="h-6 w-6 text-teal-600"></i>
+                                </div>
+                                <h3 id="indoor-gardening-title" class="text-xl font-bold text-gray-900">Indoor Gardening</h3>
+                            </div>
+                            <p id="indoor-gardening-desc" class="text-gray-600 mb-4">
+                                Bring nature indoors with houseplants, herbs, and vegetables that thrive in indoor environments.
+                            </p>
+                            <div class="border-l-4 border-teal-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="indoor-success">Success Factors:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="indoor-tip-1">• Provide adequate light sources</li>
+                                    <li id="indoor-tip-2">• Maintain proper humidity levels</li>
+                                    <li id="indoor-tip-3">• Ensure good air circulation</li>
+                                    <li id="indoor-tip-4">• Choose appropriate plant varieties</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="indoor-gardening-expanded-content" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h5 id="indoor-plants-title" class="font-semibold text-gray-900 mb-2">Easy Indoor Plants:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="indoor-pothos">• Pothos: Low-maintenance vine</li>
+                                        <li id="indoor-snake-plant">• Snake plant: Tolerates low light</li>
+                                        <li id="indoor-spider-plant">• Spider plant: Easy to propagate</li>
+                                        <li id="indoor-peace-lily">• Peace lily: Beautiful flowers</li>
+                                        <li id="indoor-herbs">• Herbs: Basil, mint, parsley</li>
+                                    </ul>
+                                    <h5 id="indoor-conditions-title" class="font-semibold text-gray-900 mb-2 mt-4">Growing Conditions:</h5>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="indoor-light">• Light: South-facing windows or grow lights</li>
+                                        <li id="indoor-temperature">• Temperature: Most plants prefer 65-75°F</li>
+                                        <li id="indoor-humidity">• Humidity: Use humidifiers or pebble trays</li>
+                                        <li id="indoor-soil">• Soil: Use quality potting mixes</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="indoor-gardening-expand-btn" onclick="expandGardenStyle('indoor-gardening')" class="mt-4 text-teal-600 hover:text-teal-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Mobile-First Plant Care Section -->
+        <section id="plant-care" class="py-12 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-8 lg:mb-12">
+                    <h2 id="plant-care-title" class="text-3xl sm:text-4xl font-serif font-bold text-green-800 mb-4">
+                        Expert Plant Care
+                    </h2>
+                    <p id="plant-care-intro" class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                        Master the fundamentals of plant care with our comprehensive guides covering watering, pest control, and disease management.
+                    </p>
+                </div>
+
+                <!-- Plant Care Cards - Mobile First -->
+                <div class="mobile-grid">
+                    <!-- Watering Guide -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i data-lucide="droplets" class="h-6 w-6 text-blue-600"></i>
+                                </div>
+                                <h3 id="watering-guide-title" class="text-xl font-bold text-gray-900">Watering Guide</h3>
+                            </div>
+                            <p id="watering-intro" class="text-gray-600 mb-4">
+                                Master the art of proper plant hydration with these essential techniques:
+                            </p>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="watering-tip-1">• Check soil moisture before watering</li>
+                                    <li id="watering-tip-2">• Water deeply but less frequently</li>
+                                    <li id="watering-tip-3">• Morning watering is usually best</li>
+                                    <li id="watering-tip-4">• Adjust frequency by season and weather</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="watering-expanded" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h4 class="font-semibold text-gray-900 mb-2" id="watering-signs-title">Signs of Watering Issues:</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="watering-overwater">• Overwatering: Yellow leaves, root rot, fungal growth</li>
+                                        <li id="watering-underwater">• Underwatering: Wilting, dry soil, brown leaf edges</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="watering-expand-btn" onclick="expandContent('watering')" class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pest Control -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-orange-100 p-3 rounded-lg">
+                                    <i data-lucide="bug" class="h-6 w-6 text-orange-600"></i>
+                                </div>
+                                <h3 id="pest-control-title" class="text-xl font-bold text-gray-900">Pest Control</h3>
+                            </div>
+                            <p id="pest-intro" class="text-gray-600 mb-4">
+                                Protect your plants from common pests with integrated management strategies:
+                            </p>
+                            <div class="border-l-4 border-orange-500 pl-4">
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="pest-tip-1">• Regular inspection and early detection</li>
+                                    <li id="pest-tip-2">• Encourage beneficial insects</li>
+                                    <li id="pest-tip-3">• Use organic treatments when possible</li>
+                                    <li id="pest-tip-4">• Maintain plant health for resistance</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="pest-expanded" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h4 class="font-semibold text-gray-900 mb-2" id="pest-common-title">Common Garden Pests:</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="pest-aphids">• Aphids: Small, soft-bodied insects on new growth</li>
+                                        <li id="pest-spider-mites">• Spider mites: Tiny pests causing stippled leaves</li>
+                                        <li id="pest-whiteflies">• Whiteflies: Small white flying insects</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="pest-expand-btn" onclick="expandContent('pest')" class="mt-4 text-orange-600 hover:text-orange-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Disease Management -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <div class="bg-gradient-to-r from-purple-400 to-purple-600 h-2"></div>
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-purple-100 p-3 rounded-lg">
+                                    <i data-lucide="shield" class="h-6 w-6 text-purple-600"></i>
+                                </div>
+                                <h3 id="disease-mgmt-title" class="text-xl font-bold text-gray-900">Disease Management</h3>
+                            </div>
+                            <p id="disease-intro" class="text-gray-600 mb-4">
+                                Prevent and treat plant diseases with proper management techniques:
+                            </p>
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="disease-tip-1">• Ensure proper air circulation</li>
+                                    <li id="disease-tip-2">• Avoid overhead watering</li>
+                                    <li id="disease-tip-3">• Remove infected plant material</li>
+                                    <li id="disease-tip-4">• Choose disease-resistant varieties</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Expandable content -->
+                            <div id="disease-expanded" class="mt-4 hidden">
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h4 class="font-semibold text-gray-900 mb-2" id="disease-common-title">Common Plant Diseases:</h4>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li id="disease-powdery-mildew">• Powdery mildew: White powdery coating on leaves</li>
+                                        <li id="disease-black-spot">• Black spot: Dark spots on leaves and stems</li>
+                                        <li id="disease-root-rot">• Root rot: Mushy, dark roots from overwatering</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button id="disease-expand-btn" onclick="expandContent('disease')" class="mt-4 text-purple-600 hover:text-purple-800 text-sm font-semibold touch-target">
+                                <span id="click-more-content">Click for more content</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Mobile-First Seasonal Tips Section -->
+        <section id="seasonal-tips" class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-8 lg:mb-12">
+                    <h2 id="seasonal-tips-title" class="text-3xl sm:text-4xl font-serif font-bold text-green-800 mb-4">
+                        Seasonal Gardening Tips
+                    </h2>
+                    <p id="seasonal-tips-intro" class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                        Discover season-specific guidance to keep your garden thriving year-round with our comprehensive seasonal gardening calendar.
+                    </p>
+                </div>
+
+                <!-- Seasonal Cards - Mobile First -->
+                <div class="mobile-grid">
+                    <!-- Spring -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="Spring.jpg" alt="Spring Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-green-100 p-3 rounded-lg">
+                                    <i data-lucide="flower" class="h-6 w-6 text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h3 id="spring-title" class="text-xl font-bold text-gray-900">Spring</h3>
+                                    <p id="spring-period" class="text-sm text-gray-500">March - May</p>
+                                </div>
+                            </div>
+                            <p id="spring-description" class="text-gray-600 mb-4">
+                                The season of renewal and growth. Prepare your garden for the growing season ahead.
+                            </p>
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="spring-tasks-title">Key Tasks:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="spring-task-1">Start seeds indoors for warm-season crops</li>
+                                    <li id="spring-task-2">Prepare garden beds and add compost</li>
+                                    <li id="spring-task-3">Prune fruit trees and flowering shrubs</li>
+                                    <li id="spring-task-4">Begin pest and disease monitoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summer -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="summer.jpg" alt="Summer Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-yellow-100 p-3 rounded-lg">
+                                    <i data-lucide="sun" class="h-6 w-6 text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <h3 id="summer-title" class="text-xl font-bold text-gray-900">Summer</h3>
+                                    <p id="summer-period" class="text-sm text-gray-500">June - August</p>
+                                </div>
+                            </div>
+                            <p id="summer-description" class="text-gray-600 mb-4">
+                                Peak growing season with abundant harvests. Focus on maintenance and water management.
+                            </p>
+                            <div class="border-l-4 border-yellow-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="summer-tasks-title">Key Tasks:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="summer-task-1">Deep watering during hot, dry periods</li>
+                                    <li id="summer-task-2">Harvest vegetables at peak ripeness</li>
+                                    <li id="summer-task-3">Deadhead flowers to encourage blooming</li>
+                                    <li id="summer-task-4">Monitor and treat pest infestations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Autumn -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="autumn.jpg" alt="Autumn Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-orange-100 p-3 rounded-lg">
+                                    <i data-lucide="leaf" class="h-6 w-6 text-orange-600"></i>
+                                </div>
+                                <div>
+                                    <h3 id="autumn-title" class="text-xl font-bold text-gray-900">Autumn</h3>
+                                    <p id="autumn-period" class="text-sm text-gray-500">September - November</p>
+                                </div>
+                            </div>
+                            <p id="autumn-description" class="text-gray-600 mb-4">
+                                Harvest time and preparation for winter. Focus on cleanup and protection.
+                            </p>
+                            <div class="border-l-4 border-orange-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="autumn-tasks-title">Key Tasks:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="autumn-task-1">Harvest remaining crops before frost</li>
+                                    <li id="autumn-task-2">Plant spring-blooming bulbs</li>
+                                    <li id="autumn-task-3">Clean up fallen leaves and debris</li>
+                                    <li id="autumn-task-4">Protect tender plants from cold</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Winter -->
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
+                        <img src="winter.jpg" alt="Winter Gardening" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <i data-lucide="snowflake" class="h-6 w-6 text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 id="winter-title" class="text-xl font-bold text-gray-900">Winter</h3>
+                                    <p id="winter-period" class="text-sm text-gray-500">December - February</p>
+                                </div>
+                            </div>
+                            <p id="winter-description" class="text-gray-600 mb-4">
+                                Planning and protection season. Focus on indoor growing and garden planning.
+                            </p>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2" id="winter-tasks-title">Key Tasks:</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li id="winter-task-1">Plan next year's garden layout</li>
+                                    <li id="winter-task-2">Order seeds and plant catalogs</li>
+                                    <li id="winter-task-3">Maintain houseplants and indoor herbs</li>
+                                    <li id="winter-task-4">Check and maintain garden tools</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modern Premium Membership Section -->
+        <section id="membership" class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 id="membership-title" class="text-4xl font-bold text-gray-800 mb-6">Choose Your Gardening Journey</h2>
+                    <p id="membership-intro" class="text-xl text-gray-600 max-w-3xl mx-auto">Get expert guidance, AI plant diagnosis, and premium features to take your gardening to the next level</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    
+                    <!-- Basic Membership -->
+                    <div class="membership-card">
+                        <div class="text-center mb-8">
+                            <h3 id="basic-membership-name" class="text-2xl font-bold text-gray-800 mb-2">Basic Membership</h3>
+                            <p id="basic-membership-subtitle" class="text-gray-600">Perfect for gardening beginners</p>
+                        </div>
+
+                        <!-- Basic Monthly -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 id="basic-monthly-title" class="text-lg font-semibold text-gray-800">Monthly Plan</h4>
+                                    <div class="text-2xl font-bold text-green-600">$4.99<span class="text-sm text-gray-500">/month</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="split-payment-button mb-4">
+                                <button class="payment-half paypal-half" onclick="handlePayPalPayment('basic', 'monthly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">PayPal</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$4.99/mo</div>
+                                </button>
+                                <button class="payment-half stripe-half" onclick="handleStripePayment('basic', 'monthly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">Pay with Stripe</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$4.99/mo</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Basic Yearly -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 id="basic-yearly-title" class="text-lg font-semibold text-gray-800">Yearly Plan</h4>
+                                    <div class="flex items-center">
+                                        <div class="text-2xl font-bold text-green-600">$47.90<span class="text-sm text-gray-500">/year</span></div>
+                                        <span id="basic-save-badge" class="save-badge">Save 20%</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500 line-through">$59.88/year</div>
+                                </div>
+                            </div>
+                            
+                            <div class="split-payment-button mb-4">
+                                <button class="payment-half paypal-half" onclick="handlePayPalPayment('basic', 'yearly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">PayPal</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$47.90/yr</div>
+                                </button>
+                                <button class="payment-half stripe-half" onclick="handleStripePayment('basic', 'yearly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">Pay with Stripe</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$47.90/yr</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Basic Features -->
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="basic-feature-1">Member discounts</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="basic-feature-2">Basic plant identification</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="basic-feature-3">Community forum access</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Green Thumb Membership -->
+                    <div class="membership-card featured">
+                        <div id="most-popular-badge" class="featured-badge">Most Popular</div>
+                        
+                        <div class="text-center mb-8">
+                            <h3 id="green-thumb-name" class="text-2xl font-bold text-gray-800 mb-2">Green Thumb Membership</h3>
+                            <p id="green-thumb-subtitle" class="text-gray-600">For serious gardeners and plant enthusiasts</p>
+                        </div>
+
+                        <!-- Green Thumb Monthly -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 id="green-thumb-monthly-title" class="text-lg font-semibold text-gray-800">Monthly Plan</h4>
+                                    <div class="text-2xl font-bold text-green-600">$9.99<span class="text-sm text-gray-500">/month</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="split-payment-button mb-4">
+                                <button class="payment-half paypal-half" onclick="handlePayPalPayment('green-thumb', 'monthly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">PayPal</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$9.99/mo</div>
+                                </button>
+                                <button class="payment-half stripe-half" onclick="handleStripePayment('green-thumb', 'monthly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">Pay with Stripe</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$9.99/mo</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Green Thumb Yearly -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 id="green-thumb-yearly-title" class="text-lg font-semibold text-gray-800">Yearly Plan</h4>
+                                    <div class="flex items-center">
+                                        <div class="text-2xl font-bold text-green-600">$95.90<span class="text-sm text-gray-500">/year</span></div>
+                                        <span id="green-thumb-save-badge" class="save-badge">Save 20%</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500 line-through">$119.88/year</div>
+                                </div>
+                            </div>
+                            
+                            <div class="split-payment-button mb-4">
+                                <button class="payment-half paypal-half" onclick="handlePayPalPayment('green-thumb', 'yearly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">PayPal</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$95.90/yr</div>
+                                </button>
+                                <button class="payment-half stripe-half" onclick="handleStripePayment('green-thumb', 'yearly', event)">
+                                    <div class="flex items-center justify-center">
+                                        <span class="mr-2">Pay with Stripe</span>
+                                        <div class="payment-loading"></div>
+                                    </div>
+                                    <div class="price-badge">$95.90/yr</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Green Thumb Features -->
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="green-thumb-feature-1">Everything in Basic Plan</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="green-thumb-feature-2">AI garden planning & insights</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="green-thumb-feature-3">Advanced disease identification AI</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-500 mr-3">✓</span>
+                                <span id="green-thumb-feature-4">Location-specific calendars</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       <!-- Enhanced Mobile-First Newsletter Section -->
+<section id="newsletter" class="py-12 bg-green-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 id="newsletter-title" class="text-3xl sm:text-4xl font-serif font-bold text-white mb-4">
+                Join Our Garden Community
+            </h2>
+            <p id="newsletter-description" class="text-lg sm:text-xl text-green-100 mb-8">
+                Get weekly gardening advice, seasonal tips, and exclusive content delivered to your inbox.
+            </p>
+            
+            <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input 
+                    type="email" 
+                    id="newsletter-email" 
+                    name="email"
+                    placeholder="Enter your email address"
+                    class="flex-1 px-4 py-3 rounded-lg border border-green-400 focus:outline-none focus:ring-2 focus:ring-white text-gray-900 touch-target"
+                    required
+                >
+                <button 
+                    type="submit" 
+                    id="newsletter-submit-btn"
+                    class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors touch-target"
+                >
+                    <span id="newsletter-submit-btn-text">Subscribe Free</span>
+                </button>
+            </form>
+            <div id="newsletter-message" class="mt-4 text-white font-semibold"></div>
+            <script>
+            document.getElementById('newsletter-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('newsletter-email').value;
+                const messageDiv = document.getElementById('newsletter-message');
+                messageDiv.textContent = '';
+                try {
+                    const res = await fetch('/api/newsletter-signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        messageDiv.textContent = 'Thank you for subscribing!';
+                        this.reset();
+                    } else {
+                        messageDiv.textContent = data.error || 'There was an error. Please try again.';
+                    }
+                } catch (err) {
+                    messageDiv.textContent = 'Network error. Please try again later.';
+                }
+            });
+            </script>
+        </div>
+    </div>
+</section>
+
+        <!-- Enhanced Mobile-First AI Plant Doctor Section -->
+        <section id="plant-doctor" class="py-12 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-8 lg:mb-12">
+                    <h2 id="plant-doctor-title" class="text-3xl sm:text-4xl font-serif font-bold text-green-800 mb-4">
+                        Plant Doctor - AI Plant Analysis
+                    </h2>
+                    <p id="plant-doctor-description" class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-6">
+                        Upload or take a photo of your plant for instant AI analysis and expert recommendations.
+                    </p>
+                    
+                    <!-- Free Analysis Counter -->
+                    <div class="bg-white rounded-lg shadow-sm border border-green-200 p-4 max-w-md mx-auto mb-8">
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-gray-700" id="free-analysis-counter-text"></div>
+                            <div id="analysis-counter-doctor" class="text-sm mt-1">
+                                <span class="text-green-600 font-semibold">3 of 3 left</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Mobile-First Statistics -->
+                <div class="stats-mobile text-center mb-8 lg:mb-12">
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">15,000+</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-plants-analyzed">Plants Analyzed</div>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">98%</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-accuracy-rate">Accuracy Rate</div>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="text-2xl sm:text-3xl font-bold text-green-600 mb-2">24/7</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="stat-instant-analysis">Instant Analysis</div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Mobile-First Plant Doctor Interface -->
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="p-6 sm:p-8">
+            <!-- Upload Interface -->
+            <div class="text-center">
+                <div id="upload-interface" class="border-2 border-dashed border-gray-300 rounded-lg p-8 sm:p-12 hover:border-green-400 transition-colors">
+                    <i data-lucide="camera" class="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-4"></i>
+                    <h3 id="upload-title" class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+                        Drag and drop your plant photo here
+                                    </h3>
+                                    <p id="upload-description" class="text-gray-600 mb-6">
+                                        or click to select from your device
+                                    </p>
+                                    
+                                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <label for="plant-photo-input" class="cursor-pointer">
+                                            <span id="upload-file-btn" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors inline-block touch-target">
+                                                Upload File
+                                            </span>
+                                            <input 
+                                                type="file" 
+                                                id="plant-photo-input" 
+                                                accept="image/*" 
+                                                class="hidden"
+                                                onchange="handleFileSelect(event)"
+                                            >
+                                        </label>
+                                        <button onclick="startCamera()" id="take-photo-btn" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors touch-target">
+                                            Take Photo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div id="image-preview" class="hidden">
+                                <div class="text-center">
+                                    <img id="preview-image" src="" alt="Plant photo preview" class="max-w-full h-64 sm:h-80 object-cover rounded-lg mx-auto mb-4">
+                                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <button onclick="analyzeImage()" id="analyze-btn" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors touch-target">
+                                            Analyze Plant
+                                        </button>
+                                       <button id="remove-image-btn" onclick="removeImage()" class="bg-gray-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors touch-target">Remove Image</button>
+                                    </div>
+                                </div>
+                            </div>
+<!-- ...snip everything above for brevity... -->
+<!-- Plant Identification Step -->
+<div id="identification-step" class="hidden">
+    <div class="text-center">
+        <i data-lucide="search" class="h-16 w-16 text-green-600 mx-auto mb-4"></i>
+        <h3 id="identification-title" class="text-xl font-bold text-gray-900 mb-4">Plant Identification</h3>
+        
+        <div class="bg-green-50 rounded-lg p-6 mb-6">
+            <p id="identified-plant" class="text-gray-700 mb-2">We identified your plant as:</p>
+            <p id="identified-plant-name" class="text-2xl font-bold text-green-800">Rose (Rosa)</p>
+        </div>
+        
+        <div class="mb-6">
+            <p id="is-this-correct" class="text-gray-700 mb-4">Is this identification correct?</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="confirmPlantIdentification(true)" id="yes-correct" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors touch-target">
+                    Yes, this is correct
+                </button>
+                <button onclick="confirmPlantIdentification(false)" id="no-incorrect" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors touch-target">
+                    No, this is incorrect
+                </button>
+            </div>
+        </div>
+        
+        <div id="manual-plant-input" class="hidden">
+            <div class="mb-4">
+                <label for="manual-plant-name" id="plant-name-label" class="block text-sm font-medium text-gray-700 mb-2">Plant Name:</label>
+                <input 
+                    type="text" 
+                    id="manual-plant-name" 
+                    placeholder="Enter the correct plant name"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+            </div>
+            <button onclick="updatePlantName()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors touch-target">
+                Update Plant Name
+            </button>
+        </div>
+        
+        <button onclick="proceedToDiseaseAnalysis()" id="continue-analysis-btn" class="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors touch-target">
+            Continue to Disease Analysis
+        </button>
+
+        <!-- Start Over Button (Identification Step) -->
+        <button id="start-over-identify"
+            class="bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-500 transition-colors mt-4"
+            onclick="resetAnalysis()">
+            Start Over
+        </button>
+    </div>
+</div>
+
+<!-- Analysis Results -->
+<div id="analysis-results" class="hidden">
+    <div class="text-center">
+        <i data-lucide="check-circle" class="h-16 w-16 text-green-600 mx-auto mb-4"></i>
+        <!-- Failure message will go here if plant is not identified -->
+        <div id="analysis-failure-message"></div>
+        <h3 id="analysis-complete-title" class="text-xl font-bold text-gray-900 mb-4">Analysis Complete!</h3>
+        
+        <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6 text-left">
+            <div class="mb-4">
+                <h4 class="font-semibold text-gray-900 mb-2">Plant:</h4>
+                <p id="analysis-plant-name" class="text-lg text-green-800 font-semibold">Rose (Rosa)</p>
+            </div>
+            
+            <div class="mb-4">
+                <h4 id="analysis-health-title" class="font-semibold text-gray-900 mb-2">Health Status:</h4>
+                <p id="analysis-health-status" class="text-green-700">Your plant appears to be in excellent health!</p>
+            </div>
+            
+            <div class="mb-4">
+                <h4 id="analysis-recommendations-title" class="font-semibold text-gray-900 mb-2">Recommendations:</h4>
+                <ul class="text-gray-700 space-y-1">
+                    <li id="analysis-rec-1">• Water regularly but avoid overwatering</li>
+                    <li id="analysis-rec-2">• Ensure good drainage</li>
+                    <li id="analysis-rec-3">• Provide 6-8 hours of sunlight daily</li>
+                </ul>
+            </div>
+            
+            <div class="text-sm text-gray-600">
+                <p id="analysis-confidence">Confidence: 98% - Analysis based on image quality and plant characteristics.</p>
+            </div>
+        </div>
+        <div id="analysis-benefits-section" class="mb-4" style="display: none;">
+    <h4 class="font-semibold text-gray-900 mb-2">Plant Benefits:</h4>
+    <p id="analysis-benefits" class="text-green-700"></p>
+</div>
+        <!-- Plant Benefits Section (for Green Thumb members) -->
+<div id="plant-benefits-section" style="display:none; margin-top: 1rem;">
+  <h4>Plant Benefits:</h4>
+  <div id="plant-benefits-content" style="color: #166534;"></div>
+</div>
+		<button onclick="resetAnalysis()" id="analyze-another-btn" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors touch-target">
+            Analyze Another Plant
+        </button>
+
+        <!-- Start Over Button (Analysis Results) -->
+        <button id="start-over-results"
+            class="bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-500 transition-colors mt-4"
+            onclick="resetAnalysis()">
+            Start Over
+        </button>
+    </div>
+</div>
+<!-- ...snip everything after for brevity... -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Enhanced Mobile-First Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div class="lg:col-span-1">
+                    <h3 class="text-2xl font-serif font-bold text-white mb-4">Garden with Serge</h3>
+                    <p id="footer-description" class="text-gray-300 mb-6">
+                        Your trusted companion for successful gardening. From beginner tips to advanced techniques, we help you grow the garden of your dreams.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 id="footer-quick-links-title" class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><button onclick="scrollToSection('home')" id="footer-home" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Home</button></li>
+                        <li><button onclick="scrollToSection('garden-styles')" id="footer-garden-styles" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Garden Styles</button></li>
+                        <li><button onclick="scrollToSection('plant-care')" id="footer-plant-care" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Plant Care</button></li>
+                        <li><button onclick="scrollToSection('plant-doctor')" id="footer-plant-doctor" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Plant Doctor</button></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 id="footer-contact-title" class="text-lg font-semibold text-white mb-4">Get In Touch</h4>
+                    <p id="footer-contact-description" class="text-gray-300 mb-4">
+                        Join our community of passionate gardeners and start your journey to gardening success today.
+						<div class="mt-4">
+  <a href="https://www.facebook.com/groups/gardenwithserge" target="_blank" rel="noopener noreferrer"
+     class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+    <i data-lucide="facebook" class="w-5 h-5 mr-2"></i>
+    https://www.facebook.com/profile.php?id=61576359017023
+  </a>
+</div>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 pt-8 mt-8 text-center">
+                <p id="footer-copyright" class="text-gray-400">© 2025 Garden with Serge. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="translations.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Initialize Lucide icons after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+	<script>
+/* Force the translation engine to run one extra time */
+window.addEventListener('load', () => {
+  updateContent(window.currentLanguage || 'en');
+});
+</script>
+	</body>
+</html>
