@@ -1,3 +1,4 @@
 garden/stderr.log
 *.log
 gardenwithserge.com/error_log
+garden/news_smtp_pass.key
