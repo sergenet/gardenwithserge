@@ -9,6 +9,11 @@
 require('dotenv').config();
 const OpenAI = require("openai");
 const nodemailer = require("nodemailer");
+const fs = require('fs');
+const path = require('path');
+const SMTP_PASS_PATH = path.join(__dirname, '..', 'garden', 'news_smtp_pass.key');
+const SMTP_PASS = process.env.NEWS_SMTP_PASS || (fs.existsSync(SMTP_PASS_PATH) ? fs.readFileSync(SMTP_PASS_PATH,'utf8').trim() : '');
+
 
 // =================== CONFIGURATION ===================
 const OPENAI_KEY = process.env.OPENAI_API_KEY_GWS;
@@ -28,7 +33,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: "news@gardenwithserge.com",
-    pass: "Sako!!NGWS2025"
+    pass: SMTP_PASS
   }
 });
 
