@@ -16,7 +16,14 @@ const SMTP_PASS = process.env.NEWS_SMTP_PASS || (fs.existsSync(SMTP_PASS_PATH) ?
 
 
 // =================== CONFIGURATION ===================
-const OPENAI_KEY = process.env.OPENAI_API_KEY_GWS;
+// Prefer dedicated newsletter key file, then env fallbacks
+const OPENAI_KEY_PATH = path.join(__dirname, '..', 'garden', 'openai_news.key');
+const OPENAI_KEY =
+  (fs.existsSync(OPENAI_KEY_PATH) ? fs.readFileSync(OPENAI_KEY_PATH, 'utf8').trim() : '') ||
+  process.env.OPENAI_API_KEY_NEWS ||
+  process.env.OPENAI_API_KEY_GWS ||
+  process.env.OPENAI_API_KEY ||
+  '';
 const NEWSLETTER_LANGUAGE = process.env.NEWSLETTER_LANGUAGE || "English";
 const SUBSCRIBERS = [
   "sergenet@yahoo.com",
