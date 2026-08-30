@@ -10,6 +10,11 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 const mysql = require('mysql2/promise'); // For newsletter signup
 const { validateAnalysisResult } = require('./lib/analysis-contract');
+const {
+    isHandledStripeEventType,
+    isStripeCheckoutSessionEntitled,
+    isStripeSubscriptionEntitled,
+} = require('./lib/payment-policy');
 
 function logEvent(message, metadata = {}) {
     const safe = Object.fromEntries(
@@ -672,6 +677,9 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
         const object = event.data && event.data.object ? event.data.object : null;
 
         if (!event.id || !type) return res.status(400).json({ error: 'Invalid Stripe event.' });
+        if (!isHandledStripeEventType(type)) {
+            return res.status(200).json({ ok: true, ignored: true });
+        }
         const isNewEvent = await withDb(async (connection) => {
             const [result] = await connection.execute(
                 'INSERT IGNORE INTO payment_events (provider, event_id, event_type) VALUES (?, ?, ?)',
@@ -688,7 +696,7 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
             const session = await stripeRequest('GET', `/v1/checkout/sessions/${encodeURIComponent(object.id)}?expand[]=line_items.data.price`);
             const email = (session.customer_details && session.customer_details.email) || session.customer_email || null;
             const membershipType = membershipTypeFromCheckoutSession(session);
-            if (email && membershipType) {
+            if (email && membershipType && isStripeCheckoutSessionEntitled(session)) {
                 await upsertMembership(email, membershipType, 'stripe', 1);
             }
         }
@@ -701,7 +709,7 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
             const priceId = subscription.items && subscription.items.data && subscription.items.data[0] && subscription.items.data[0].price ? subscription.items.data[0].price.id : null;
             const membershipType = PRICE_ID_TO_MEMBERSHIP[priceId] || null;
             if (email && membershipType) {
-                const active = ['active', 'trialing', 'past_due', 'unpaid'].includes(subscription.status) ? 1 : 0;
+                const active = isStripeSubscriptionEntitled(subscription.status) ? 1 : 0;
                 await upsertMembership(email, membershipType, 'stripe', active);
             }
         }
