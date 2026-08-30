@@ -15,6 +15,10 @@ const {
     isStripeCheckoutSessionEntitled,
     isStripeSubscriptionEntitled,
 } = require('./lib/payment-policy');
+const {
+    sendWelcomeEmail,
+    verifyUnsubscribeToken,
+} = require('./lib/mailer');
 
 function logEvent(message, metadata = {}) {
     const safe = Object.fromEntries(
@@ -1195,7 +1199,7 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
         let shouldSendWelcome = false;
         await withDb(async (connection) => {
             const [rows] = await connection.execute(
-                `SELECT id, active
+                `SELECT id, active, welcome_sent_at
                  FROM newsletter_subscribers
                  WHERE email = ?
                  ORDER BY id DESC
@@ -1205,7 +1209,7 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
 
             if (rows && rows.length > 0) {
                 const existing = rows[0];
-                shouldSendWelcome = Number(existing.active) !== 1;
+                shouldSendWelcome = Number(existing.active) !== 1 || !existing.welcome_sent_at;
                 await connection.execute(
                     `UPDATE newsletter_subscribers
                      SET language = ?,
@@ -1229,17 +1233,31 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
                     [emailRaw, language, plantName, diseaseAnalysis, careRecommendations, sevenDayChecklist]
                 );
             }
-            if (shouldSendWelcome) {
-                const { execFile } = require('child_process');
-                execFile('php', ['/home/sergbcqk/gardenwithserge.com/send_welcome_now.php'], { cwd: '/home/sergbcqk/gardenwithserge.com', timeout: 30000 }, (err) => {
-                if (err) {
-                        logEvent('Welcome email process failed', { errorType: err.name });
-                    }
-                });
-                }
-
-            return res.json({ message: 'Subscription request accepted.', welcomeScheduled: shouldSendWelcome });
         });
+        let claimedWelcome = false;
+        if (shouldSendWelcome) {
+            const [claimResult] = await withDb((connection) => connection.execute(
+                `UPDATE newsletter_subscribers
+                 SET welcome_sent_at = NOW()
+                 WHERE email = ?
+                   AND (welcome_sent_at IS NULL OR welcome_sent_at = '0000-00-00 00:00:00')`,
+                [emailRaw]
+            ));
+            claimedWelcome = claimResult.affectedRows === 1;
+        }
+        if (claimedWelcome) {
+            try {
+                await sendWelcomeEmail(emailRaw);
+            } catch (err) {
+                await withDb((connection) => connection.execute(
+                    'UPDATE newsletter_subscribers SET welcome_sent_at = NULL WHERE email = ?',
+                    [emailRaw]
+                ));
+                logEvent('Welcome email delivery failed', { errorType: err.name });
+                return res.status(502).json({ error: 'Subscription saved, but the welcome email could not be delivered yet.' });
+            }
+        }
+        return res.json({ message: 'Subscription request accepted.', welcomeSent: claimedWelcome });
     } catch (err) {
         logEvent('Newsletter signup failed', { errorType: err.name });
         return res.status(500).json({ error: 'Server error.' });
@@ -1275,6 +1293,24 @@ app.use((err, req, res, next) => {
     }
     logEvent('Unhandled request error', { errorType: err && err.name ? err.name : 'Error' });
     return res.status(500).json({ error: 'Request failed.' });
+});
+
+app.get('/unsubscribe', async (req, res) => {
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const token = String(req.query.token || '');
+    if (!verifyUnsubscribeToken(email, token)) {
+        return res.status(400).type('html').send('<!doctype html><html lang="en"><meta charset="utf-8"><title>Invalid unsubscribe link</title><body><h1>Invalid unsubscribe link</h1><p>This link is invalid or incomplete.</p></body></html>');
+    }
+    try {
+        await withDb((connection) => connection.execute(
+            'UPDATE newsletter_subscribers SET active = 0 WHERE email = ?',
+            [email]
+        ));
+        return res.type('html').send('<!doctype html><html lang="en"><meta charset="utf-8"><title>Unsubscribed</title><body><h1>Unsubscribed</h1><p>You will no longer receive Garden with Serge marketing emails.</p><p><a href="/">Return to Garden with Serge</a></p></body></html>');
+    } catch (err) {
+        logEvent('Unsubscribe failed', { errorType: err.name });
+        return res.status(500).type('html').send('<!doctype html><html lang="en"><meta charset="utf-8"><title>Unable to unsubscribe</title><body><h1>Unable to unsubscribe</h1><p>Please try again later or contact support.</p></body></html>');
+    }
 });
 
 app.use('/api', (req, res) => {
