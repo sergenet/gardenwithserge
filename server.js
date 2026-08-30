@@ -81,9 +81,9 @@ app.use(helmet({
             frameAncestors: ["'none'"],
             formAction: ["'self'", 'https://www.paypal.com', 'https://checkout.stripe.com'],
             imgSrc: ["'self'", 'data:', 'blob:'],
-            scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.paypal.com', 'https://www.googletagmanager.com'],
+            scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.paypal.com'],
             styleSrc: ["'self'", "'unsafe-inline'"],
-            connectSrc: ["'self'", 'https://api.gardenwithserge.com', 'https://api.stripe.com', 'https://www.google-analytics.com', 'https://region1.google-analytics.com'],
+            connectSrc: ["'self'", 'https://api.gardenwithserge.com', 'https://api.stripe.com'],
             frameSrc: ['https://js.stripe.com', 'https://hooks.stripe.com', 'https://www.paypal.com'],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
@@ -209,8 +209,9 @@ async function withDb(fn) {
 }
 
 function analyticsVisitorHash(req) {
+    const day = new Date().toISOString().slice(0, 10);
     const source = `${req.ip || 'unknown'}|${String(req.headers['user-agent'] || '').slice(0, 200)}`;
-    return crypto.createHmac('sha256', ANALYTICS_HASH_SECRET).update(source).digest('hex');
+    return crypto.createHmac('sha256', ANALYTICS_HASH_SECRET).update(`${day}|${source}`).digest('hex');
 }
 
 function quotaSubjectKey(kind, value) {
@@ -219,11 +220,25 @@ function quotaSubjectKey(kind, value) {
     return `${kind}:${digest}`;
 }
 
+function visitorMeasurementAllowed(req) {
+    return String(req.headers['sec-gpc'] || '') !== '1' && String(req.headers.dnt || '') !== '1';
+}
+
+function isHumanPageView(req) {
+    if (req.method !== 'GET' || req.path.startsWith('/api/') || req.path.startsWith('/admin')) return false;
+    if (new Set(['/healthz', '/readyz']).has(req.path)) return false;
+    const extension = path.extname(req.path).toLowerCase();
+    if (extension && extension !== '.html') return false;
+    const acceptsHtml = String(req.headers.accept || '').toLowerCase().includes('text/html');
+    const isDocument = String(req.headers['sec-fetch-dest'] || '').toLowerCase() === 'document';
+    if (!acceptsHtml && !isDocument) return false;
+    return !/(bot|crawler|spider|slurp|lighthouse|pagespeed|headlesschrome)/i.test(String(req.headers['user-agent'] || ''));
+}
+
 function trafficMetricKeys(req, statusCode) {
     if (req.path.startsWith('/admin') || req.path.startsWith('/api/admin')) return [];
     const keys = [];
-    const isPage = req.method === 'GET' && !req.path.startsWith('/api/') && !path.extname(req.path);
-    if (isPage) keys.push('page_views');
+    if (isHumanPageView(req)) keys.push('human_page_views');
     if (req.method === 'POST' && req.path === '/api/plant-identify') keys.push(statusCode < 400 ? 'plant_identifications' : 'plant_identification_rejections');
     if (req.method === 'POST' && req.path === '/api/plant-analyze') keys.push(statusCode < 400 ? 'disease_diagnoses' : 'disease_diagnosis_rejections');
     if (statusCode >= 500) keys.push('server_errors');
@@ -234,12 +249,12 @@ async function recordTrafficMetrics(req, statusCode) {
     const keys = trafficMetricKeys(req, statusCode);
     if (!keys.length) return;
     await withDb(async (connection) => {
-        if (keys.includes('page_views')) {
+        if (keys.includes('human_page_views') && visitorMeasurementAllowed(req)) {
             const [visitor] = await connection.execute(
                 'INSERT IGNORE INTO site_visitors_daily (visitor_hash, visit_date) VALUES (?, CURRENT_DATE())',
                 [analyticsVisitorHash(req)]
             );
-            if (visitor.affectedRows === 1) keys.push('unique_visitors');
+            if (visitor.affectedRows === 1) keys.push('daily_unique_visitors');
         }
         for (const metricKey of keys) {
             await connection.execute(
@@ -284,6 +299,7 @@ async function ensureAppSchema() {
                 KEY idx_visit_date (visit_date)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         `);
+        await connection.execute('DELETE FROM site_visitors_daily WHERE visit_date < CURRENT_DATE() - INTERVAL 90 DAY');
 
         const [legacyUsageRows] = await connection.execute(
             `SELECT subject_key, usage_date, analysis_count, last_tier
