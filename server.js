@@ -15,6 +15,7 @@ const {
     validatePlantReference,
 } = require('./lib/analysis-contract');
 const { detectImageMime, isSupportedImage } = require('./lib/image-policy');
+const { classifyAiError } = require('./lib/ai-error-policy');
 const {
     isHandledStripeEventType,
     isStripeCheckoutSessionEntitled,
@@ -1041,8 +1042,9 @@ Use null if unsure. Only return JSON.`;
         }
         res.json({ ...result, tier: access.tier });
     } catch (err) {
-        logEvent('Plant identification failed', { errorType: err.name });
-        res.status(500).json({ error: 'Plant identification failed.' });
+        const code = classifyAiError(err);
+        logEvent('Plant identification failed', { errorType: err.name, errorCode: code, upstreamStatus: err.status });
+        res.status(502).json({ error: 'Plant identification failed.', code });
     }
 });
 
@@ -1187,8 +1189,9 @@ Use null if unsure. Only return JSON.`;
             remainingToday: remaining,
         });
     } catch (err) {
-        logEvent('Plant analysis failed', { errorType: err.name });
-        res.status(500).json({ error: 'Plant analysis failed.' });
+        const code = classifyAiError(err);
+        logEvent('Plant analysis failed', { errorType: err.name, errorCode: code, upstreamStatus: err.status });
+        res.status(502).json({ error: 'Plant analysis failed.', code });
     }
 });
 
