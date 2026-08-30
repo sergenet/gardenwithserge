@@ -191,7 +191,7 @@ function toggleMobileMenu() {
     }
 }
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 45000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 75000) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -473,7 +473,34 @@ async function getPlantBenefits(plantName) {
 
 // AI Plant Doctor functionality - Enhanced with two-step process
 
-function handleFileSelect(event) {
+async function optimizePlantPhoto(file) {
+    const bitmap = await createImageBitmap(file);
+    try {
+        const maxDimension = 1600;
+        const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+        if (scale === 1 && file.size <= 2 * 1024 * 1024) return file;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+        canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+        const context = canvas.getContext('2d', { alpha: false });
+        if (!context) throw new Error('Photo processing is unavailable in this browser.');
+        context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob(
+                (result) => result ? resolve(result) : reject(new Error('Photo compression failed.')),
+                'image/jpeg',
+                0.85
+            );
+        });
+        const baseName = file.name.replace(/\.[^.]+$/, '') || 'plant-photo';
+        return new File([blob], `${baseName}.jpg`, { type: 'image/jpeg', lastModified: Date.now() });
+    } finally {
+        bitmap.close();
+    }
+}
+
+async function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
     const supportedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -483,14 +510,20 @@ function handleFileSelect(event) {
         alert('Please use a JPEG, PNG, or WebP photo. HEIC and other formats are not supported yet.');
         return;
     }
-    if (file.size > 8 * 1024 * 1024) {
+    if (file.size > 25 * 1024 * 1024) {
         event.target.value = '';
         selectedFile = null;
-        alert('Please use a photo smaller than 8 MB.');
+        alert('Please use a photo smaller than 25 MB.');
         return;
     }
-    selectedFile = file;
-    displayImagePreview(file);
+    try {
+        selectedFile = await optimizePlantPhoto(file);
+        displayImagePreview(selectedFile);
+    } catch (error) {
+        event.target.value = '';
+        selectedFile = null;
+        alert(error && error.message ? error.message : 'The photo could not be prepared for analysis.');
+    }
 }
 
 function displayImagePreview(file) {
