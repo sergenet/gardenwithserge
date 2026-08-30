@@ -816,12 +816,13 @@ function proceedToDiseaseAnalysis() {
 function showAnalysisError(message) {
     const identificationStep = document.getElementById('identification-step');
     const analysisResults = document.getElementById('analysis-results');
-    const failureMessage = document.getElementById('analysis-failure-message');
+    const failureMessage = document.getElementById('diagnosis-access-message')
+        || document.getElementById('analysis-failure-message');
     if (analysisResults) analysisResults.classList.add('hidden');
     if (identificationStep) identificationStep.classList.remove('hidden');
     if (failureMessage) {
         failureMessage.textContent = message;
-        failureMessage.className = 'mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-left text-red-800';
+        failureMessage.className = 'mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-left font-semibold text-amber-900';
         failureMessage.setAttribute('role', 'alert');
     }
     activeAnalysisData = null;

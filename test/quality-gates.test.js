@@ -15,7 +15,7 @@ test('homepage uses responsive modern hero images and minified scripts', () => {
     assert.match(html, /hero-garden-pathway-480\.webp 480w/);
     assert.match(html, /hero-garden-pathway-960\.webp 960w/);
     assert.match(html, /translations\.min\.js\?v=10/);
-    assert.match(html, /app\.min\.js\?v=16/);
+    assert.match(html, /app\.min\.js\?v=17/);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-480.webp')).size < 60_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.webp')).size < 160_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.avif')).size < 80_000);
@@ -31,6 +31,13 @@ test('primary plant doctor page has a main landmark and non-blocking script plac
 test('Plant Doctor guards optional membership-benefit elements', () => {
     const app = fs.readFileSync(path.join(publicDir, 'app.js'), 'utf8');
     assert.doesNotMatch(app, /getElementById\('plant-benefits-(?:section|content)'\)\.(?:style|innerText)/);
+});
+
+test('paid diagnosis message is rendered inside the visible identification step', () => {
+    const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf8');
+    const app = fs.readFileSync(path.join(publicDir, 'app.js'), 'utf8');
+    assert.match(html, /<div id="identification-step"[\s\S]*id="diagnosis-access-message"[\s\S]*<\/div>\s*<!-- Analysis Results -->/);
+    assert.match(app, /getElementById\('diagnosis-access-message'\)/);
 });
 
 test('static cache policy distinguishes immutable and mutable assets', () => {
