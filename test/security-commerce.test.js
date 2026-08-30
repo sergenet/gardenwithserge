@@ -9,6 +9,7 @@ const index = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
 
 test('commerce fails closed and webhooks are replay protected', () => {
     assert.match(server, /COMMERCE_ENABLED.*false/);
+    assert.match(server, /confirm-stripe-session[\s\S]*COMMERCE_DISABLED/);
     assert.match(server, /CREATE TABLE IF NOT EXISTS payment_events/);
     assert.match(server, /INSERT IGNORE INTO payment_events/);
     assert.doesNotMatch(server, /success:\s*true,\s*email,/s);

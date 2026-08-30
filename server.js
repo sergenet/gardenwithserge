@@ -854,6 +854,9 @@ app.get('/api/membership/status', async (req, res) => {
 
 app.get('/api/membership/confirm-stripe-session', async (req, res) => {
     try {
+        if (!COMMERCE_ENABLED) {
+            return res.status(503).json({ error: 'Commerce is temporarily unavailable.', code: 'COMMERCE_DISABLED' });
+        }
         const sessionId = String(req.query.session_id || '').trim();
         if (!sessionId) {
             return res.status(400).json({ error: 'session_id is required' });
