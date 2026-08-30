@@ -213,6 +213,12 @@ function analyticsVisitorHash(req) {
     return crypto.createHmac('sha256', ANALYTICS_HASH_SECRET).update(source).digest('hex');
 }
 
+function quotaSubjectKey(kind, value) {
+    const normalized = String(value || 'unknown').trim().toLowerCase();
+    const digest = crypto.createHmac('sha256', ANALYTICS_HASH_SECRET).update(`${kind}:${normalized}`).digest('hex');
+    return `${kind}:${digest}`;
+}
+
 function trafficMetricKeys(req, statusCode) {
     if (req.path.startsWith('/admin') || req.path.startsWith('/api/admin')) return [];
     const keys = [];
@@ -278,6 +284,28 @@ async function ensureAppSchema() {
                 KEY idx_visit_date (visit_date)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         `);
+
+        const [legacyUsageRows] = await connection.execute(
+            `SELECT subject_key, usage_date, analysis_count, last_tier
+             FROM analysis_usage_daily
+             WHERE subject_key LIKE 'ip:%' OR subject_key LIKE 'member:%'`
+        );
+        for (const row of legacyUsageRows) {
+            const separator = row.subject_key.indexOf(':');
+            const kind = row.subject_key.slice(0, separator) === 'member' ? 'member' : 'anon';
+            const hashedKey = quotaSubjectKey(kind, row.subject_key.slice(separator + 1));
+            await connection.execute(
+                `INSERT INTO analysis_usage_daily (subject_key, usage_date, analysis_count, last_tier)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE analysis_count = GREATEST(analysis_count, VALUES(analysis_count)),
+                    last_tier = VALUES(last_tier), updated_at = NOW()`,
+                [hashedKey, row.usage_date, row.analysis_count, row.last_tier]
+            );
+            await connection.execute(
+                'DELETE FROM analysis_usage_daily WHERE subject_key = ? AND usage_date = ?',
+                [row.subject_key, row.usage_date]
+            );
+        }
 
         await connection.execute(`
             CREATE TABLE IF NOT EXISTS billing_requests (
@@ -497,7 +525,7 @@ async function resolveAccessContext(req) {
             tier: membership.tier,
             membershipType: membership.membershipType,
             paymentProvider: membership.paymentProvider,
-            subjectKey: `member:${tokenPayload.email}`,
+            subjectKey: quotaSubjectKey('member', tokenPayload.email),
             tokenValid: true,
         };
     }
@@ -508,7 +536,7 @@ async function resolveAccessContext(req) {
         tier: 'free',
         membershipType: null,
         paymentProvider: null,
-        subjectKey: `ip:${ip}`,
+        subjectKey: quotaSubjectKey('anon', ip),
         tokenValid: false,
     };
 }
