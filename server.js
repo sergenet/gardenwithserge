@@ -121,6 +121,12 @@ app.use((req, res, next) => {
     });
     next();
 });
+app.use((req, res, next) => {
+    if (process.env.NODE_ENV === 'production' && String(req.hostname || '').toLowerCase() === 'gardenwithserge.com') {
+        return res.redirect(301, `${PUBLIC_SITE_URL}${req.originalUrl || '/'}`);
+    }
+    return next();
+});
 app.use(cors({
     origin(origin, callback) {
         if (!origin || ALLOWED_ORIGINS.has(origin)) return callback(null, true);

@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 const primary = 'https://www.gardenwithserge.com';
 const api = 'https://api.gardenwithserge.com';
+const bare = 'https://gardenwithserge.com';
 
 function requireCondition(condition, message) {
     if (!condition) throw new Error(message);
@@ -19,6 +20,29 @@ async function get(path, base = primary) {
 }
 
 const checks = [];
+
+const dynamicProbePath = `/__canonical-host-probe-${Date.now()}`;
+const dynamicProbe = await fetch(`${bare}${dynamicProbePath}`, { redirect: 'manual', signal: AbortSignal.timeout(20_000) });
+requireCondition(dynamicProbe.status === 301, `${bare}${dynamicProbePath} must return 301`);
+requireCondition(dynamicProbe.headers.get('location') === `${primary}${dynamicProbePath}`, `${bare}${dynamicProbePath} redirect target mismatch`);
+
+const barePlantDoctor = await fetch(`${bare}/plant-doctor.html`, { redirect: 'manual', signal: AbortSignal.timeout(20_000) });
+if (barePlantDoctor.status === 200) {
+    const html = await barePlantDoctor.text();
+    requireCondition(html.includes('<link rel="canonical" href="https://www.gardenwithserge.com/plant-doctor.html">'), 'Bare Plant Doctor canonical mismatch');
+} else {
+    requireCondition(barePlantDoctor.status === 301 && barePlantDoctor.headers.get('location') === `${primary}/plant-doctor.html`, 'Bare Plant Doctor redirect mismatch');
+}
+
+const bareSitemap = await fetch(`${bare}/sitemap.xml`, { redirect: 'manual', signal: AbortSignal.timeout(20_000) });
+if (bareSitemap.status === 200) {
+    const xml = await bareSitemap.text();
+    const bareSitemapUrls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+    requireCondition(bareSitemapUrls.length > 0 && bareSitemapUrls.every((url) => url.startsWith(`${primary}/`)), 'Bare sitemap contains non-canonical URLs');
+} else {
+    requireCondition(bareSitemap.status === 301 && bareSitemap.headers.get('location') === `${primary}/sitemap.xml`, 'Bare sitemap redirect mismatch');
+}
+checks.push('bare-domain-redirect-and-static-canonicals');
 const localHomepage = await readFile(new URL('../public/index.html', import.meta.url), 'utf8');
 const expectedAppScript = localHomepage.match(/app\.min\.js\?v=\d+/)?.[0];
 requireCondition(expectedAppScript, 'Local homepage does not reference a versioned application script');

@@ -67,6 +67,10 @@ test('unknown API and page requests have explicit 404 handlers', () => {
     assert.match(server, /status\(404\)\.sendFile\(path\.join\(__dirname, 'public', '404\.html'\)\)/);
 });
 
+test('production application redirects bare-domain requests to the canonical www host', () => {
+    assert.match(server, /req\.hostname[\s\S]*=== 'gardenwithserge\.com'[\s\S]*res\.redirect\(301, `\$\{PUBLIC_SITE_URL\}\$\{req\.originalUrl/);
+});
+
 test('security middleware restricts origins, framing, and browser permissions', () => {
     assert.match(server, /ALLOWED_ORIGINS/);
     assert.match(server, /frameAncestors:\s*\["'none'"\]/);
@@ -120,4 +124,11 @@ test('legacy paid benefits route is bounded and obsolete PHP APIs are denied', (
     assert.doesNotMatch(legacyBenefits, /OpenAI error:/);
     assert.match(legacyHtaccess, /RewriteRule "\^api\/\[\^\/\]\+\\\.php\$" - \[F,L,NC\]/);
     assert.match(legacyHtaccess, /RewriteRule "\^backend\(\?:\/\|\$\)" - \[F,L,NC\]/);
+});
+
+test('bare-domain redirect runs before Passenger static-file mapping', () => {
+    const redirect = legacyHtaccess.indexOf('RewriteCond %{HTTP_HOST} ^gardenwithserge\\.com$');
+    const passenger = legacyHtaccess.indexOf('PassengerAppRoot');
+    assert.ok(redirect > -1 && redirect < passenger);
+    assert.doesNotMatch(legacyHtaccess, /\^www\\\.gardenwithserge\\\.com\$/);
 });
