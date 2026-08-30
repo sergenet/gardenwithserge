@@ -823,6 +823,15 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
         const object = event.data && event.data.object ? event.data.object : null;
 
         if (!event.id || !type) return res.status(400).json({ error: 'Invalid Stripe event.' });
+        const keyMode = stripeKeyMode();
+        const eventModeMatches = (keyMode === 'test' && event.livemode === false)
+            || (keyMode === 'live' && event.livemode === true);
+        if (!eventModeMatches) {
+            return res.status(400).json({ error: 'Stripe event mode does not match the configured account.' });
+        }
+        if (keyMode === 'test') {
+            return res.status(200).json({ ok: true, sandbox: true });
+        }
         if (!isHandledStripeEventType(type)) {
             return res.status(200).json({ ok: true, ignored: true });
         }

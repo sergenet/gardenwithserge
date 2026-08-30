@@ -24,6 +24,14 @@ test('commerce fails closed and webhooks are replay protected', () => {
     paymentButtons.forEach(([button]) => assert.match(button, /\bdisabled\b/));
 });
 
+test('Stripe sandbox events cannot grant production membership', () => {
+    assert.match(server, /eventModeMatches[\s\S]*keyMode === 'test'[\s\S]*event\.livemode === false/);
+    assert.match(server, /if \(keyMode === 'test'\)[\s\S]*sandbox: true/);
+    const sandboxReturn = server.indexOf("if (keyMode === 'test')");
+    const paymentClaim = server.indexOf('INSERT IGNORE INTO payment_events');
+    assert.ok(sandboxReturn > -1 && sandboxReturn < paymentClaim);
+});
+
 test('Stripe checkout is server-created and contains no obsolete public account identifiers', () => {
     const appSource = fs.readFileSync(path.join(root, 'public', 'app.js'), 'utf8');
     const minifiedAppSource = fs.readFileSync(path.join(root, 'public', 'app.min.js'), 'utf8');
