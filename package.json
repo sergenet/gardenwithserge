@@ -9,6 +9,7 @@
     "build:assets": "node scripts/copy-static-assets.js",
     "build:js": "terser public/translations.js -c -m -o public/translations.min.js && terser public/app.js -c -m -o public/app.min.js",
     "build": "npm run build:css && npm run build:assets && npm run build:js",
+    "check:production": "node scripts/check-production.mjs",
     "check": "node --check server.js && node --check public/app.js && node --check public/translations.js && node --test"
   },
   "dependencies": {
