@@ -9,7 +9,11 @@ PassengerStartupFile server.js
 
 Options -Indexes
 
-<FilesMatch "(?i)(^\.|\.(?:env|log|sqlite|db|bak|backup|old|orig|sql|ini|ya?ml|toml|lock|md|ps1|py|csv|docx?)$)">
+<FilesMatch "(?i)(^\.|^error_log$|\.php$|\.(?:env|json|log|sqlite|db|bak|backup|old|orig|sql|ini|ya?ml|toml|lock|md|ps1|py|csv|docx?)$)">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "(?i)^(?:inject_keys\.js|app(?:1|x)\.js|translations(?:1|x)\.js|test.*\.html|verify-payment-setup\.html|.*(?:copy|old)\.js)$">
   Require all denied
 </FilesMatch>
 

@@ -961,7 +961,19 @@ app.post('/api/admin/billing-requests/:id/status', adminLimiter, requireAdminAut
     }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+const PUBLIC_SENSITIVE_PATH = /(?:^|\/)(?:\.env(?:\..*)?|package(?:-lock)?\.json|composer(?:\.json|\.lock)|[^/]+\.(?:log|sqlite|sqlite3|db|bak|backup|old|orig|sql|ini|ya?ml|toml|lock|md|ps1|py|csv|docx?))$/i;
+
+app.use((req, res, next) => {
+    if (PUBLIC_SENSITIVE_PATH.test(req.path)) {
+        return res.status(404).type('text').send('Not found.');
+    }
+    return next();
+});
+
+app.use(express.static(path.join(__dirname, 'public'), {
+    dotfiles: 'deny',
+    fallthrough: true,
+}));
 
 app.get('/api/commerce/config', (req, res) => {
     return res.json({
