@@ -467,6 +467,7 @@
                     <!-- Right Image - Mobile optimized -->
                     <div class="relative order-first lg:order-last">
                         <picture>
+                            <source type="image/avif" srcset="hero-garden-pathway-480.avif 480w, hero-garden-pathway-960.avif 960w, hero-garden-pathway-1200.avif 1200w" sizes="(min-width: 1024px) 50vw, calc(100vw - 4rem)">
                             <source type="image/webp" srcset="hero-garden-pathway-480.webp 480w, hero-garden-pathway-960.webp 960w" sizes="(min-width: 1024px) 50vw, calc(100vw - 4rem)">
                             <img src="hero-garden-pathway.jpg" width="1200" height="675" fetchpriority="high" decoding="async" alt="Beautiful garden pathway with flowering bushes" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg shadow-xl">
                         </picture>
@@ -624,7 +625,10 @@
                 <div class="mobile-grid">
                     <!-- Container Gardening -->
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden card-mobile">
-                        <img src="container-gardening.jpg" width="233" height="148" loading="lazy" decoding="async" alt="Container Gardening" class="w-full h-48 object-cover">
+                        <picture>
+                            <source type="image/avif" srcset="container-gardening.avif">
+                            <img src="container-gardening.jpg" width="233" height="148" loading="lazy" decoding="async" alt="Container Gardening" class="w-full h-48 object-cover">
+                        </picture>
                         <div class="p-6">
                             <div class="flex items-center space-x-3 mb-4">
                                 <div class="bg-blue-100 p-3 rounded-lg">
