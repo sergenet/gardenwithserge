@@ -1099,44 +1099,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // MODERN PAYMENT SYSTEM INTEGRATION
 // ========================================
 
-// Stripe initialization
-let stripe;
-if (typeof Stripe !== 'undefined') {
-    stripe = Stripe('pk_live_51QZissFJK8JMTXAGJXHqgM1jrMQubVXAScCSGxYckMzvYQhoGkB1J56CHwR1fabPnnrBu8Asfaf2wVoT3EaK9jyY002HHOHiCI');
-}
-
-// Payment configuration
-const paymentConfig = {
-    'basic': {
-        'monthly': {
-            stripePrice: 'price_1QZjhGFJK8JMTXAGlnc3JnKI',
-            stripeBuyLink: 'https://buy.stripe.com/4gM5kDdj3ahB8rr44B7Re00',
-            paypalPlan: 'P-59008482787162719NBUDZZA',
-            amount: 4.99
-        },
-        'yearly': {
-            stripePrice: 'price_1QZjhGFJK8JMTXAGfgE2HXCZ',
-            stripeBuyLink: 'https://buy.stripe.com/6oU3cvgvf0H1233asZ7Re03',
-            paypalPlan: 'P-09S96113AN811444HNBUEAEI',
-            amount: 47.90
-        }
-    },
-    'green-thumb': {
-        'monthly': {
-            stripePrice: 'price_1QZjhGFJK8JMTXAGmnC4KLPQ',
-            stripeBuyLink: 'https://buy.stripe.com/00wbJ1baVahBcHH0Sp7Re01',
-            paypalPlan: 'P-0H932671XA612824SNA37QNA',
-            amount: 9.99
-        },
-        'yearly': {
-            stripePrice: 'price_1QZjhGFJK8JMTXAGnbH5TYUW',
-            stripeBuyLink: 'https://buy.stripe.com/3cI7sL6UFexRbDDfNj7Re02',
-            paypalPlan: 'P-7HG26175MM096980GNBUEH7Q',
-            amount: 95.90
-        }
-    }
-};
-
 // Handle Stripe payment
 async function handleStripePayment(membershipType, billingCycle, event) {
     const button = event.target.closest('.stripe-half');
@@ -1150,38 +1112,22 @@ async function handleStripePayment(membershipType, billingCycle, event) {
     if (loadingSpinner) loadingSpinner.style.display = 'block';
     
     try {
-        const config = paymentConfig[membershipType][billingCycle];
-        
-        // Use direct buy link since we have buy.stripe.com URLs instead of price IDs
-        if (config.stripeBuyLink) {
-            // Redirect to Stripe buy link
-            window.location.href = config.stripeBuyLink;
-            return;
-        }
-        
-        // Fallback: Traditional checkout (if price IDs are provided in the future)
-        const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: config.stripePrice,
-                quantity: 1,
-            }],
-            mode: 'subscription',
-            successUrl: `${window.location.origin}/payment-success.html?session_id={CHECKOUT_SESSION_ID}&type=${membershipType}&cycle=${billingCycle}`,
-            cancelUrl: `${window.location.origin}/payment-cancel.html`,
-            customerEmail: null,
-            metadata: {
-                membershipType: membershipType,
-                billingCycle: billingCycle,
-                language: window.currentLanguage || 'en'
-            },
-            allowPromotionCodes: true,
-            billingAddressCollection: 'auto',
-            automaticTax: { enabled: true }
+        const checkoutAttemptId = window.crypto && typeof window.crypto.randomUUID === 'function'
+            ? window.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+        const response = await fetch('/api/checkout/stripe', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ membershipType, billingCycle, checkoutAttemptId })
         });
-
-        if (error) {
-            throw new Error(error.message);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.url) throw new Error(payload.error || 'Unable to start checkout');
+        const checkoutUrl = new URL(payload.url);
+        if (checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
+            throw new Error('Invalid checkout destination');
         }
+        window.location.assign(checkoutUrl.href);
 
     } catch (error) {
         // Show user-friendly error message

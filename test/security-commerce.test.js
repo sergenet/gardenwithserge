@@ -24,6 +24,36 @@ test('commerce fails closed and webhooks are replay protected', () => {
     paymentButtons.forEach(([button]) => assert.match(button, /\bdisabled\b/));
 });
 
+test('Stripe checkout is server-created and contains no obsolete public account identifiers', () => {
+    const appSource = fs.readFileSync(path.join(root, 'public', 'app.js'), 'utf8');
+    const minifiedAppSource = fs.readFileSync(path.join(root, 'public', 'app.min.js'), 'utf8');
+    assert.match(server, /STRIPE_PRICE_BASIC_MONTHLY/);
+    assert.match(server, /app\.post\('\/api\/checkout\/stripe'/);
+    assert.match(server, /Idempotency-Key/);
+    assert.match(server, /subscription_data\[metadata\]\[membershipType\]/);
+    assert.match(server, /checkoutUrl\.hostname !== 'checkout\.stripe\.com'/);
+    assert.match(server, /app\.get\('\/api\/admin\/commerce-readiness', adminLimiter, requireAdminAuth/);
+    assert.doesNotMatch(appSource, /pk_live_|buy\.stripe\.com|price_1QZj/);
+    assert.doesNotMatch(minifiedAppSource, /pk_live_|buy\.stripe\.com|price_1QZj/);
+    assert.doesNotMatch(server, /price_1QZj/);
+});
+
+test('private admin console reports commerce readiness without displaying identifiers', () => {
+    const dashboard = fs.readFileSync(path.join(root, 'admin-dashboard.html'), 'utf8');
+    assert.match(dashboard, /Commerce readiness/);
+    assert.match(dashboard, /\/api\/admin\/commerce-readiness/);
+    assert.match(dashboard, /Keys and Stripe identifiers are never displayed/);
+    assert.doesNotMatch(dashboard, /price_[A-Za-z0-9]+|sk_(?:live|test)_/);
+});
+
+test('payment success page waits for verified entitlement and uses local assets only', () => {
+    const successPage = fs.readFileSync(path.join(root, 'public', 'payment-success.html'), 'utf8');
+    assert.match(successPage, /Verifying your membership/);
+    assert.match(successPage, /confirm-stripe-session/);
+    assert.match(successPage, /!response\.ok\|\|!payload\.success/);
+    assert.doesNotMatch(successPage, /cdn\.tailwindcss|unpkg\.com|Payment Successful!|confirmation email has been sent/i);
+});
+
 test('unknown API and page requests have explicit 404 handlers', () => {
     assert.match(server, /app\.use\('\/api',[\s\S]*status\(404\)\.json/);
     assert.match(server, /status\(404\)\.sendFile\(path\.join\(__dirname, 'public', '404\.html'\)\)/);

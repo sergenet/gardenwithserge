@@ -50,6 +50,7 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 const ENABLE_STRIPE_AUTO_REFUND = String(process.env.ENABLE_STRIPE_AUTO_REFUND || 'false').toLowerCase() === 'true';
 const COMMERCE_ENABLED = String(process.env.COMMERCE_ENABLED || 'false').toLowerCase() === 'true';
+const PUBLIC_SITE_URL = String(process.env.PUBLIC_SITE_URL || 'https://www.gardenwithserge.com').replace(/\/+$/, '');
 const FREE_DAILY_LIMIT = 3;
 const ADMIN_DASHBOARD_PASSWORD = process.env.ADMIN_DASHBOARD_PASSWORD || '';
 const ANALYTICS_HASH_SECRET = process.env.ANALYTICS_HASH_SECRET || MEMBER_TOKEN_SECRET;
@@ -61,12 +62,16 @@ const ALLOWED_ORIGINS = new Set(
 );
 const SUPPORTED_NEWSLETTER_LANGUAGES = new Set(['English', 'Greek', 'Spanish', 'French', 'German', 'Arabic', 'Russian']);
 
-const PRICE_ID_TO_MEMBERSHIP = {
-    price_1QZjhGFJK8JMTXAGlnc3JnKI: 'basic_monthly',
-    price_1QZjhGFJK8JMTXAGfgE2HXCZ: 'basic_yearly',
-    price_1QZjhGFJK8JMTXAGmnC4KLPQ: 'green_thumb_monthly',
-    price_1QZjhGFJK8JMTXAGnbH5TYUW: 'green_thumb_yearly',
+const STRIPE_PLANS = {
+    'basic:monthly': { priceId: process.env.STRIPE_PRICE_BASIC_MONTHLY || '', membershipType: 'basic', billingCycle: 'monthly', entitlement: 'basic_monthly', unitAmount: 499, interval: 'month' },
+    'basic:yearly': { priceId: process.env.STRIPE_PRICE_BASIC_YEARLY || '', membershipType: 'basic', billingCycle: 'yearly', entitlement: 'basic_yearly', unitAmount: 4790, interval: 'year' },
+    'green-thumb:monthly': { priceId: process.env.STRIPE_PRICE_GREEN_THUMB_MONTHLY || '', membershipType: 'green-thumb', billingCycle: 'monthly', entitlement: 'green_thumb_monthly', unitAmount: 999, interval: 'month' },
+    'green-thumb:yearly': { priceId: process.env.STRIPE_PRICE_GREEN_THUMB_YEARLY || '', membershipType: 'green-thumb', billingCycle: 'yearly', entitlement: 'green_thumb_yearly', unitAmount: 9590, interval: 'year' },
 };
+const PRICE_ID_TO_MEMBERSHIP = Object.fromEntries(
+    Object.values(STRIPE_PLANS).filter((plan) => plan.priceId).map((plan) => [plan.priceId, plan.entitlement])
+);
+const STRIPE_PRICE_CONFIGURATION_COMPLETE = Object.values(STRIPE_PLANS).every((plan) => Boolean(plan.priceId));
 
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
@@ -79,12 +84,12 @@ app.use(helmet({
             baseUri: ["'self'"],
             objectSrc: ["'none'"],
             frameAncestors: ["'none'"],
-            formAction: ["'self'", 'https://www.paypal.com', 'https://checkout.stripe.com'],
+            formAction: ["'self'"],
             imgSrc: ["'self'", 'data:', 'blob:'],
-            scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.paypal.com'],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
             connectSrc: ["'self'", 'https://api.gardenwithserge.com', 'https://api.stripe.com'],
-            frameSrc: ['https://js.stripe.com', 'https://hooks.stripe.com', 'https://www.paypal.com'],
+            frameSrc: ["'self'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
     },
@@ -644,7 +649,7 @@ function requireAdminAuth(req, res, next) {
     return next();
 }
 
-async function stripeRequest(method, endpointPath, formData = null) {
+async function stripeRequest(method, endpointPath, formData = null, options = {}) {
     if (!STRIPE_SECRET_KEY) {
         throw new Error('Stripe secret key is not configured.');
     }
@@ -652,6 +657,7 @@ async function stripeRequest(method, endpointPath, formData = null) {
     const headers = {
         Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
     };
+    if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey;
     let body;
     if (formData && Object.keys(formData).length > 0) {
         const params = new URLSearchParams();
@@ -676,6 +682,38 @@ async function stripeRequest(method, endpointPath, formData = null) {
         throw new Error(message);
     }
     return payload;
+}
+
+function stripeKeyMode() {
+    if (STRIPE_SECRET_KEY.startsWith('sk_test_')) return 'test';
+    if (STRIPE_SECRET_KEY.startsWith('sk_live_')) return 'live';
+    return STRIPE_SECRET_KEY ? 'unknown' : 'missing';
+}
+
+async function inspectStripePlan(plan) {
+    if (!plan.priceId) return { configured: false, valid: false };
+    try {
+        const price = await stripeRequest('GET', `/v1/prices/${encodeURIComponent(plan.priceId)}?expand[]=product`);
+        const product = price && typeof price.product === 'object' ? price.product : null;
+        const valid = Boolean(
+            price.active && price.currency === 'usd' && price.unit_amount === plan.unitAmount
+            && price.type === 'recurring' && price.recurring && price.recurring.interval === plan.interval
+            && product && product.active !== false
+            && (!product.metadata || !product.metadata.membershipType
+                || product.metadata.membershipType.replace('_', '-') === plan.membershipType)
+        );
+        return {
+            configured: true,
+            valid,
+            active: Boolean(price.active),
+            currency: price.currency || null,
+            unitAmount: Number.isInteger(price.unit_amount) ? price.unit_amount : null,
+            interval: price.recurring ? price.recurring.interval : null,
+        };
+    } catch (error) {
+        logEvent('Stripe plan readiness check failed', { errorType: error.name, entitlement: plan.entitlement });
+        return { configured: true, valid: false };
+    }
 }
 
 function membershipTypeFromCheckoutSession(session) {
@@ -888,6 +926,23 @@ app.get('/api/admin/summary', adminLimiter, requireAdminAuth, async (req, res) =
     }
 });
 
+app.get('/api/admin/commerce-readiness', adminLimiter, requireAdminAuth, async (req, res) => {
+    const mode = stripeKeyMode();
+    const entries = await Promise.all(Object.entries(STRIPE_PLANS).map(async ([name, plan]) => [name, await inspectStripePlan(plan)]));
+    const plans = Object.fromEntries(entries);
+    const allPricesValid = Object.values(plans).every((plan) => plan.valid);
+    return res.json({
+        commerceEnabled: COMMERCE_ENABLED,
+        mode,
+        secretConfigured: Boolean(STRIPE_SECRET_KEY),
+        webhookConfigured: Boolean(STRIPE_WEBHOOK_SECRET),
+        allPricesConfigured: STRIPE_PRICE_CONFIGURATION_COMPLETE,
+        allPricesValid,
+        readyForSandboxTest: mode === 'test' && Boolean(STRIPE_WEBHOOK_SECRET) && allPricesValid,
+        plans,
+    });
+});
+
 app.get('/admin/billing-requests', adminLimiter, requireAdminAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-billing-requests.html'));
 });
@@ -994,9 +1049,47 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.get('/api/commerce/config', (req, res) => {
     return res.json({
         enabled: COMMERCE_ENABLED,
-        stripe: COMMERCE_ENABLED && Boolean(STRIPE_SECRET_KEY) && Boolean(STRIPE_WEBHOOK_SECRET),
+        stripe: COMMERCE_ENABLED && Boolean(STRIPE_SECRET_KEY) && Boolean(STRIPE_WEBHOOK_SECRET) && STRIPE_PRICE_CONFIGURATION_COMPLETE,
         paypal: false,
     });
+});
+
+app.post('/api/checkout/stripe', async (req, res) => {
+    if (!COMMERCE_ENABLED) {
+        return res.status(503).json({ error: 'Commerce is temporarily unavailable.', code: 'COMMERCE_DISABLED' });
+    }
+    if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SECRET || !STRIPE_PRICE_CONFIGURATION_COMPLETE) {
+        return res.status(503).json({ error: 'Stripe checkout is not configured.', code: 'STRIPE_NOT_CONFIGURED' });
+    }
+    const membershipType = String(req.body.membershipType || '').trim();
+    const billingCycle = String(req.body.billingCycle || '').trim();
+    const checkoutAttemptId = String(req.body.checkoutAttemptId || '').trim();
+    const plan = STRIPE_PLANS[`${membershipType}:${billingCycle}`];
+    if (!plan || !/^[A-Za-z0-9._-]{16,100}$/.test(checkoutAttemptId)) {
+        return res.status(400).json({ error: 'Invalid checkout request.' });
+    }
+    try {
+        const session = await stripeRequest('POST', '/v1/checkout/sessions', {
+            mode: 'subscription',
+            'line_items[0][price]': plan.priceId,
+            'line_items[0][quantity]': 1,
+            success_url: `${PUBLIC_SITE_URL}/payment-success.html?session_id={CHECKOUT_SESSION_ID}&type=${encodeURIComponent(membershipType)}&cycle=${encodeURIComponent(billingCycle)}`,
+            cancel_url: `${PUBLIC_SITE_URL}/payment-cancel.html`,
+            allow_promotion_codes: 'true',
+            billing_address_collection: 'auto',
+            'metadata[membershipType]': membershipType,
+            'metadata[billingCycle]': billingCycle,
+            'subscription_data[metadata][membershipType]': plan.entitlement,
+        }, { idempotencyKey: `gws-checkout-${checkoutAttemptId}` });
+        const checkoutUrl = new URL(String(session.url || ''));
+        if (checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
+            throw new Error('Unexpected checkout destination');
+        }
+        return res.json({ url: checkoutUrl.href });
+    } catch (error) {
+        logEvent('Stripe checkout creation failed', { errorType: error.name, membershipType, billingCycle });
+        return res.status(502).json({ error: 'Unable to start Stripe checkout.' });
+    }
 });
 
 app.get('/api/membership/status', async (req, res) => {

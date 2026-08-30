@@ -1,186 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Successful - Garden with Serge</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <title>Membership confirmation | Garden with Serge</title>
     <style>
-        .success-animation {
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .checkmark {
-            animation: checkmark 0.6s ease-in-out 0.9s both;
-        }
-        
-        @keyframes checkmark {
-            0% {
-                stroke-dashoffset: 50;
-            }
-            100% {
-                stroke-dashoffset: 0;
-            }
-        }
+        :root{color-scheme:light;--green:#166534;--ink:#172019;--muted:#5f6e63;--line:#d7e3d9;--warn:#92400e}*{box-sizing:border-box}body{margin:0;background:#f3f8f4;color:var(--ink);font:16px/1.55 system-ui,"Segoe UI",sans-serif}main{max-width:720px;margin:7vh auto;padding:20px}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 35px #173b2014;padding:clamp(24px,5vw,44px)}h1{color:var(--green);margin:0 0 12px}h2{font-size:1.08rem;margin-top:28px}.status{display:inline-block;margin:12px 0;padding:8px 12px;border-radius:999px;background:#ecfdf3;color:var(--green);font-weight:700}.status.warn{background:#fff7ed;color:var(--warn)}dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;padding:18px;background:#f7faf7;border-radius:12px}dt{color:var(--muted)}dd{margin:0;font-weight:650}p,li{color:var(--muted)}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.actions a{padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--green);color:var(--green)}.actions a.primary{background:var(--green);color:#fff}
     </style>
 </head>
-<body class="bg-gradient-to-br from-green-50 to-teal-50 min-h-screen">
-    <div class="container mx-auto px-4 py-12">
-        <div class="max-w-2xl mx-auto">
-            <!-- Success Card -->
-            <div class="bg-white rounded-2xl shadow-xl p-8 text-center success-animation">
-                <!-- Success Icon -->
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-green-600 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="50">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                
-                <!-- Success Message -->
-                <h1 class="text-3xl font-bold text-gray-800 mb-4">Payment Successful!</h1>
-                <p class="text-lg text-gray-600 mb-8">Thank you for subscribing to Garden with Serge. Your membership is now active!</p>
-                
-                <!-- Membership Details -->
-                <div class="bg-green-50 rounded-lg p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-green-800 mb-3">Membership Details</h2>
-                    <div class="text-left space-y-2">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Plan:</span>
-                            <span class="font-medium text-gray-800" id="membership-plan">Loading...</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Billing:</span>
-                            <span class="font-medium text-gray-800" id="billing-cycle">Loading...</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Status:</span>
-                            <span class="font-medium text-green-600">Active</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- What's Next -->
-                <div class="text-left mb-8">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">What's Next?</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
-                            <span class="text-gray-600">A confirmation email has been sent to your email address</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i data-lucide="leaf" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
-                            <span class="text-gray-600">Start using the AI Plant Doctor with unlimited analyses</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i data-lucide="book-open" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
-                            <span class="text-gray-600">Access exclusive gardening guides and seasonal tips</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i data-lucide="users" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
-                            <span class="text-gray-600">Join our premium community of garden enthusiasts</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="index.html" class="px-8 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors inline-flex items-center justify-center">
-                        <i data-lucide="home" class="w-5 h-5 mr-2"></i>
-                        Back to Garden
-                    </a>
-                    <a href="billing-support.html" class="px-8 py-3 bg-white border border-blue-200 text-blue-700 rounded-lg font-medium hover:bg-blue-50 transition-colors inline-flex items-center justify-center">
-                        <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i>
-                        Billing Support
-                    </a>
-                    <a href="mailto:support@gardenwithserge.com" class="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors inline-flex items-center justify-center">
-                        <i data-lucide="help-circle" class="w-5 h-5 mr-2"></i>
-                        Get Support
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Additional Info -->
-            <div class="mt-8 text-center text-sm text-gray-500">
-                <p>Need help? Contact us at <a href="mailto:support@gardenwithserge.com" class="text-green-600 hover:underline">support@gardenwithserge.com</a></p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-        
-        // Get URL parameters
-        function getUrlParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return {
-                type: urlParams.get('type'),
-                cycle: urlParams.get('cycle'),
-                provider: urlParams.get('provider'),
-                sessionId: urlParams.get('session_id')
-            };
-        }
-        
-        // Display membership details
-        function displayMembershipDetails() {
-            const params = getUrlParams();
-            const planElement = document.getElementById('membership-plan');
-            const cycleElement = document.getElementById('billing-cycle');
-            
-            if (params.type && params.cycle) {
-                const planNames = {
-                    'basic': 'Basic Membership',
-                    'green-thumb': 'Green Thumb Membership'
-                };
-                
-                const cycleNames = {
-                    'monthly': 'Monthly',
-                    'yearly': 'Yearly'
-                };
-                
-                planElement.textContent = planNames[params.type] || 'Premium Membership';
-                cycleElement.textContent = cycleNames[params.cycle] || 'Subscription';
-            } else {
-                planElement.textContent = 'Premium Membership';
-                cycleElement.textContent = 'Subscription';
-            }
-        }
-
-        async function confirmStripeSession() {
-            const params = getUrlParams();
-            if (!params.sessionId) return;
-            try {
-                const response = await fetch(`/api/membership/confirm-stripe-session?session_id=${encodeURIComponent(params.sessionId)}`, {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
-                if (!response.ok) {
-                    const payload = await response.json().catch(() => ({}));
-                    throw new Error(payload.error || 'Unable to confirm Stripe session');
-                }
-                await response.json();
-            } catch (err) {
-                console.error('Stripe session confirmation failed:', err);
-            }
-        }
-        
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            displayMembershipDetails();
-            confirmStripeSession();
-        });
-    </script>
+<body>
+<main><section class="card" aria-live="polite">
+    <h1 id="title">Verifying your membership</h1>
+    <p id="message">Stripe returned you to Garden with Serge. We are confirming the completed subscription before granting member access.</p>
+    <div class="status" id="status">Pending verification</div>
+    <dl>
+        <dt>Plan</dt><dd id="membership-plan">Membership</dd>
+        <dt>Billing</dt><dd id="billing-cycle">Subscription</dd>
+    </dl>
+    <h2>What happens now</h2>
+    <ul>
+        <li>This page does not create or repeat a payment.</li>
+        <li>Member access is granted only after the server verifies a completed Stripe subscription.</li>
+        <li>If confirmation is delayed, retain your Stripe receipt and use Billing Support.</li>
+    </ul>
+    <div class="actions"><a class="primary" href="/">Back to Garden</a><a href="/billing-support.html">Billing Support</a><a href="mailto:contact@gardenwithserge.com">Contact</a></div>
+</section></main>
+<script>
+const params=new URLSearchParams(window.location.search),sessionId=params.get('session_id'),type=params.get('type'),cycle=params.get('cycle');
+const planNames={basic:'Basic Membership','green-thumb':'Green Thumb Membership'},cycleNames={monthly:'Monthly',yearly:'Yearly'};
+document.getElementById('membership-plan').textContent=planNames[type]||'Membership';
+document.getElementById('billing-cycle').textContent=cycleNames[cycle]||'Subscription';
+async function confirmMembership(){const title=document.getElementById('title'),message=document.getElementById('message'),status=document.getElementById('status');if(!sessionId){title.textContent='Confirmation link incomplete';message.textContent='No Stripe Checkout Session was supplied. No payment was attempted by this page.';status.textContent='Unable to verify';status.classList.add('warn');return}try{const response=await fetch(`/api/membership/confirm-stripe-session?session_id=${encodeURIComponent(sessionId)}`,{credentials:'same-origin',cache:'no-store'});const payload=await response.json().catch(()=>({}));if(!response.ok||!payload.success)throw new Error('not confirmed');title.textContent='Membership confirmed';message.textContent='Your completed Stripe subscription was verified and member access is active in this browser.';status.textContent='Active'}catch{title.textContent='Confirmation pending';message.textContent='We could not confirm the subscription yet. Stripe may still have completed the payment; this page did not attempt another charge. Please wait briefly, then return through your Stripe receipt or contact Billing Support.';status.textContent='Not yet verified';status.classList.add('warn')}}
+confirmMembership();
+</script>
 </body>
 </html>
