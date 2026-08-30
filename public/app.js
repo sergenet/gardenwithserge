@@ -166,7 +166,7 @@ function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
         element.scrollIntoView({ 
-            behavior: 'smooth',
+            behavior: 'instant',
             block: 'start'
         });
     }
@@ -549,7 +549,7 @@ async function analyzeImage() {
         formData.append('image', selectedFile);
         formData.append('language', window.currentLanguage || 'en');
         // Use absolute path for production server
-        const response = await fetch('https://www.gardenwithserge.com/api/plant-identify', {
+        const response = await fetch('https://api.gardenwithserge.com/api/plant-identify', {
             method: 'POST',
             body: formData
         });
@@ -1222,6 +1222,69 @@ function changeLanguage(lang, flag, label) {
     if (langDropdown) langDropdown.classList.remove('show');
 }
 
+function installCspSafeInteractions() {
+    document.querySelectorAll('[onclick]').forEach((element) => {
+        const handler = element.getAttribute('onclick') || '';
+        let listener = null;
+        let match;
+
+        if ((match = handler.match(/^scrollToSection\('([^']+)'\)$/))) {
+            listener = () => scrollToSection(match[1]);
+        } else if (handler === 'toggleLanguageDropdown()') {
+            listener = () => toggleLanguageDropdown();
+        } else if (handler === 'toggleMobileMenu()') {
+            listener = () => toggleMobileMenu();
+        } else if ((match = handler.match(/^changeLanguage\('([^']+)', '([^']+)', '([^']+)'\)$/))) {
+            listener = () => changeLanguage(match[1], match[2], match[3]);
+        } else if ((match = handler.match(/^expandGardenStyle\('([^']+)'\)$/))) {
+            listener = () => expandGardenStyle(match[1]);
+        } else if ((match = handler.match(/^expandContent\('([^']+)'\)$/))) {
+            listener = () => expandContent(match[1]);
+        } else if ((match = handler.match(/^handlePayPalPayment\('([^']+)', '([^']+)', event\)$/))) {
+            listener = (event) => handlePayPalPayment(match[1], match[2], event);
+        } else if ((match = handler.match(/^handleStripePayment\('([^']+)', '([^']+)', event\)$/))) {
+            listener = (event) => handleStripePayment(match[1], match[2], event);
+        } else if (handler.includes("window.location.href='/learning-center.php?lang='")) {
+            listener = () => { window.location.href = `/learning-center.php?lang=${window.currentLanguage || 'en'}`; };
+        } else if (handler === "window.location.href='login.php'") {
+            listener = () => { window.location.href = 'login.php'; };
+        } else if (handler === 'startCamera()') {
+            listener = () => startCamera();
+        } else if (handler === 'analyzeImage()') {
+            listener = () => analyzeImage();
+        } else if (handler === 'removeImage()') {
+            listener = () => removeImage();
+        } else if (handler === 'confirmPlantIdentification(true)') {
+            listener = () => confirmPlantIdentification(true);
+        } else if (handler === 'confirmPlantIdentification(false)') {
+            listener = () => confirmPlantIdentification(false);
+        } else if (handler === 'updatePlantName()') {
+            listener = () => updatePlantName();
+        } else if (handler === 'proceedToDiseaseAnalysis()') {
+            listener = () => proceedToDiseaseAnalysis();
+        } else if (handler === 'resetAnalysis()') {
+            listener = () => resetAnalysis();
+        }
+
+        if (listener) {
+            element.removeAttribute('onclick');
+            element.addEventListener('click', listener);
+        }
+    });
+
+    const photoInput = document.getElementById('plant-photo-input');
+    if (photoInput) {
+        photoInput.removeAttribute('onchange');
+        photoInput.addEventListener('change', handleFileSelect);
+    }
+
+    const leadMagnetForm = document.getElementById('lm-form');
+    if (leadMagnetForm) {
+        leadMagnetForm.removeAttribute('onsubmit');
+        leadMagnetForm.addEventListener('submit', handleLeadMagnetSubmit);
+    }
+}
+
 // On page load, initialize to last selected language
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1229,6 +1292,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let savedLang = urlLang || localStorage.getItem('selectedLanguage') || localStorage.getItem('preferred-language') || 'en';
     window.currentLanguage = savedLang;
+    installCspSafeInteractions();
     setupNewsletterFormOverride();
     updateTranslations(savedLang);
     loadMembershipStatus();
