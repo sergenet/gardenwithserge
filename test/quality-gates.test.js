@@ -15,7 +15,7 @@ test('homepage uses responsive modern hero images and minified scripts', () => {
     assert.match(html, /hero-garden-pathway-480\.webp 480w/);
     assert.match(html, /hero-garden-pathway-960\.webp 960w/);
     assert.match(html, /translations\.min\.js\?v=9/);
-    assert.match(html, /app\.min\.js\?v=14/);
+    assert.match(html, /app\.min\.js\?v=15/);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-480.webp')).size < 60_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.webp')).size < 160_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.avif')).size < 80_000);
@@ -26,6 +26,11 @@ test('primary plant doctor page has a main landmark and non-blocking script plac
     assert.match(html, /<main class="container">[\s\S]*<\/main>/);
     assert.match(html, /<\/main>\s*<script src="translations\.min\.js\?v=9"><\/script>/);
     assert.doesNotMatch(html, /<head>[\s\S]*translations\.min\.js[\s\S]*<\/head>/);
+});
+
+test('Plant Doctor guards optional membership-benefit elements', () => {
+    const app = fs.readFileSync(path.join(publicDir, 'app.js'), 'utf8');
+    assert.doesNotMatch(app, /getElementById\('plant-benefits-(?:section|content)'\)\.(?:style|innerText)/);
 });
 
 test('static cache policy distinguishes immutable and mutable assets', () => {

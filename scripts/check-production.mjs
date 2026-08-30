@@ -32,7 +32,7 @@ checks.push('commerce-disabled');
 const homepage = await get('/');
 requireCondition(homepage.body.includes('<link rel="canonical" href="https://www.gardenwithserge.com/">'), 'Homepage canonical is missing');
 requireCondition(homepage.body.includes('hero-garden-pathway-960.avif'), 'Optimized hero source is missing');
-requireCondition(homepage.body.includes('app.min.js?v=14'), 'Current minified application script is missing');
+requireCondition(homepage.body.includes('app.min.js?v=15'), 'Current minified application script is missing');
 requireCondition(!/amazon\.|amzn\.|tag=sergenet05-20/i.test(homepage.body), 'Closed Amazon affiliate link detected');
 requireCondition(homepage.headers.get('strict-transport-security')?.includes('max-age=31536000'), 'HSTS is missing');
 requireCondition(homepage.headers.get('x-content-type-options') === 'nosniff', 'nosniff header is missing');

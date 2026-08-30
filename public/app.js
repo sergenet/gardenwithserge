@@ -629,14 +629,16 @@ async function analyzeImage() {
         }
 
         // --- Plant Benefits call for Green Thumb members ---
-        if (window.membershipType === 'green_thumb') {
-            document.getElementById('plant-benefits-section').style.display = 'block';
-            document.getElementById('plant-benefits-content').innerText = "Loading...";
+        const benefitsSection = document.getElementById('plant-benefits-section');
+        const benefitsContent = document.getElementById('plant-benefits-content');
+        if (window.membershipType === 'green_thumb' && benefitsSection && benefitsContent) {
+            benefitsSection.style.display = 'block';
+            benefitsContent.innerText = "Loading...";
             getPlantBenefits(identifiedPlantName).then(benefits => {
-                document.getElementById('plant-benefits-content').innerText = benefits;
+                if (benefitsContent.isConnected) benefitsContent.innerText = benefits;
             });
-        } else {
-            document.getElementById('plant-benefits-section').style.display = 'none';
+        } else if (benefitsSection) {
+            benefitsSection.style.display = 'none';
         }
 
         showIdentificationStep();
