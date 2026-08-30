@@ -40,3 +40,11 @@ test('newsletter signup uses the single-recipient mailer and an atomic welcome c
     assert.match(server, /sendWelcomeEmail\(emailRaw\)/);
     assert.doesNotMatch(server, /send_welcome_now\.php|execFile\('php'/);
 });
+
+test('mailer supports explicit authenticated TLS mode for port 465', () => {
+    const mailer = fs.readFileSync(path.join(__dirname, '..', 'lib', 'mailer.js'), 'utf8');
+    assert.match(mailer, /SMTP_PORT/);
+    assert.match(mailer, /SMTP_SECURE/);
+    assert.match(mailer, /requireTLS:\s*!secure/);
+    assert.match(mailer, /rejectUnauthorized:\s*true/);
+});
