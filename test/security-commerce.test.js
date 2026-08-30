@@ -30,6 +30,11 @@ test('security middleware restricts origins, framing, and browser permissions', 
     assert.match(server, /timingSafeEqual\(supplied, expected\)/);
 });
 
+test('free access is limited to three identifications and excludes disease diagnosis', () => {
+    assert.match(server, /plant-identify[\s\S]*consumeDailyUsage\(access\.subjectKey, access\.tier, FREE_DAILY_LIMIT\)/);
+    assert.match(server, /plant-analyze[\s\S]*PAID_MEMBERSHIP_REQUIRED/);
+});
+
 test('deployable primary tree contains no obvious private-key credential pattern', () => {
     const prohibited = [
         /sk_(?:live|test)_[A-Za-z0-9]{12,}/,

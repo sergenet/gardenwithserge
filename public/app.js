@@ -106,7 +106,7 @@ function updateAnalysisCounter() {
 
     // Get translations with clean English fallbacks
     const unlimitedText = dict['unlimited-analyses'] || 'Unlimited analyses';
-    const freeAnalysisText = dict['free-analysis-counter'] || '3 Free analysis per day';
+    const freeAnalysisText = dict['free-analysis-counter'] || '3 free plant identifications per day';
     const counterUnlimited = dict['counter-unlimited'] || 'Unlimited';
     const counterNoLeft = dict['counter-no-left'] || 'No free analysis left today';
     
@@ -608,11 +608,25 @@ async function analyzeImage() {
             method: 'POST',
             body: formData
         });
+        if (response.status === 429) {
+            const payload = await response.json().catch(() => ({}));
+            dailyAnalysisCount = 3;
+            updateAnalysisCounter();
+            throw new Error(payload.error || 'Daily free plant-identification limit reached.');
+        }
         if (!response.ok) {
             const payload = await response.json().catch(() => ({}));
             throw new Error(payload.error || `Plant identification request failed (${response.status}).`);
         }
         const data = await response.json();
+        if (!userHasUnlimitedAnalysis() && Number.isFinite(Number(data.usedToday))) {
+            dailyAnalysisCount = Number(data.usedToday);
+            localStorage.setItem('plantAnalysisDaily', JSON.stringify({
+                date: new Date().toDateString(),
+                count: dailyAnalysisCount
+            }));
+            updateAnalysisCounter();
+        }
 
         if (typeof data.plantName === "undefined") {
             alert(typeof t === 'function' ? t('pd-alert-failed-identify') : 'Sorry, something went wrong.');
@@ -738,6 +752,10 @@ function proceedToDiseaseAnalysis() {
     const identificationStep = document.getElementById('identification-step');
     const analyzeBtn = document.getElementById('continue-analysis-btn');
     const originalText = analyzeBtn ? analyzeBtn.textContent : 'Continue to Disease Analysis';
+    if (!userHasUnlimitedAnalysis()) {
+        showAnalysisError('Plant disease diagnosis requires an active paid membership.');
+        return;
+    }
     if (analyzeBtn) {
         analyzeBtn.textContent = 'Analyzing...';
         analyzeBtn.disabled = true;
@@ -753,6 +771,11 @@ function proceedToDiseaseAnalysis() {
                 method: 'POST',
                 body: formData
             });
+            if (response.status === 403) {
+                const payload = await response.json().catch(() => ({}));
+                showAnalysisError(payload.error || 'Plant disease diagnosis requires an active paid membership.');
+                return;
+            }
             if (response.status === 429) {
                 const payload = await response.json().catch(() => ({}));
                 const msg = payload.error || 'Daily free analysis limit reached. Upgrade to continue.';

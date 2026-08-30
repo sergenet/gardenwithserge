@@ -14,8 +14,8 @@ test('homepage uses responsive modern hero images and minified scripts', () => {
     assert.match(html, /hero-garden-pathway-1200\.avif 1200w/);
     assert.match(html, /hero-garden-pathway-480\.webp 480w/);
     assert.match(html, /hero-garden-pathway-960\.webp 960w/);
-    assert.match(html, /translations\.min\.js\?v=9/);
-    assert.match(html, /app\.min\.js\?v=15/);
+    assert.match(html, /translations\.min\.js\?v=10/);
+    assert.match(html, /app\.min\.js\?v=16/);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-480.webp')).size < 60_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.webp')).size < 160_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.avif')).size < 80_000);
@@ -24,7 +24,7 @@ test('homepage uses responsive modern hero images and minified scripts', () => {
 test('primary plant doctor page has a main landmark and non-blocking script placement', () => {
     const html = fs.readFileSync(path.join(publicDir, 'plant-doctor.html'), 'utf8');
     assert.match(html, /<main class="container">[\s\S]*<\/main>/);
-    assert.match(html, /<\/main>\s*<script src="translations\.min\.js\?v=9"><\/script>/);
+    assert.match(html, /<\/main>\s*<script src="translations\.min\.js\?v=10"><\/script>/);
     assert.doesNotMatch(html, /<head>[\s\S]*translations\.min\.js[\s\S]*<\/head>/);
 });
 

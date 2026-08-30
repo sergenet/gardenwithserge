@@ -843,6 +843,7 @@ app.get('/api/membership/status', async (req, res) => {
             tier: context.tier,
             membershipType: context.membershipType,
             email: context.email,
+            diagnosisAccess: context.tier === 'basic' || context.tier === 'green_thumb',
             freeDailyLimit: FREE_DAILY_LIMIT,
             usedToday: used,
             remainingToday: remaining,
@@ -988,6 +989,20 @@ app.post('/api/plant-identify', aiLimiter, upload.single('image'), async (req, r
         if (!req.file || !isSupportedImage(req.file.buffer)) {
             return res.status(400).json({ error: 'A valid JPEG, PNG, or WebP image is required.' });
         }
+        let freeUsage = null;
+        if (access.tier === 'free') {
+            freeUsage = await consumeDailyUsage(access.subjectKey, access.tier, FREE_DAILY_LIMIT);
+            if (!freeUsage.allowed) {
+                return res.status(429).json({
+                    error: 'Daily free plant-identification limit reached.',
+                    code: 'FREE_IDENTIFICATION_LIMIT_REACHED',
+                    tier: 'free',
+                    limit: FREE_DAILY_LIMIT,
+                    used: freeUsage.used,
+                    remaining: 0,
+                });
+            }
+        }
         const { language } = req.body;
         const langCode = language || req.query.lang || 'en';
         
@@ -1043,7 +1058,13 @@ Confidence MUST be an integer from 0 to 100. Only return JSON.`;
             logEvent('Invalid JSON returned for plant-identify');
             return res.status(502).json({ error: 'Plant identification could not be completed.' });
         }
-        res.json({ ...result, tier: access.tier });
+        res.json({
+            ...result,
+            tier: access.tier,
+            freeDailyLimit: access.tier === 'free' ? FREE_DAILY_LIMIT : null,
+            usedToday: access.tier === 'free' ? freeUsage.used : null,
+            remainingToday: access.tier === 'free' ? Math.max(0, FREE_DAILY_LIMIT - freeUsage.used) : null,
+        });
     } catch (err) {
         const code = classifyAiError(err);
         logEvent('Plant identification failed', { errorType: err.name, errorCode: code, upstreamStatus: err.status });
@@ -1055,6 +1076,12 @@ Confidence MUST be an integer from 0 to 100. Only return JSON.`;
 app.post('/api/plant-analyze', aiLimiter, upload.single('image'), async (req, res) => {
     try {
         const access = await resolveAccessContext(req);
+        if (access.tier === 'free') {
+            return res.status(403).json({
+                error: 'Plant disease diagnosis requires an active paid membership.',
+                code: 'PAID_MEMBERSHIP_REQUIRED',
+            });
+        }
         const { plantName, scientificName, language } = req.body;
         if (!req.file || !isSupportedImage(req.file.buffer) || !plantName) {
             return res.status(400).json({ error: 'A valid image and plant name are required.' });
@@ -1077,21 +1104,6 @@ app.post('/api/plant-analyze', aiLimiter, upload.single('image'), async (req, re
             'ar': 'Arabic'
         };
         const targetLang = langMap[langCode.toLowerCase()] || 'English';
-
-        let freeUsage = null;
-        if (access.tier === 'free') {
-            freeUsage = await consumeDailyUsage(access.subjectKey, access.tier, FREE_DAILY_LIMIT);
-            if (!freeUsage.allowed) {
-                return res.status(429).json({
-                    error: 'Daily free analysis limit reached. Upgrade to Basic for unlimited analysis.',
-                    code: 'FREE_LIMIT_REACHED',
-                    tier: 'free',
-                    limit: FREE_DAILY_LIMIT,
-                    used: freeUsage.used,
-                    remaining: 0,
-                });
-            }
-        }
 
         const imageMime = detectImageMime(req.file.buffer);
         const imageBase64 = req.file.buffer.toString('base64');
@@ -1177,19 +1189,12 @@ Use null if unsure. Only return JSON.`;
             }
         }
 
-        let used = null;
-        let remaining = null;
-        if (access.tier === 'free') {
-            used = freeUsage.used;
-            remaining = Math.max(0, FREE_DAILY_LIMIT - used);
-        }
-
         res.json({
             ...result,
             tier: access.tier,
-            freeDailyLimit: access.tier === 'free' ? FREE_DAILY_LIMIT : null,
-            usedToday: used,
-            remainingToday: remaining,
+            freeDailyLimit: null,
+            usedToday: null,
+            remainingToday: null,
         });
     } catch (err) {
         const code = classifyAiError(err);
