@@ -45,3 +45,16 @@ test('static cache policy distinguishes immutable and mutable assets', () => {
     assert.match(htaccess, /max-age=31536000, immutable/);
     assert.match(htaccess, /max-age=2592000, stale-while-revalidate=86400/);
 });
+
+test('featured cornerstone guides are static, canonical, and linked without blocked PHP paths', () => {
+    const index = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf8');
+    const sitemap = fs.readFileSync(path.join(publicDir, 'sitemap.xml'), 'utf8');
+    for (const slug of ['plant-disease-guide', 'plant-troubleshooting', 'indoor-plants-guide']) {
+        const guide = fs.readFileSync(path.join(publicDir, `${slug}.html`), 'utf8');
+        assert.match(index, new RegExp(`/${slug}\\.html`));
+        assert.match(sitemap, new RegExp(`/${slug}\\.html`));
+        assert.match(guide, new RegExp(`rel="canonical" href="https://www\\.gardenwithserge\\.com/${slug}\\.html"`));
+        assert.doesNotMatch(guide, /<\?php|cdn\.tailwindcss\.com/);
+    }
+    assert.doesNotMatch(index, /(?:plant-disease-guide|plant-troubleshooting|indoor-plants-guide)\.php/);
+});
