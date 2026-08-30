@@ -475,10 +475,22 @@ async function getPlantBenefits(plantName) {
 
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-        selectedFile = file;
-        displayImagePreview(file);
+    if (!file) return;
+    const supportedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
+    if (!supportedTypes.has(file.type.toLowerCase())) {
+        event.target.value = '';
+        selectedFile = null;
+        alert('Please use a JPEG, PNG, or WebP photo. HEIC and other formats are not supported yet.');
+        return;
     }
+    if (file.size > 8 * 1024 * 1024) {
+        event.target.value = '';
+        selectedFile = null;
+        alert('Please use a photo smaller than 8 MB.');
+        return;
+    }
+    selectedFile = file;
+    displayImagePreview(file);
 }
 
 function displayImagePreview(file) {
@@ -564,7 +576,8 @@ async function analyzeImage() {
             body: formData
         });
         if (!response.ok) {
-            throw new Error('Plant identification failed.');
+            const payload = await response.json().catch(() => ({}));
+            throw new Error(payload.error || `Plant identification request failed (${response.status}).`);
         }
         const data = await response.json();
 
@@ -578,7 +591,7 @@ async function analyzeImage() {
             identifiedPlantName = data.plantName;
             let details = '';
             if (data.scientificName) details += ` (${data.scientificName})`;
-            if (data.confidence) details += `, Confidence: ${(data.confidence * 100).toFixed(0)}%`;
+            if (Number.isFinite(Number(data.confidence))) details += `, Confidence: ${Math.round(Number(data.confidence))}%`;
             if (details) identifiedPlantName += details;
         }
 
@@ -595,7 +608,10 @@ async function analyzeImage() {
 
         showIdentificationStep();
     } catch (err) {
-        alert(typeof t === 'function' ? t('pd-alert-failed-identify') : 'Failed to identify plant.');
+        const message = err && err.name === 'AbortError'
+            ? 'Plant identification timed out. Please try a smaller photo or try again shortly.'
+            : (err && err.message ? err.message : (typeof t === 'function' ? t('pd-alert-failed-identify') : 'Failed to identify plant.'));
+        alert(message);
         identifiedPlantName = 'Unknown plant';
         showIdentificationStep();
     } finally {
