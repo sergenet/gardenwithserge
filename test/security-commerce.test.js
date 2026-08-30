@@ -31,7 +31,7 @@ test('security middleware restricts origins, framing, and browser permissions', 
 });
 
 test('free access is limited to three identifications and excludes disease diagnosis', () => {
-    assert.match(server, /plant-identify[\s\S]*consumeDailyUsage\(access\.subjectKey, access\.tier, FREE_DAILY_LIMIT\)/);
+    assert.match(server, /plant-identify[\s\S]*consumeDailyUsage\(`\$\{access\.subjectKey\}:identify`, access\.tier, FREE_DAILY_LIMIT\)/);
     assert.match(server, /plant-analyze[\s\S]*PAID_MEMBERSHIP_REQUIRED/);
 });
 

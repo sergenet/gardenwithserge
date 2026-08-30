@@ -837,7 +837,7 @@ app.get('/api/commerce/config', (req, res) => {
 app.get('/api/membership/status', async (req, res) => {
     try {
         const context = await resolveAccessContext(req);
-        const used = context.tier === 'free' ? await getDailyUsageCount(context.subjectKey) : 0;
+        const used = context.tier === 'free' ? await getDailyUsageCount(`${context.subjectKey}:identify`) : 0;
         const remaining = context.tier === 'free' ? Math.max(0, FREE_DAILY_LIMIT - used) : null;
         return res.json({
             tier: context.tier,
@@ -991,7 +991,7 @@ app.post('/api/plant-identify', aiLimiter, upload.single('image'), async (req, r
         }
         let freeUsage = null;
         if (access.tier === 'free') {
-            freeUsage = await consumeDailyUsage(access.subjectKey, access.tier, FREE_DAILY_LIMIT);
+            freeUsage = await consumeDailyUsage(`${access.subjectKey}:identify`, access.tier, FREE_DAILY_LIMIT);
             if (!freeUsage.allowed) {
                 return res.status(429).json({
                     error: 'Daily free plant-identification limit reached.',
