@@ -1,0 +1,31 @@
+# Passenger application mapping. Secrets belong in cPanel environment settings.
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/sergbcqk/garden"
+PassengerBaseURI "/"
+PassengerNodejs "/home/sergbcqk/nodevenv/garden/18/bin/node"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
+Options -Indexes
+
+<FilesMatch "(?i)(^\.|\.(?:env|log|sqlite|db|bak|backup|old|orig|sql|ini|ya?ml|toml|lock|md|ps1|py|csv|docx?)$)">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^gardenwithserge\.com$ [NC]
+  RewriteRule ^ https://www.gardenwithserge.com%{REQUEST_URI} [L,R=301,NE]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "DENY"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(self)"
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  <FilesMatch "\.(?:css|js|png|jpe?g|gif|webp|svg|ico|woff2?|pdf)$">
+    Header set Cache-Control "public, max-age=604800, stale-while-revalidate=86400"
+  </FilesMatch>
+</IfModule>

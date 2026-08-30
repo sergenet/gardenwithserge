@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Billing Requests - Garden with Serge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex flex-col gap-2 mb-6">
+            <h1 class="text-3xl font-bold">Billing Requests Admin</h1>
+            <p class="text-slate-600">Recent billing requests, pending manual actions, and quick status updates.</p>
+        </div>
+
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl shadow p-4">
+                <div class="text-sm text-slate-500">Received</div>
+                <div id="count-received" class="text-2xl font-bold">0</div>
+            </div>
+            <div class="bg-white rounded-xl shadow p-4">
+                <div class="text-sm text-slate-500">Pending Manual</div>
+                <div id="count-pending_manual" class="text-2xl font-bold">0</div>
+            </div>
+            <div class="bg-white rounded-xl shadow p-4">
+                <div class="text-sm text-slate-500">Processed</div>
+                <div id="count-processed" class="text-2xl font-bold">0</div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-4 mb-6">
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+                <label class="flex-1">
+                    <div class="text-sm font-medium mb-1">Filter by status</div>
+                    <select id="status-filter" class="w-full border rounded-lg px-3 py-2">
+                        <option value="">All</option>
+                        <option value="received">Received</option>
+                        <option value="pending_manual">Pending Manual</option>
+                        <option value="processed">Processed</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </label>
+                <label class="w-full sm:w-40">
+                    <div class="text-sm font-medium mb-1">Limit</div>
+                    <input id="limit-input" type="number" min="1" max="200" value="50" class="w-full border rounded-lg px-3 py-2" />
+                </label>
+                <button id="refresh-btn" class="bg-slate-900 text-white rounded-lg px-4 py-2">Refresh</button>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="px-4 py-3 border-b flex items-center justify-between">
+                    <h2 class="font-semibold">Pending Manual Actions</h2>
+                    <span id="pending-count" class="text-sm text-slate-500">0 items</span>
+                </div>
+                <div id="pending-list" class="divide-y"></div>
+            </div>
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="px-4 py-3 border-b flex items-center justify-between">
+                    <h2 class="font-semibold">Recent Requests</h2>
+                    <span id="recent-count" class="text-sm text-slate-500">0 items</span>
+                </div>
+                <div id="recent-list" class="divide-y"></div>
+            </div>
+        </section>
+
+        <p id="error-message" class="text-red-700 hidden mb-4"></p>
+        <div class="text-sm text-slate-500">
+            Tip: because this page is served through a Basic Auth-protected route, browser credentials are reused for the API calls.
+        </div>
+    </main>
+
+    <template id="row-template">
+        <article class="p-4">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="font-semibold text-slate-900 request-title"></div>
+                    <span class="status-pill text-xs font-semibold px-2 py-1 rounded-full"></span>
+                </div>
+                <div class="text-sm text-slate-600 request-meta"></div>
+                <div class="text-sm text-slate-700 request-reason"></div>
+                <pre class="details-json hidden bg-slate-50 text-xs overflow-auto rounded-lg p-3 border"></pre>
+                <div class="flex gap-2 flex-wrap actions"></div>
+            </div>
+        </article>
+    </template>
+
+    <script>
+        const statusStyles = {
+            received: 'bg-amber-100 text-amber-800',
+            pending_manual: 'bg-orange-100 text-orange-800',
+            processed: 'bg-green-100 text-green-800',
+            rejected: 'bg-red-100 text-red-800',
+            resolved: 'bg-blue-100 text-blue-800',
+            default: 'bg-slate-100 text-slate-800',
+        };
+
+        async function fetchJson(url, options = {}) {
+            const response = await fetch(url, {
+                credentials: 'same-origin',
+                ...options,
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.error || 'Request failed');
+            }
+            return payload;
+        }
+
+        function renderDetails(detailsJson) {
+            if (!detailsJson) return null;
+            if (typeof detailsJson === 'string') return detailsJson;
+            return JSON.stringify(detailsJson, null, 2);
+        }
+
+        function createRow(item, includeActions) {
+            const template = document.getElementById('row-template');
+            const node = template.content.cloneNode(true);
+            const article = node.querySelector('article');
+            const title = node.querySelector('.request-title');
+            const meta = node.querySelector('.request-meta');
+            const reason = node.querySelector('.request-reason');
+            const pill = node.querySelector('.status-pill');
+            const details = node.querySelector('.details-json');
+            const actions = node.querySelector('.actions');
+
+            title.textContent = `#${item.id} ${item.request_type} - ${item.email}`;
+            meta.textContent = `${item.membership_type || 'n/a'} · ${item.provider || 'n/a'} · ${item.created_at}`;
+            reason.textContent = item.reason ? item.reason : 'No reason provided.';
+            pill.textContent = item.status;
+            pill.className = `status-pill text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[item.status] || statusStyles.default}`;
+
+            const detailsText = renderDetails(item.details_json);
+            if (detailsText) {
+                details.classList.remove('hidden');
+                details.textContent = detailsText;
+            }
+
+            if (includeActions) {
+                ['processed', 'resolved', 'rejected'].forEach((status) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'px-3 py-1 rounded border text-sm hover:bg-slate-50';
+                    button.textContent = `Mark ${status}`;
+                    button.addEventListener('click', async () => {
+                        await fetchJson(`/api/admin/billing-requests/${item.id}/status`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status }),
+                        });
+                        await loadData();
+                    });
+                    actions.appendChild(button);
+                });
+            }
+
+            return node;
+        }
+
+        async function loadData() {
+            const error = document.getElementById('error-message');
+            error.classList.add('hidden');
+            error.textContent = '';
+
+            try {
+                const status = document.getElementById('status-filter').value;
+                const limit = document.getElementById('limit-input').value || '50';
+                const query = new URLSearchParams();
+                if (status) query.set('status', status);
+                query.set('limit', limit);
+
+                const data = await fetchJson(`/api/admin/billing-requests?${query.toString()}`);
+
+                document.getElementById('count-received').textContent = data.counts.received || 0;
+                document.getElementById('count-pending_manual').textContent = data.counts.pending_manual || 0;
+                document.getElementById('count-processed').textContent = data.counts.processed || 0;
+                document.getElementById('pending-count').textContent = `${data.pendingManualActions.length} items`;
+                document.getElementById('recent-count').textContent = `${data.recent.length} items`;
+
+                const pendingList = document.getElementById('pending-list');
+                const recentList = document.getElementById('recent-list');
+                pendingList.innerHTML = '';
+                recentList.innerHTML = '';
+
+                data.pendingManualActions.forEach((item) => pendingList.appendChild(createRow(item, true)));
+                data.recent.forEach((item) => recentList.appendChild(createRow(item, false)));
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('refresh-btn').addEventListener('click', loadData);
+        document.getElementById('status-filter').addEventListener('change', loadData);
+        document.getElementById('limit-input').addEventListener('change', loadData);
+        loadData();
+    </script>
+</body>
+</html>

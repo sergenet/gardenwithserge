@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled - Garden with Serge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto">
+            <!-- Cancel Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
+                <!-- Cancel Icon -->
+                <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="x-circle" class="w-10 h-10 text-orange-600"></i>
+                </div>
+                
+                <!-- Cancel Message -->
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">Payment Cancelled</h1>
+                <p class="text-lg text-gray-600 mb-8">No worries! Your payment has been cancelled and no charges were made to your account.</p>
+                
+                <!-- Information Box -->
+                <div class="bg-blue-50 rounded-lg p-6 mb-8">
+                    <h2 class="text-xl font-semibold text-blue-800 mb-3">What Happened?</h2>
+                    <div class="text-left space-y-3">
+                        <div class="flex items-start">
+                            <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">You cancelled the payment process before completion</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-blue-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">No charges were made to your payment method</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-lucide="clock" class="w-5 h-5 text-blue-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">You can try again anytime you're ready</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Still Interested -->
+                <div class="text-left mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Still Interested?</h3>
+                    <p class="text-gray-600 mb-4">Join thousands of gardeners who are already enjoying:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i data-lucide="brain" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">AI-powered plant disease diagnosis</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="book" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Expert gardening guides and seasonal tips</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="users" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Premium community access</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i data-lucide="calendar" class="w-5 h-5 text-green-600 mr-3 mt-0.5"></i>
+                            <span class="text-gray-600">Personalized gardening calendar</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html#membership" class="px-8 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors inline-flex items-center justify-center">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 mr-2"></i>
+                        Try Again
+                    </a>
+                    <a href="index.html" class="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors inline-flex items-center justify-center">
+                        <i data-lucide="home" class="w-5 h-5 mr-2"></i>
+                        Back to Garden
+                    </a>
+                </div>
+                
+                <!-- Help Section -->
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-2">Need Help?</h4>
+                    <p class="text-sm text-gray-600 mb-3">If you're experiencing issues with payment or have questions about our plans:</p>
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center text-sm">
+                        <a href="mailto:support@gardenwithserge.com" class="text-blue-600 hover:underline inline-flex items-center">
+                            <i data-lucide="mail" class="w-4 h-4 mr-1"></i>
+                            Email Support
+                        </a>
+                        <span class="hidden sm:inline text-gray-400">|</span>
+                        <a href="index.html#plant-doctor" class="text-blue-600 hover:underline inline-flex items-center">
+                            <i data-lucide="leaf" class="w-4 h-4 mr-1"></i>
+                            Try Free Features
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Info -->
+            <div class="mt-8 text-center text-sm text-gray-500">
+                <p>Questions? We're here to help at <a href="mailto:support@gardenwithserge.com" class="text-blue-600 hover:underline">support@gardenwithserge.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

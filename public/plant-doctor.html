@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free AI plant disease diagnosis tool. Upload a photo of your houseplant, vegetable, or basic and tropical fruit tree to identify pests and diseases instantly.">
+  <meta name="keywords" content="plant disease identification, plant doctor, AI plant diagnosis, fruit tree disease analyzer, tropical fruit pests, plant health analyzer">
+  <meta property="og:title" content="AI Plant Doctor - Free Plant & Fruit Tree Disease Diagnosis Online">
+  <meta property="og:description" content="Scan sick plant leaves, vegetables, or basic and tropical fruit trees with your camera for real-time disease identification and organic pest remedies.">
+  <meta property="og:image" content="https://www.gardenwithserge.com/favicon.png">
+  <meta property="og:url" content="https://www.gardenwithserge.com/plant-doctor.html">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://www.gardenwithserge.com/plant-doctor.html">
+  
+  <title>AI Plant Doctor - Free Plant & Fruit Tree Disease Diagnosis Online</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background: linear-gradient(135deg, #f5f5dc 0%, #e8f4ee 100%);
+      color: #333;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    nav { background: white; padding: 1rem; border-bottom: 2px solid #10b981; margin-bottom: 2rem; border-radius: 8px; }
+    nav a { color: #10b981; text-decoration: none; font-weight: bold; margin-right: 2rem; }
+    nav a:hover { text-decoration: underline; }
+    h1 { color: #16a34a; margin-bottom: 0.5rem; font-size: 2.5rem; }
+    .subtitle { color: #666; font-size: 1.1rem; margin-bottom: 2rem; }
+    #result, #analysis { display: none; margin-top: 1.5em; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    #confirm-block { display: none; margin-top: 1.5em; }
+    
+    #confirm-block button { 
+      background: #16a34a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; 
+      cursor: pointer; font-weight: bold; margin-top: 1rem; width: 100%;
+    }
+    #confirm-block button#pd-btn-no {
+      background: #ef4444;
+      margin-top: 0.5rem;
+    }
+    #confirm-block button#pd-btn-no:hover {
+      background: #dc2626;
+    }
+    #confirm-block button#pd-btn-yes:hover {
+      background: #15803d;
+    }
+    #analysis button#pd-btn-startover { 
+      background: #16a34a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; 
+      cursor: pointer; font-weight: bold; margin-top: 1.5rem; width: 100%;
+    }
+    #analysis button#pd-btn-startover:hover { background: #15803d; }
+    
+    #result h3, #analysis h3 { color: #16a34a; margin-bottom: 1rem; font-size: 1.75rem; border-bottom: 2px solid #f0fdf4; padding-bottom: 0.5rem; }
+    #result p, #analysis p { margin: 0.75rem 0; font-size: 1.1rem; }
+    #result b, #analysis b { color: #16a34a; }
+    #recommendations { margin-top: 1rem; margin-left: 1.5rem; }
+    #recommendations li { margin: 0.5rem 0; font-size: 1rem; line-height: 1.5; list-style-type: disc; }
+
+    .upload-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .upload-section button { 
+      background: #16a34a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; 
+      cursor: pointer; font-weight: bold; margin-top: 1rem; width: 100%;
+    }
+    .upload-section button:hover { background: #15803d; }
+    .file-upload-wrapper {
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .file-upload-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 2px dashed #86efac;
+      padding: 1.25rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .file-upload-label:hover {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+    .file-chosen-text {
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      color: #555;
+      font-weight: 500;
+    }
+    .results-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .result-item { margin: 1rem 0; padding: 1rem; background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 6px; }
+    .result-item p { margin: 0.5rem 0; }
+    .result-item b { color: #16a34a; }
+
+    /* Lead Magnet Premium Styles */
+    .lead-magnet-card {
+      margin-top: 2rem;
+      padding: 1.75rem;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 2px dashed #34d399;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .lead-magnet-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #10b981, #059669);
+    }
+    .lead-magnet-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.1);
+      border-color: #10b981;
+    }
+    .lead-magnet-title {
+      color: #065f46;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .lead-magnet-desc {
+      color: #374151;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+      max-width: 550px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .lead-magnet-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .lead-magnet-input {
+      padding: 0.85rem 1.25rem;
+      border: 2px solid #a7f3d0;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+      transition: all 0.2s ease;
+      background: white;
+      color: #1f2937;
+    }
+    .lead-magnet-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    .lead-magnet-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 0.85rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      font-size: 1.05rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.2);
+    }
+    .lead-magnet-btn:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    }
+    .lead-magnet-btn:active {
+      transform: translateY(0);
+    }
+    .lead-magnet-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .lead-magnet-success {
+      display: none;
+      color: #065f46;
+      font-weight: 700;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      padding: 1.25rem;
+      background: #ecfdf5;
+      border-radius: 8px;
+      border: 2px solid #86efac;
+      animation: fadeInMagnet 0.5s ease-out;
+    }
+    @keyframes fadeInMagnet {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <!-- FAQ Schema for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I use the Plant Doctor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Upload a clear photo of your plant or affected leaf. Our AI analyzes the image and provides disease identification, health status, and care recommendations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the Plant Doctor free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! The Plant Doctor is completely free to use. No membership required. Free users get 3 analyses per day, and members get unlimited analyses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How accurate is the AI diagnosis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our AI provides confidence scores for each diagnosis. For best results, upload clear, well-lit photos of affected plant areas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I identify any type of plant?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the Plant Doctor can identify most common houseplants, garden plants, herbs, and vegetables. For best results, include leaves or flowers in your photo."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- BreadcrumbList Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://gardenwithserge.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Plant Doctor",
+        "item": "https://gardenwithserge.com/plant-doctor.html"
+      }
+    ]
+  </script>
+  <script src="translations.js?v=6"></script>
+</head>
+<body>
+  <nav>
+    <a href="/" id="nav-home">← Home</a>
+    <a href="/learning-center.php" id="lc-back-hub">← Back to Learning Center</a>
+  </nav>
+
+  <div class="container">
+    <h1 id="pd-title">Free AI Plant Doctor</h1>
+    <p class="subtitle" id="pd-subtitle">Upload a photo for instant disease diagnosis and care recommendations</p>
+
+    <div class="upload-section">
+      <h2 style="color: #16a34a; margin-bottom: 0.5rem;" id="pd-diagnose-title">Diagnose Your Plant</h2>
+      <div id="analysis-counter-doctor" style="margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 600; text-align: center;">
+        <span style="color: #16a34a;">3 of 3 analyses left today</span>
+      </div>
+      <div class="file-upload-wrapper" style="display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin: 1.5rem auto;">
+        
+        <!-- Button 1: Take Photo using Camera (Mobile capture) -->
+        <label for="plant-image-camera" class="file-upload-label" style="background: #ecfdf5; border-color: #34d399; color: #047857;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon" style="vertical-align: middle; margin-right: 8px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <span id="pd-camera-text">Take Photo with Camera</span>
+        </label>
+        <input type="file" id="plant-image-camera" accept="image/*" capture="environment" style="display: none;">
+        
+        <!-- Button 2: Choose from Gallery -->
+        <label for="plant-image-gallery" class="file-upload-label" style="background: #f0fdf4; border-color: #86efac; color: #16a34a;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon" style="vertical-align: middle; margin-right: 8px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span id="pd-upload-text">Choose Plant Photo</span>
+        </label>
+        <input type="file" id="plant-image-gallery" accept="image/*" style="display: none;">
+        
+        <!-- Upload Preview Container -->
+        <div id="upload-preview-container" style="display: none; margin-top: 0.5rem; text-align: center;">
+          <img id="upload-preview-img" src="" alt="Selected plant preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #86efac; object-fit: cover;">
+        </div>
+
+        <div id="pd-no-file" class="file-chosen-text" style="font-style: italic; color: #555;">No file selected</div>
+      </div>
+      <button id="pd-btn-identify">Identify Plant</button>
+    </div>
+
+  <div id="result">
+    <h3 id="pd-identity-title">Plant Identity</h3>
+    <div style="text-align: center; margin: 1.5rem 0;">
+      <img id="plant-image-preview" src="" alt="Uploaded plant photo" style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); object-fit: cover;">
+    </div>
+    <p><b id="pd-name-label">Name:</b> <span id="plant-name"></span></p>
+    <p><b id="pd-scientific-label">Scientific Name:</b> <span id="plant-scientific"></span></p>
+    <p><b id="pd-confidence-label">Confidence:</b> <span id="plant-confidence"></span>%</p>
+    <div id="confirm-block">
+      <button id="pd-btn-yes">Yes, analyze health</button>
+      <button id="pd-btn-no">No, upload another</button>
+    </div>
+  </div>
+
+  <div id="analysis">
+    <h3 id="pd-analysis-title">Disease Analysis</h3>
+    <div style="text-align: center; margin: 1.5rem 0;">
+      <img id="plant-image-preview-analysis" src="" alt="Uploaded plant photo" style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); object-fit: cover;">
+    </div>
+    <p><b id="pd-health-label">Health Status:</b> <span id="health-status"></span></p>
+    <p><b id="pd-analysis-label">Analysis:</b> <span id="disease-analysis"></span></p>
+    <ul id="recommendations"></ul>
+
+    <!-- 7-Day Plant Recovery PDF Lead Magnet -->
+    <div id="recovery-lead-magnet" class="lead-magnet-card">
+      <h4 class="lead-magnet-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #10b981; vertical-align: middle; margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span id="lm-title">Get Your Plant's 7-Day Recovery Checklist</span>
+      </h4>
+      <p id="lm-desc" class="lead-magnet-desc">
+        We will email you a custom, step-by-step organic recovery checklist, watering schedule adjustments, and follow-up care alerts tailored to your plant.
+      </p>
+      
+      <form id="lm-form" onsubmit="handleLeadMagnetSubmit(event)" class="lead-magnet-form">
+        <input type="email" id="lm-email" required placeholder="Enter your email address" class="lead-magnet-input">
+        <button type="submit" id="lm-btn-submit" class="lead-magnet-btn">
+          <span id="lm-btn-text">Email My Recovery Plan</span>
+        </button>
+      </form>
+      <div id="lm-success-msg" class="lead-magnet-success"></div>
+    </div>
+
+    <button onclick="location.reload()" id="pd-btn-startover">Start Over</button>
+  </div>
+
+  <script>
+    let uploadedFile, plantData, activeAnalysisData = null;
+    let membershipType = 'free';
+
+    // Load preferred language
+    const urlParams = new URLSearchParams(window.location.search);
+    let lang = urlParams.get('lang') || localStorage.getItem('preferred-language') || 'en';
+    const match = document.cookie.match(new RegExp('(^| )language=([^;]+)'));
+    if (!urlParams.get('lang') && match) lang = match[2];
+
+    // Save to localStorage if we got it from the URL
+    if (urlParams.get('lang')) {
+      localStorage.setItem('preferred-language', lang);
+      localStorage.setItem('selectedLanguage', lang);
+    }
+
+    const getTranslation = (key, fallback) => {
+      if (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) {
+        return translations[lang][key];
+      }
+      return fallback;
+    };
+
+    function getDailyAnalysisCount() {
+      const today = new Date().toDateString();
+      const storedData = localStorage.getItem('plantAnalysisDaily');
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        if (data.date === today) {
+          return data.count;
+        }
+      }
+      return 0;
+    }
+
+    function incrementAnalysisCount() {
+      const today = new Date().toDateString();
+      let count = getDailyAnalysisCount() + 1;
+      localStorage.setItem('plantAnalysisDaily', JSON.stringify({
+        date: today,
+        count: count
+      }));
+      updateAnalysisCounter();
+    }
+
+    function userHasUnlimitedAnalysis() {
+      return membershipType === 'basic' || membershipType === 'green_thumb';
+    }
+
+    function updateAnalysisCounter() {
+      const dailyAnalysisCount = getDailyAnalysisCount();
+      const dailyLimit = 3;
+      const remaining = Math.max(0, dailyLimit - dailyAnalysisCount);
+      
+      const counterElement = document.getElementById('analysis-counter-doctor');
+      if (!counterElement) return;
+
+      if (userHasUnlimitedAnalysis()) {
+        const text = getTranslation('unlimited-analyses', 'Unlimited analyses');
+        counterElement.innerHTML = `<span style="color: #16a34a;">${text}</span>`;
+      } else if (remaining > 0) {
+        let leftTemplate = getTranslation('analyses-left', '{remaining} of {limit} left');
+        const remainingText = leftTemplate
+          .replace('{remaining}', remaining)
+          .replace('{limit}', dailyLimit);
+        counterElement.innerHTML = `<span style="color: #16a34a;">${remainingText}</span>`;
+      } else {
+        const text = getTranslation('counter-no-left', 'No free analysis left today');
+        counterElement.innerHTML = `<span style="color: #ef4444;">${text}</span>`;
+      }
+    }
+
+    async function loadMembershipStatus() {
+      try {
+        const response = await fetch('/api/membership/status', {
+          method: 'GET',
+          credentials: 'same-origin'
+        });
+        if (!response.ok) {
+          return;
+        }
+        const data = await response.json();
+        if (data && data.tier) {
+          membershipType = data.tier;
+        }
+      } catch (_) {
+        // Non-blocking fallback
+      }
+      updateAnalysisCounter();
+    }
+
+    function checkDailyLimitAndPrompt() {
+      if (!userHasUnlimitedAnalysis() && getDailyAnalysisCount() >= 3) {
+        const upgradeMsg = getTranslation('upgrade-basic-prompt', 'Upgrade to Basic Membership ($4.99/month) for unlimited plant identification and disease analysis.');
+        if (confirm(upgradeMsg + '\n\nClick OK to view membership plans.')) {
+          window.location.href = '/index.html?lang=' + lang + '#membership';
+        }
+        return false;
+      }
+      return true;
+    }
+
+    // Apply translations on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMembershipStatus();
+
+      if (typeof updateContent === 'function') {
+        updateContent(lang);
+      }
+
+      // Set lead magnet placeholder text
+      const lmEmail = document.getElementById('lm-email');
+      if (lmEmail) {
+        lmEmail.placeholder = getTranslation('newsletter-email-placeholder', 'Enter your email address');
+      }
+
+      // Dynamically append current language to local navigation links
+      document.querySelectorAll('nav a').forEach(link => {
+        try {
+          const url = new URL(link.href, window.location.href);
+          url.searchParams.set('lang', lang);
+          link.href = url.pathname + url.search;
+        } catch (e) {
+          if (link.getAttribute('href').indexOf('?') === -1) {
+            link.href = link.getAttribute('href') + '?lang=' + lang;
+          }
+        }
+      });
+
+      // Handle custom file input text and image preview changes for both Camera and Gallery inputs
+      const cameraInput = document.getElementById('plant-image-camera');
+      const galleryInput = document.getElementById('plant-image-gallery');
+      const fileText = document.getElementById('pd-no-file');
+      const previewContainer = document.getElementById('upload-preview-container');
+      const previewImg = document.getElementById('upload-preview-img');
+
+      function handleFileSelect(inputElement, otherInputElement) {
+        if (inputElement.files && inputElement.files.length > 0) {
+          uploadedFile = inputElement.files[0];
+          fileText.textContent = uploadedFile.name;
+          fileText.style.fontStyle = 'normal';
+          fileText.style.color = '#16a34a';
+
+          // Show immediate image preview
+          if (previewImg && previewContainer) {
+            previewImg.src = URL.createObjectURL(uploadedFile);
+            previewContainer.style.display = 'block';
+          }
+
+          // Reset other input to avoid conflict
+          if (otherInputElement) {
+            otherInputElement.value = '';
+          }
+        }
+      }
+
+      if (cameraInput && fileText) {
+        cameraInput.addEventListener('change', () => {
+          handleFileSelect(cameraInput, galleryInput);
+        });
+      }
+
+      if (galleryInput && fileText) {
+        galleryInput.addEventListener('change', () => {
+          handleFileSelect(galleryInput, cameraInput);
+        });
+      }
+    });
+
+    document.getElementById('pd-btn-identify').onclick = async function() {
+      if (!checkDailyLimitAndPrompt()) return;
+
+      if (!uploadedFile) { 
+        alert(getTranslation('pd-alert-image', 'Please upload or take a plant photo.')); 
+        return; 
+      }
+
+      // Update intermediate/final result image previews immediately
+      const objectUrl = URL.createObjectURL(uploadedFile);
+      document.getElementById('plant-image-preview').src = objectUrl;
+      document.getElementById('plant-image-preview-analysis').src = objectUrl;
+
+      const formData = new FormData();
+      formData.append('image', uploadedFile);
+      formData.append('language', lang);
+
+      const btn = document.getElementById('pd-btn-identify');
+      btn.disabled = true;
+      btn.innerText = getTranslation('pd-btn-identifying', 'Identifying...');
+
+      try {
+        const res = await fetch('/api/plant-identify', { method: 'POST', body: formData });
+        btn.disabled = false;
+        btn.innerText = getTranslation('pd-btn-identify', 'Identify Plant');
+
+        if (!res.ok) { 
+          alert(getTranslation('pd-alert-failed-identify', 'Failed to identify plant.')); 
+          return; 
+        }
+        plantData = await res.json();
+
+        let nameToShow = plantData.plantName || 'Unknown';
+        let lowerName = nameToShow.toLowerCase().trim();
+        const translatedUnknown = getTranslation('unknown-plant', 'Unknown plant');
+        if (lowerName === "unknown plant" || lowerName === "unknown") {
+          nameToShow = translatedUnknown;
+        } else if (lowerName.startsWith("unknown plant")) {
+          nameToShow = translatedUnknown + nameToShow.substring("unknown plant".length);
+        } else if (lowerName.startsWith("unknown")) {
+          nameToShow = translatedUnknown + nameToShow.substring("unknown".length);
+        }
+        document.getElementById('plant-name').innerText = nameToShow;
+        document.getElementById('plant-scientific').innerText = plantData.scientificName || 'Unknown';
+        document.getElementById('plant-confidence').innerText = plantData.confidence !== undefined ? (plantData.confidence * 100).toFixed(1) : 'N/A';
+
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('confirm-block').style.display = 'block';
+      } catch (e) {
+        btn.disabled = false;
+        btn.innerText = getTranslation('pd-btn-identify', 'Identify Plant');
+        alert(getTranslation('pd-alert-failed-identify', 'Failed to identify plant.'));
+      }
+    };
+
+    document.getElementById('pd-btn-yes').onclick = async function() {
+      if (!checkDailyLimitAndPrompt()) return;
+
+      const formData = new FormData();
+      formData.append('image', uploadedFile);
+      formData.append('plantName', plantData.plantName || '');
+      formData.append('scientificName', plantData.scientificName || '');
+      formData.append('language', lang);
+
+      const btn = document.getElementById('pd-btn-yes');
+      btn.disabled = true;
+      btn.innerText = getTranslation('pd-btn-analyzing', 'Analyzing...');
+
+      try {
+        const res = await fetch('/api/plant-analyze', { method: 'POST', body: formData });
+        btn.disabled = false;
+        btn.innerText = getTranslation('pd-btn-yes', 'Yes, analyze health');
+
+        if (!res.ok) { 
+          alert(getTranslation('pd-alert-failed-analyze', 'Failed to analyze plant health.')); 
+          return; 
+        }
+        const analysis = await res.json();
+        activeAnalysisData = analysis;
+
+        // Increment daily count on successful diagnostic check
+        if (!userHasUnlimitedAnalysis()) {
+          incrementAnalysisCount();
+        }
+
+        document.getElementById('health-status').innerText = analysis.healthStatus || 'Unknown';
+        document.getElementById('disease-analysis').innerText = analysis.diseaseAnalysis || '';
+        const ul = document.getElementById('recommendations');
+        ul.innerHTML = '';
+        (analysis.careRecommendations || []).forEach(rec => {
+          const li = document.createElement('li');
+          li.innerText = rec;
+          ul.appendChild(li);
+        });
+
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('analysis').style.display = 'block';
+      } catch (e) {
+        btn.disabled = false;
+        btn.innerText = getTranslation('pd-btn-yes', 'Yes, analyze health');
+        alert(getTranslation('pd-alert-failed-analyze', 'Failed to analyze plant health.'));
+      }
+    };
+
+    document.getElementById('pd-btn-no').onclick = function() {
+      location.reload();
+    };
+
+    // Lead Magnet Form AJAX Submission Handler
+    async function handleLeadMagnetSubmit(event) {
+      event.preventDefault();
+      const emailInput = document.getElementById('lm-email');
+      const submitBtn = document.getElementById('lm-btn-submit');
+      const successMsg = document.getElementById('lm-success-msg');
+      const lmForm = document.getElementById('lm-form');
+
+      if (!emailInput || !emailInput.value) return;
+
+      const email = emailInput.value.trim();
+      
+      // Map ISO language code to full language name (as defined in Express server.js)
+      const langMapping = {
+        'en': 'English',
+        'es': 'Spanish',
+        'fr': 'French',
+        'de': 'German',
+        'el': 'Greek',
+        'ru': 'Russian',
+        'ar': 'Arabic'
+      };
+      const fullLanguageName = langMapping[lang] || 'English';
+
+      const plantName = document.getElementById('plant-name')?.innerText || (plantData && plantData.plantName ? plantData.plantName : '');
+      const diseaseAnalysis = document.getElementById('health-status')?.innerText || '';
+      const careRecommendations = [];
+      const recElements = document.getElementById('recommendations')?.getElementsByTagName('li');
+      if (recElements) {
+        for (let i = 0; i < recElements.length; i++) {
+          if (recElements[i].innerText.trim()) {
+            careRecommendations.push(recElements[i].innerText.trim());
+          }
+        }
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/newsletter-signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            language: fullLanguageName,
+            plantName: plantName,
+            diseaseAnalysis: diseaseAnalysis,
+            careRecommendations: careRecommendations,
+            sevenDayChecklist: activeAnalysisData && activeAnalysisData.sevenDayChecklist ? activeAnalysisData.sevenDayChecklist : null
+          })
+        });
+
+        if (response.ok) {
+          // Success! Hide form and show localized success message
+          if (lmForm) lmForm.style.display = 'none';
+          
+          let successText = getTranslation('lm-success', "🎉 Sent! Your custom recovery plan for {plant} is on its way to your inbox! Check your spam folder if it doesn't arrive in a few minutes.");
+          
+          // Inject identified plant name safely
+          successText = successText.replace('{plant}', plantName || 'your plant');
+          
+          if (successMsg) {
+            successMsg.innerText = successText;
+            successMsg.style.display = 'block';
+          }
+        } else {
+          // Handle specific subscription errors returned by server
+          let errorText = getTranslation('newsletter-error', 'An error occurred. Please try again.');
+          try {
+            const errData = await response.json();
+            if (errData && errData.error) {
+              errorText = errData.error;
+            }
+          } catch (_) {}
+          alert(errorText);
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Error subscribing:', error);
+        alert(getTranslation('newsletter-error', 'An error occurred. Please try again.'));
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

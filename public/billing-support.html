@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Support - Garden with Serge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <main class="max-w-3xl mx-auto px-4 py-10">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Billing Support</h1>
+        <p class="text-gray-600 mb-8">Submit cancellation or refund requests. Stripe requests are attempted automatically when possible.</p>
+
+        <section class="bg-white rounded-xl shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Cancel Subscription</h2>
+            <form id="cancel-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input id="cancel-email" type="email" required class="w-full border rounded-lg px-3 py-2" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reason (optional)</label>
+                    <textarea id="cancel-reason" class="w-full border rounded-lg px-3 py-2" rows="3"></textarea>
+                </div>
+                <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                    <input id="cancel-immediate" type="checkbox" class="rounded" />
+                    Cancel immediately (otherwise end of billing period)
+                </label>
+                <button class="bg-red-600 text-white px-4 py-2 rounded-lg">Submit Cancel Request</button>
+            </form>
+            <p id="cancel-result" class="mt-3 text-sm"></p>
+        </section>
+
+        <section class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Refund Request</h2>
+            <form id="refund-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input id="refund-email" type="email" required class="w-full border rounded-lg px-3 py-2" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (optional, USD)</label>
+                    <input id="refund-amount" type="number" step="0.01" min="0" class="w-full border rounded-lg px-3 py-2" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Reason (required)</label>
+                    <textarea id="refund-reason" required class="w-full border rounded-lg px-3 py-2" rows="3"></textarea>
+                </div>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Submit Refund Request</button>
+            </form>
+            <p id="refund-result" class="mt-3 text-sm"></p>
+        </section>
+
+        <div class="mt-8">
+            <a href="index.html" class="text-green-700 hover:underline">Back to Home</a>
+        </div>
+    </main>
+
+    <script>
+        async function postJson(url, body) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify(body)
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.error || 'Request failed');
+            }
+            return payload;
+        }
+
+        document.getElementById('cancel-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const output = document.getElementById('cancel-result');
+            output.textContent = 'Submitting...';
+            try {
+                const payload = await postJson('/api/subscription/cancel-request', {
+                    email: document.getElementById('cancel-email').value,
+                    reason: document.getElementById('cancel-reason').value,
+                    immediate: document.getElementById('cancel-immediate').checked,
+                });
+                output.textContent = `Request #${payload.requestId} submitted (${payload.status}).`;
+                output.className = 'mt-3 text-sm text-green-700';
+            } catch (err) {
+                output.textContent = err.message;
+                output.className = 'mt-3 text-sm text-red-700';
+            }
+        });
+
+        document.getElementById('refund-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const output = document.getElementById('refund-result');
+            output.textContent = 'Submitting...';
+            try {
+                const amountRaw = document.getElementById('refund-amount').value;
+                const payload = await postJson('/api/refund-request', {
+                    email: document.getElementById('refund-email').value,
+                    amount: amountRaw ? Number(amountRaw) : null,
+                    reason: document.getElementById('refund-reason').value,
+                });
+                output.textContent = `Request #${payload.requestId} submitted (${payload.status}).`;
+                output.className = 'mt-3 text-sm text-green-700';
+            } catch (err) {
+                output.textContent = err.message;
+                output.className = 'mt-3 text-sm text-red-700';
+            }
+        });
+    </script>
+</body>
+</html>
