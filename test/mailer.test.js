@@ -48,3 +48,10 @@ test('mailer supports explicit authenticated TLS mode for port 465', () => {
     assert.match(mailer, /requireTLS:\s*!secure/);
     assert.match(mailer, /rejectUnauthorized:\s*true/);
 });
+
+test('mailer supports owner-only secret files without embedding credentials', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'lib', 'mailer.js'), 'utf8');
+    assert.match(source, /SMTP_PASSWORD_FILE/);
+    assert.match(source, /UNSUBSCRIBE_TOKEN_SECRET_FILE/);
+    assert.match(source, /fs\.readFileSync\(secretPath, 'utf8'\)/);
+});
