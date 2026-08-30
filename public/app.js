@@ -1287,6 +1287,7 @@ function updateTranslations(lang) {
     }
 
     refreshExpandableButtonLabels(lang);
+    updateAnalysisCounter();
 }
 
 // Language switching handler

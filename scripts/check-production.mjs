@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+
 const primary = 'https://www.gardenwithserge.com';
 const api = 'https://api.gardenwithserge.com';
 
@@ -17,6 +19,9 @@ async function get(path, base = primary) {
 }
 
 const checks = [];
+const localHomepage = await readFile(new URL('../public/index.html', import.meta.url), 'utf8');
+const expectedAppScript = localHomepage.match(/app\.min\.js\?v=\d+/)?.[0];
+requireCondition(expectedAppScript, 'Local homepage does not reference a versioned application script');
 for (const base of [primary, api]) {
     for (const path of ['/healthz', '/readyz']) {
         const result = await get(path, base);
@@ -32,7 +37,7 @@ checks.push('commerce-disabled');
 const homepage = await get('/');
 requireCondition(homepage.body.includes('<link rel="canonical" href="https://www.gardenwithserge.com/">'), 'Homepage canonical is missing');
 requireCondition(homepage.body.includes('hero-garden-pathway-960.avif'), 'Optimized hero source is missing');
-requireCondition(homepage.body.includes('app.min.js?v=17'), 'Current minified application script is missing');
+requireCondition(homepage.body.includes(expectedAppScript), `Current minified application script is missing: ${expectedAppScript}`);
 requireCondition(!/amazon\.|amzn\.|tag=sergenet05-20/i.test(homepage.body), 'Closed Amazon affiliate link detected');
 requireCondition(homepage.headers.get('strict-transport-security')?.includes('max-age=31536000'), 'HSTS is missing');
 requireCondition(homepage.headers.get('x-content-type-options') === 'nosniff', 'nosniff header is missing');

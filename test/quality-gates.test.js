@@ -15,7 +15,7 @@ test('homepage uses responsive modern hero images and minified scripts', () => {
     assert.match(html, /hero-garden-pathway-480\.webp 480w/);
     assert.match(html, /hero-garden-pathway-960\.webp 960w/);
     assert.match(html, /translations\.min\.js\?v=10/);
-    assert.match(html, /app\.min\.js\?v=17/);
+    assert.match(html, /app\.min\.js\?v=18/);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-480.webp')).size < 60_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.webp')).size < 160_000);
     assert.ok(fs.statSync(path.join(publicDir, 'hero-garden-pathway-960.avif')).size < 80_000);
@@ -31,6 +31,15 @@ test('primary plant doctor page has a main landmark and non-blocking script plac
 test('Plant Doctor guards optional membership-benefit elements', () => {
     const app = fs.readFileSync(path.join(publicDir, 'app.js'), 'utf8');
     assert.doesNotMatch(app, /getElementById\('plant-benefits-(?:section|content)'\)\.(?:style|innerText)/);
+});
+
+test('language changes refresh the dynamic daily analysis counter', () => {
+    const source = fs.readFileSync(path.join(publicDir, 'app.js'), 'utf8');
+    const updateTranslations = source.slice(
+        source.indexOf('function updateTranslations(lang)'),
+        source.indexOf('// Language switching handler')
+    );
+    assert.match(updateTranslations, /updateAnalysisCounter\(\)/);
 });
 
 test('paid diagnosis message is rendered inside the visible identification step', () => {
