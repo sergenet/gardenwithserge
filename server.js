@@ -52,6 +52,7 @@ const ENABLE_STRIPE_AUTO_REFUND = String(process.env.ENABLE_STRIPE_AUTO_REFUND |
 const COMMERCE_ENABLED = String(process.env.COMMERCE_ENABLED || 'false').toLowerCase() === 'true';
 const FREE_DAILY_LIMIT = 3;
 const ADMIN_DASHBOARD_PASSWORD = process.env.ADMIN_DASHBOARD_PASSWORD || '';
+const ANALYTICS_HASH_SECRET = process.env.ANALYTICS_HASH_SECRET || MEMBER_TOKEN_SECRET;
 const ALLOWED_ORIGINS = new Set(
     (process.env.ALLOWED_ORIGINS || 'https://www.gardenwithserge.com,https://gardenwithserge.com')
         .split(',')
@@ -108,6 +109,9 @@ app.use((req, res, next) => {
             path: req.path,
             status: res.statusCode,
             durationMs: Math.round(durationMs),
+        });
+        recordTrafficMetrics(req, res.statusCode).catch((error) => {
+            logEvent('Traffic metric recording failed', { errorType: error.name });
         });
     });
     next();
@@ -204,6 +208,44 @@ async function withDb(fn) {
     }
 }
 
+function analyticsVisitorHash(req) {
+    const source = `${req.ip || 'unknown'}|${String(req.headers['user-agent'] || '').slice(0, 200)}`;
+    return crypto.createHmac('sha256', ANALYTICS_HASH_SECRET).update(source).digest('hex');
+}
+
+function trafficMetricKeys(req, statusCode) {
+    if (req.path.startsWith('/admin') || req.path.startsWith('/api/admin')) return [];
+    const keys = [];
+    const isPage = req.method === 'GET' && !req.path.startsWith('/api/') && !path.extname(req.path);
+    if (isPage) keys.push('page_views');
+    if (req.method === 'POST' && req.path === '/api/plant-identify') keys.push(statusCode < 400 ? 'plant_identifications' : 'plant_identification_rejections');
+    if (req.method === 'POST' && req.path === '/api/plant-analyze') keys.push(statusCode < 400 ? 'disease_diagnoses' : 'disease_diagnosis_rejections');
+    if (statusCode >= 500) keys.push('server_errors');
+    return keys;
+}
+
+async function recordTrafficMetrics(req, statusCode) {
+    const keys = trafficMetricKeys(req, statusCode);
+    if (!keys.length) return;
+    await withDb(async (connection) => {
+        if (keys.includes('page_views')) {
+            const [visitor] = await connection.execute(
+                'INSERT IGNORE INTO site_visitors_daily (visitor_hash, visit_date) VALUES (?, CURRENT_DATE())',
+                [analyticsVisitorHash(req)]
+            );
+            if (visitor.affectedRows === 1) keys.push('unique_visitors');
+        }
+        for (const metricKey of keys) {
+            await connection.execute(
+                `INSERT INTO site_metrics_daily (metric_date, metric_key, metric_count)
+                 VALUES (CURRENT_DATE(), ?, 1)
+                 ON DUPLICATE KEY UPDATE metric_count = metric_count + 1, updated_at = NOW()`,
+                [metricKey]
+            );
+        }
+    });
+}
+
 async function ensureAppSchema() {
     await withDb(async (connection) => {
         await connection.execute(`
@@ -214,6 +256,26 @@ async function ensureAppSchema() {
                 last_tier VARCHAR(32) NOT NULL DEFAULT 'free',
                 updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (subject_key, usage_date)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
+
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS site_metrics_daily (
+                metric_date DATE NOT NULL,
+                metric_key VARCHAR(64) NOT NULL,
+                metric_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (metric_date, metric_key)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
+
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS site_visitors_daily (
+                visitor_hash CHAR(64) NOT NULL,
+                visit_date DATE NOT NULL,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (visitor_hash, visit_date),
+                KEY idx_visit_date (visit_date)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         `);
 
@@ -734,6 +796,53 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
 });
 
 app.use(express.json({ limit: '256kb', strict: true }));
+
+app.get('/admin', adminLimiter, requireAdminAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
+});
+
+app.get('/api/admin/summary', adminLimiter, requireAdminAuth, async (req, res) => {
+    try {
+        const days = Math.min(Math.max(parseInt(req.query.days, 10) || 30, 7), 90);
+        const summary = await withDb(async (connection) => {
+            const [traffic] = await connection.execute(
+                `SELECT DATE_FORMAT(metric_date, '%Y-%m-%d') AS metric_date, metric_key, metric_count
+                 FROM site_metrics_daily
+                 WHERE metric_date >= CURRENT_DATE() - INTERVAL ? DAY
+                 ORDER BY metric_date ASC`, [days - 1]
+            );
+            const [signups] = await connection.execute(
+                `SELECT COUNT(*) AS total, SUM(active = 1) AS active,
+                        SUM(created_at >= CURRENT_DATE()) AS today,
+                        SUM(created_at >= CURRENT_DATE() - INTERVAL 6 DAY) AS last_7_days,
+                        SUM(created_at >= CURRENT_DATE() - INTERVAL 29 DAY) AS last_30_days
+                 FROM newsletter_subscribers`
+            );
+            const [memberships] = await connection.execute(
+                `SELECT COALESCE(membership_type, 'free') AS membership_type, COUNT(*) AS count
+                 FROM newsletter_subscribers WHERE active = 1
+                 GROUP BY COALESCE(membership_type, 'free')`
+            );
+            const [usage] = await connection.execute(
+                `SELECT DATE_FORMAT(usage_date, '%Y-%m-%d') AS usage_date,
+                        SUM(analysis_count) AS requests, COUNT(DISTINCT subject_key) AS users
+                 FROM analysis_usage_daily
+                 WHERE usage_date >= CURRENT_DATE() - INTERVAL ? DAY
+                 GROUP BY usage_date ORDER BY usage_date ASC`, [days - 1]
+            );
+            const [billing] = await connection.execute('SELECT status, COUNT(*) AS count FROM billing_requests GROUP BY status');
+            return { traffic, signups: signups[0], memberships, usage, billing };
+        });
+        return res.json({
+            generatedAt: new Date().toISOString(), periodDays: days,
+            commerce: { enabled: COMMERCE_ENABLED },
+            service: { status: 'ready', database: 'connected' }, ...summary,
+        });
+    } catch (err) {
+        logEvent('Admin summary fetch failed', { errorType: err.name });
+        return res.status(500).json({ error: 'Unable to fetch admin summary' });
+    }
+});
 
 app.get('/admin/billing-requests', adminLimiter, requireAdminAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-billing-requests.html'));
