@@ -191,6 +191,16 @@ function toggleMobileMenu() {
     }
 }
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 45000) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 // Toggle language dropdown
 function toggleLanguageDropdown() {
     const dropdown = document.getElementById('language-dropdown');
@@ -549,7 +559,7 @@ async function analyzeImage() {
         formData.append('image', selectedFile);
         formData.append('language', window.currentLanguage || 'en');
         // Use absolute path for production server
-        const response = await fetch('https://api.gardenwithserge.com/api/plant-identify', {
+        const response = await fetchWithTimeout('https://api.gardenwithserge.com/api/plant-identify', {
             method: 'POST',
             body: formData
         });
@@ -688,7 +698,7 @@ function proceedToDiseaseAnalysis() {
             formData.append('image', selectedFile);
             formData.append('plantName', identifiedPlantName);
             formData.append('language', window.currentLanguage || 'en');
-            const response = await fetch('https://www.gardenwithserge.com/api/plant-analyze', {
+            const response = await fetchWithTimeout('https://api.gardenwithserge.com/api/plant-analyze', {
                 method: 'POST',
                 body: formData
             });

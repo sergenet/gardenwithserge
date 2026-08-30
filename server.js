@@ -1005,14 +1005,14 @@ app.post('/api/plant-identify', aiLimiter, upload.single('image'), async (req, r
         const imageMime = detectImageMime(req.file.buffer);
         const imageBase64 = req.file.buffer.toString('base64');
         const prompt = `
-Identify the plant in the image. Respond as JSON:
+Identify the most likely plant shown in the image. If a plant is clearly visible, return the most defensible common name and scientific name supported by the image. When species-level identification is uncertain, return a genus or plant-family level identification instead and lower the confidence. Use null only when no plant is visible or the image is too ambiguous even for a broader identification. Respond as JSON:
 {
   "plantName": "",
   "scientificName": "",
   "confidence": 0
 }
 You MUST write the plantName value in the ${targetLang} language. Keep the scientificName in its standard Latin format.
-Use null if unsure. Only return JSON.`;
+Confidence MUST be an integer from 0 to 100. Only return JSON.`;
 
         const messages = [
             {
