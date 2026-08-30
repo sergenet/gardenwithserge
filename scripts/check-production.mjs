@@ -36,6 +36,7 @@ requireCondition(homepage.body.includes('app.min.js?v=11'), 'Current minified ap
 requireCondition(!/amazon\.|amzn\.|tag=sergenet05-20/i.test(homepage.body), 'Closed Amazon affiliate link detected');
 requireCondition(homepage.headers.get('strict-transport-security')?.includes('max-age=31536000'), 'HSTS is missing');
 requireCondition(homepage.headers.get('x-content-type-options') === 'nosniff', 'nosniff header is missing');
+requireCondition(homepage.headers.get('content-security-policy')?.includes('https://api.gardenwithserge.com'), 'Plant Doctor API is blocked by CSP');
 checks.push('homepage-content-and-headers');
 
 const sitemap = await get('/sitemap.xml');

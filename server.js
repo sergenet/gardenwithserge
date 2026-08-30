@@ -82,7 +82,7 @@ app.use(helmet({
             imgSrc: ["'self'", 'data:', 'blob:'],
             scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.paypal.com', 'https://www.googletagmanager.com'],
             styleSrc: ["'self'", "'unsafe-inline'"],
-            connectSrc: ["'self'", 'https://api.stripe.com', 'https://www.google-analytics.com', 'https://region1.google-analytics.com'],
+            connectSrc: ["'self'", 'https://api.gardenwithserge.com', 'https://api.stripe.com', 'https://www.google-analytics.com', 'https://region1.google-analytics.com'],
             frameSrc: ['https://js.stripe.com', 'https://hooks.stripe.com', 'https://www.paypal.com'],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
