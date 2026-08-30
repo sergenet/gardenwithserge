@@ -7,7 +7,8 @@
     "start": "node server.js",
     "build:css": "tailwindcss -c tailwind.config.js -i src/styles.css -o public/styles.css --minify",
     "build:assets": "node scripts/copy-static-assets.js",
-    "build": "npm run build:css && npm run build:assets",
+    "build:js": "terser public/translations.js -c -m -o public/translations.min.js && terser public/app.js -c -m -o public/app.min.js",
+    "build": "npm run build:css && npm run build:assets && npm run build:js",
     "check": "node --check server.js && node --check public/app.js && node --check public/translations.js && node --test"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "openai": "6.49.0"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "terser": "5.44.0"
   }
 }

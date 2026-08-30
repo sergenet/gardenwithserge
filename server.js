@@ -1253,7 +1253,13 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
                     'UPDATE newsletter_subscribers SET welcome_sent_at = NULL WHERE email = ?',
                     [emailRaw]
                 ));
-                logEvent('Welcome email delivery failed', { errorType: err.name });
+                logEvent('Welcome email delivery failed', {
+                    errorType: err.name,
+                    errorCode: err.code,
+                    smtpCommand: err.command,
+                    responseCode: err.responseCode,
+                    syscall: err.syscall,
+                });
                 return res.status(502).json({ error: 'Subscription saved, but the welcome email could not be delivered yet.' });
             }
         }

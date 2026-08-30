@@ -138,9 +138,9 @@ function updateAnalysisCounter() {
     counterElements.forEach(counterElement => {
         if (counterElement) {
             if (userHasUnlimitedAnalysis()) {
-                counterElement.innerHTML = `<span class="text-green-600 font-semibold">${counterUnlimited}</span>`;
+                counterElement.innerHTML = `<span class="text-green-700 font-semibold">${counterUnlimited}</span>`;
             } else if (remaining > 0) {
-                counterElement.innerHTML = `<span class="text-green-600 font-semibold">${remainingText}</span>`;
+                counterElement.innerHTML = `<span class="text-green-700 font-semibold">${remainingText}</span>`;
             } else {
                 counterElement.innerHTML = `<span class="text-red-600 font-semibold">${counterNoLeft}</span>`;
             }
