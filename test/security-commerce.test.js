@@ -152,3 +152,10 @@ test('bare-domain redirect runs before Passenger static-file mapping', () => {
     assert.ok(redirect > -1 && redirect < passenger);
     assert.doesNotMatch(legacyHtaccess, /\^www\\\.gardenwithserge\\\.com\$/);
 });
+
+test('legacy indexed disease guide redirects directly to the maintained canonical page', () => {
+    assert.match(
+        legacyHtaccess,
+        /RewriteRule \^plant-disease-guide\\\.php\$ https:\/\/www\.gardenwithserge\.com\/plant-disease-guide\.html \[L,R=301,NE\]/
+    );
+});

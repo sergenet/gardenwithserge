@@ -67,3 +67,32 @@ test('featured cornerstone guides are static, canonical, and linked without bloc
     }
     assert.doesNotMatch(index, /(?:plant-disease-guide|plant-troubleshooting|indoor-plants-guide)\.php/);
 });
+
+test('plant disease guide has search-focused metadata, truthful access language, and matching Article data', () => {
+    const guide = fs.readFileSync(path.join(publicDir, 'plant-disease-guide.html'), 'utf8');
+    const translations = fs.readFileSync(path.join(publicDir, 'translations.js'), 'utf8');
+    const sitemap = fs.readFileSync(path.join(publicDir, 'sitemap.xml'), 'utf8');
+
+    assert.match(guide, /<title>Plant Disease Identification Guide: Symptoms and Treatment<\/title>/);
+    assert.match(guide, /<meta name="description" content="Identify common plant diseases by leaf, stem, root, and pest symptoms\./);
+    assert.match(guide, /<meta property="og:url" content="https:\/\/www\.gardenwithserge\.com\/plant-disease-guide\.html">/);
+    assert.match(guide, /<meta name="robots" content="index,follow,max-image-preview:large">/);
+    assert.doesNotMatch(guide, /<meta name="keywords"/);
+    assert.doesNotMatch(guide, /"@type": "FAQPage"/);
+
+    const jsonLdBlocks = [...guide.matchAll(/<script type="application\/ld\+json">\s*([\s\S]*?)\s*<\/script>/g)]
+        .map((match) => JSON.parse(match[1]));
+    const article = jsonLdBlocks.find((block) => block['@type'] === 'Article');
+    assert.ok(article);
+    assert.equal(article.headline, 'Plant Disease Identification Guide: Symptoms and Treatment');
+    assert.equal(article.mainEntityOfPage, 'https://www.gardenwithserge.com/plant-disease-guide.html');
+    assert.equal(article.dateModified, '2026-08-31');
+    assert.deepEqual(article.author, { '@type': 'Person', name: 'Serge Shammas' });
+
+    assert.match(guide, /Plant Doctor disease analysis is available with a paid membership/);
+    assert.match(guide, /Free visitors can identify up to three plants per day/);
+    assert.match(guide, /link\.href = url\.pathname \+ url\.search \+ url\.hash/);
+    assert.doesNotMatch(guide, /free AI Plant Doctor|Try Plant Doctor Now \(Free\)|Diagnose Now \(Free\)|instant, accurate diagnosis/i);
+    assert.match(translations, /"pdg-unsure-desc": "Plant Doctor disease analysis is available with a paid membership/);
+    assert.match(sitemap, /plant-disease-guide\.html<\/loc><lastmod>2026-08-31<\/lastmod>/);
+});
