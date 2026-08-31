@@ -61,5 +61,6 @@ test('only active PayPal subscriptions grant access and lifecycle events are bou
     assert.equal(isPayPalSubscriptionEntitled('ACTIVE'), true);
     assert.equal(isPayPalSubscriptionEntitled('SUSPENDED'), false);
     assert.equal(isHandledPayPalEventType('BILLING.SUBSCRIPTION.ACTIVATED'), true);
+    assert.equal(isHandledPayPalEventType('BILLING.SUBSCRIPTION.RE-ACTIVATED'), true);
     assert.equal(isHandledPayPalEventType('PAYMENT.SALE.COMPLETED'), false);
 });
