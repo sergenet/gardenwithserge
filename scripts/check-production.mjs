@@ -55,8 +55,8 @@ for (const base of [primary, api]) {
 }
 
 const commerce = JSON.parse((await get('/api/commerce/config')).body);
-requireCondition(commerce.enabled === false && commerce.stripe === false && commerce.paypal === false, 'Commerce is not safely disabled');
-checks.push('commerce-disabled');
+requireCondition(commerce.enabled === true && commerce.stripe === true && commerce.paypal === false, 'Live Stripe commerce is not ready');
+checks.push('stripe-commerce-enabled');
 
 const homepage = await get('/');
 requireCondition(homepage.body.includes('<link rel="canonical" href="https://www.gardenwithserge.com/">'), 'Homepage canonical is missing');
