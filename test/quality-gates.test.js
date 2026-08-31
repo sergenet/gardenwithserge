@@ -96,3 +96,13 @@ test('plant disease guide has search-focused metadata, truthful access language,
     assert.match(translations, /"pdg-unsure-desc": "Plant Doctor disease analysis is available with a paid membership/);
     assert.match(sitemap, /plant-disease-guide\.html<\/loc><lastmod>2026-08-31<\/lastmod>/);
 });
+
+test('plant doctor and troubleshooting pages state the free and paid boundaries accurately', () => {
+    const doctor = fs.readFileSync(path.join(publicDir, 'plant-doctor.html'), 'utf8');
+    const troubleshooting = fs.readFileSync(path.join(publicDir, 'plant-troubleshooting.html'), 'utf8');
+    assert.doesNotMatch(doctor, /Free AI plant disease diagnosis|completely free to use|instant disease diagnosis/i);
+    assert.match(doctor, /three plant identifications per day/i);
+    assert.match(doctor, /disease analysis is a paid-member feature/i);
+    assert.doesNotMatch(troubleshooting, /free AI Plant Doctor to upload a photo and get an instant diagnosis/i);
+    assert.match(troubleshooting, /disease analysis is available to paid members/i);
+});

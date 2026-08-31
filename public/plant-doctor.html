@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free AI plant disease diagnosis tool. Upload a photo of your houseplant, vegetable, or basic and tropical fruit tree to identify pests and diseases instantly.">
-  <meta name="keywords" content="plant disease identification, plant doctor, AI plant diagnosis, fruit tree disease analyzer, tropical fruit pests, plant health analyzer">
-  <meta property="og:title" content="AI Plant Doctor - Free Plant & Fruit Tree Disease Diagnosis Online">
-  <meta property="og:description" content="Scan sick plant leaves, vegetables, or basic and tropical fruit trees with your camera for real-time disease identification and organic pest remedies.">
+  <meta name="description" content="Upload a clear plant photo for AI-generated plant identification and care guidance. Free visitors receive up to three plant identifications per day; disease analysis requires membership.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:title" content="AI Plant Identifier and Plant Doctor | Garden with Serge">
+  <meta property="og:description" content="Identify a plant from a photo, review confidence and care guidance, and access member disease-analysis options with clear AI limitations.">
   <meta property="og:image" content="https://www.gardenwithserge.com/favicon.png">
   <meta property="og:url" content="https://www.gardenwithserge.com/plant-doctor.html">
   <meta property="og:type" content="website">
   <link rel="canonical" href="https://www.gardenwithserge.com/plant-doctor.html">
   <link rel="icon" type="image/png" href="/favicon.png">
   
-  <title>AI Plant Doctor - Free Plant & Fruit Tree Disease Diagnosis Online</title>
+  <title>AI Plant Identifier and Plant Doctor | Garden with Serge</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
@@ -209,48 +209,6 @@
     }
   </style>
 
-  <!-- FAQ Schema for SEO -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I use the Plant Doctor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Upload a clear photo of your plant or affected leaf. Our AI analyzes the image and provides disease identification, health status, and care recommendations."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the Plant Doctor free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes! The Plant Doctor is completely free to use. No membership required. Free users get 3 analyses per day, and members get unlimited analyses."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How accurate is the AI diagnosis?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Our AI provides confidence scores for each diagnosis. For best results, upload clear, well-lit photos of affected plant areas."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I identify any type of plant?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, the Plant Doctor can identify most common houseplants, garden plants, herbs, and vegetables. For best results, include leaves or flowers in your photo."
-        }
-      }
-    ]
-  }
-  </script>
-
   <!-- BreadcrumbList Schema -->
   <script type="application/ld+json">
   {
@@ -261,13 +219,13 @@
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://gardenwithserge.com/"
+        "item": "https://www.gardenwithserge.com/"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Plant Doctor",
-        "item": "https://gardenwithserge.com/plant-doctor.html"
+        "item": "https://www.gardenwithserge.com/plant-doctor.html"
       }
     ]
   </script>
@@ -279,11 +237,11 @@
   </nav>
 
   <main class="container">
-    <h1 id="pd-title">Free AI Plant Doctor</h1>
-    <p class="subtitle" id="pd-subtitle">Upload a photo for instant disease diagnosis and care recommendations</p>
+    <h1 id="pd-title">AI Plant Identifier and Plant Doctor</h1>
+    <p class="subtitle" id="pd-subtitle">Upload a photo for AI-generated plant identification and care guidance. Free visitors can identify up to three plants per day; disease analysis is a paid-member feature.</p>
 
     <div class="upload-section">
-      <h2 style="color: #15803d; margin-bottom: 0.5rem;" id="pd-diagnose-title">Diagnose Your Plant</h2>
+      <h2 style="color: #15803d; margin-bottom: 0.5rem;" id="pd-diagnose-title">Identify Your Plant</h2>
       <div id="analysis-counter-doctor" style="margin-bottom: 1.5rem; font-size: 0.95rem; font-weight: 600; text-align: center;">
         <span style="color: #15803d;">3 of 3 analyses left today</span>
       </div>
@@ -322,7 +280,7 @@
     <p><b id="pd-scientific-label">Scientific Name:</b> <span id="plant-scientific"></span></p>
     <p><b id="pd-confidence-label">Confidence:</b> <span id="plant-confidence"></span>%</p>
     <div id="confirm-block">
-      <button id="pd-btn-yes">Yes, analyze health</button>
+      <button id="pd-btn-yes">Yes, continue to member health analysis</button>
       <button id="pd-btn-no">No, upload another</button>
     </div>
   </div>
@@ -659,6 +617,12 @@
         'ar': 'Arabic'
       };
       const fullLanguageName = langMapping[lang] || 'English';
+      const campaignParams = new URLSearchParams(window.location.search);
+      const attribution = {};
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach((key) => {
+        const value = campaignParams.get(key);
+        if (value) attribution[key] = value;
+      });
 
       const plantName = document.getElementById('plant-name')?.innerText || (plantData && plantData.plantName ? plantData.plantName : '');
       const diseaseAnalysis = document.getElementById('health-status')?.innerText || '';
@@ -686,7 +650,8 @@
             plantName: plantName,
             diseaseAnalysis: diseaseAnalysis,
             careRecommendations: careRecommendations,
-            sevenDayChecklist: activeAnalysisData && activeAnalysisData.sevenDayChecklist ? activeAnalysisData.sevenDayChecklist : null
+            sevenDayChecklist: activeAnalysisData && activeAnalysisData.sevenDayChecklist ? activeAnalysisData.sevenDayChecklist : null,
+            ...attribution
           })
         });
 

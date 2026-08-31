@@ -374,6 +374,12 @@ function setupNewsletterFormOverride() {
             ru: 'Russian'
         };
         const longLanguage = langMap[lang] || 'English';
+        const campaignParams = new URLSearchParams(window.location.search);
+        const attribution = {};
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach((key) => {
+            const value = campaignParams.get(key);
+            if (value) attribution[key] = value;
+        });
 
         // Hostname-aware API URL
         const NEWSLETTER_API_URL = window.location.hostname.includes('plantid')
@@ -384,7 +390,7 @@ function setupNewsletterFormOverride() {
             const res = await fetch(NEWSLETTER_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, language: longLanguage })
+                body: JSON.stringify({ email, language: longLanguage, ...attribution })
             });
 
             const data = await res.json().catch(() => ({}));

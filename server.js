@@ -281,6 +281,45 @@ function trafficMetricKeys(req, statusCode) {
     return keys;
 }
 
+function normalizeAttributionValue(value, fallback = 'none') {
+    const normalized = String(value || '').trim().toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '');
+    return normalized ? normalized.slice(0, 64) : fallback;
+}
+
+function trafficSource(req) {
+    const campaignSource = normalizeAttributionValue(req.query && req.query.utm_source, '');
+    if (campaignSource) return campaignSource;
+    const referrer = String(req.get('referer') || '');
+    if (!referrer) return 'direct';
+    try {
+        const hostname = new URL(referrer).hostname.toLowerCase().replace(/^www\./, '');
+        if (hostname === 'gardenwithserge.com' || hostname.endsWith('.gardenwithserge.com')) return 'internal';
+        if (hostname === 'google.com' || hostname.endsWith('.google.com')) return 'google';
+        if (hostname === 'bing.com' || hostname.endsWith('.bing.com')) return 'bing';
+        if (hostname === 'pinterest.com' || hostname.endsWith('.pinterest.com')) return 'pinterest';
+        if (hostname === 'youtube.com' || hostname.endsWith('.youtube.com') || hostname === 'youtu.be') return 'youtube';
+        if (hostname === 'facebook.com' || hostname.endsWith('.facebook.com')) return 'facebook';
+        if (hostname === 'instagram.com' || hostname.endsWith('.instagram.com')) return 'instagram';
+        if (hostname === 'reddit.com' || hostname.endsWith('.reddit.com')) return 'reddit';
+        return 'other-referral';
+    } catch {
+        return 'other-referral';
+    }
+}
+
+function trafficDimensions(req) {
+    if (!isHumanPageView(req) || !visitorMeasurementAllowed(req)) return [];
+    const source = trafficSource(req);
+    if (source === 'internal') return [];
+    const page = req.path === '/' ? '/' : req.path.slice(0, 160);
+    const campaign = normalizeAttributionValue(req.query && req.query.utm_campaign, '');
+    return [
+        ['source', source],
+        ['landing_page', page],
+        ...(campaign ? [['campaign', campaign]] : []),
+    ];
+}
+
 async function recordTrafficMetrics(req, statusCode) {
     const keys = trafficMetricKeys(req, statusCode);
     if (!keys.length) return;
@@ -299,6 +338,16 @@ async function recordTrafficMetrics(req, statusCode) {
                  ON DUPLICATE KEY UPDATE metric_count = metric_count + 1, updated_at = NOW()`,
                 [metricKey]
             );
+        }
+        if (statusCode < 400) {
+            for (const [dimensionType, dimensionValue] of trafficDimensions(req)) {
+                await connection.execute(
+                    `INSERT INTO site_traffic_dimensions_daily (metric_date, dimension_type, dimension_value, metric_count)
+                     VALUES (CURRENT_DATE(), ?, ?, 1)
+                     ON DUPLICATE KEY UPDATE metric_count = metric_count + 1, updated_at = NOW()`,
+                    [dimensionType, dimensionValue]
+                );
+            }
         }
     });
 }
@@ -336,6 +385,18 @@ async function ensureAppSchema() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         `);
         await connection.execute('DELETE FROM site_visitors_daily WHERE visit_date < CURRENT_DATE() - INTERVAL 90 DAY');
+
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS site_traffic_dimensions_daily (
+                metric_date DATE NOT NULL,
+                dimension_type VARCHAR(32) NOT NULL,
+                dimension_value VARCHAR(160) NOT NULL,
+                metric_count BIGINT UNSIGNED NOT NULL DEFAULT 0,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (metric_date, dimension_type, dimension_value),
+                KEY idx_dimension_period (dimension_type, metric_date)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
 
         const [legacyUsageRows] = await connection.execute(
             `SELECT subject_key, usage_date, analysis_count, last_tier
@@ -1173,8 +1234,22 @@ app.get('/api/admin/summary', adminLimiter, requireAdminAuth, async (req, res) =
                  WHERE usage_date >= CURRENT_DATE() - INTERVAL ? DAY
                  GROUP BY usage_date ORDER BY usage_date ASC`, [days - 1]
             );
+            const [dimensions] = await connection.execute(
+                `SELECT dimension_type, dimension_value, SUM(metric_count) AS metric_count
+                 FROM site_traffic_dimensions_daily
+                 WHERE metric_date >= CURRENT_DATE() - INTERVAL ? DAY
+                 GROUP BY dimension_type, dimension_value
+                 ORDER BY metric_count DESC`, [days - 1]
+            );
+            const [signupSources] = await connection.execute(
+                `SELECT COALESCE(NULLIF(utm_source, ''), 'unattributed') AS source, COUNT(*) AS count
+                 FROM newsletter_subscribers
+                 WHERE created_at >= CURRENT_DATE() - INTERVAL ? DAY
+                 GROUP BY COALESCE(NULLIF(utm_source, ''), 'unattributed')
+                 ORDER BY count DESC`, [days - 1]
+            );
             const [billing] = await connection.execute('SELECT status, COUNT(*) AS count FROM billing_requests GROUP BY status');
-            return { traffic, signups: signups[0], memberships, usage, billing };
+            return { traffic, dimensions, signupSources, signups: signups[0], memberships, usage, billing };
         });
         return res.json({
             generatedAt: new Date().toISOString(), periodDays: days,
@@ -1819,6 +1894,10 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
     const emailRaw = String((req.body && req.body.email) || '').trim().toLowerCase();
     const languageRaw = String((req.body && req.body.language) || '').trim();
     const language = SUPPORTED_NEWSLETTER_LANGUAGES.has(languageRaw) ? languageRaw : 'English';
+    const utmSource = normalizeAttributionValue(req.body && req.body.utm_source, null);
+    const utmMedium = normalizeAttributionValue(req.body && req.body.utm_medium, null);
+    const utmCampaign = normalizeAttributionValue(req.body && req.body.utm_campaign, null);
+    const utmContent = normalizeAttributionValue(req.body && req.body.utm_content, null);
 
     const plantName = (req.body && req.body.plantName) ? String(req.body.plantName).trim() : null;
     const diseaseAnalysis = (req.body && req.body.diseaseAnalysis) ? String(req.body.diseaseAnalysis).trim() : null;
@@ -1854,16 +1933,20 @@ app.post('/api/newsletter-signup', newsletterLimiter, async (req, res) => {
                          last_plant_name = ?,
                          last_disease_analysis = ?,
                          last_care_recommendations = ?,
-                         last_seven_day_checklist = ?
+                         last_seven_day_checklist = ?,
+                         utm_source = COALESCE(?, utm_source),
+                         utm_medium = COALESCE(?, utm_medium),
+                         utm_campaign = COALESCE(?, utm_campaign),
+                         utm_content = COALESCE(?, utm_content)
                      WHERE id = ?`,
-                    [language, plantName, diseaseAnalysis, careRecommendations, sevenDayChecklist, existing.id]
+                    [language, plantName, diseaseAnalysis, careRecommendations, sevenDayChecklist, utmSource, utmMedium, utmCampaign, utmContent, existing.id]
                 );
             } else {
                 shouldSendWelcome = true;
                 await connection.execute(
-                    `INSERT INTO newsletter_subscribers (email, language, active, subscribed_at, last_plant_name, last_disease_analysis, last_care_recommendations, last_seven_day_checklist)
-                     VALUES (?, ?, 1, NOW(), ?, ?, ?, ?)`,
-                    [emailRaw, language, plantName, diseaseAnalysis, careRecommendations, sevenDayChecklist]
+                    `INSERT INTO newsletter_subscribers (email, language, active, subscribed_at, last_plant_name, last_disease_analysis, last_care_recommendations, last_seven_day_checklist, utm_source, utm_medium, utm_campaign, utm_content)
+                     VALUES (?, ?, 1, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [emailRaw, language, plantName, diseaseAnalysis, careRecommendations, sevenDayChecklist, utmSource, utmMedium, utmCampaign, utmContent]
                 );
             }
         });
