@@ -46,6 +46,11 @@ test('Stripe checkout is server-created and contains no obsolete public account 
     assert.doesNotMatch(server, /price_1QZj/);
 });
 
+test('Stripe mode detection supports least-privilege restricted keys', () => {
+    assert.match(server, /startsWith\('rk_test_'\).*return 'test'/);
+    assert.match(server, /startsWith\('rk_live_'\).*return 'live'/);
+});
+
 test('private admin console reports commerce readiness without displaying identifiers', () => {
     const dashboard = fs.readFileSync(path.join(root, 'admin-dashboard.html'), 'utf8');
     assert.match(dashboard, /Commerce readiness/);

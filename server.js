@@ -691,8 +691,8 @@ async function stripeRequest(method, endpointPath, formData = null, options = {}
 }
 
 function stripeKeyMode() {
-    if (STRIPE_SECRET_KEY.startsWith('sk_test_')) return 'test';
-    if (STRIPE_SECRET_KEY.startsWith('sk_live_')) return 'live';
+    if (STRIPE_SECRET_KEY.startsWith('sk_test_') || STRIPE_SECRET_KEY.startsWith('rk_test_')) return 'test';
+    if (STRIPE_SECRET_KEY.startsWith('sk_live_') || STRIPE_SECRET_KEY.startsWith('rk_live_')) return 'live';
     return STRIPE_SECRET_KEY ? 'unknown' : 'missing';
 }
 
