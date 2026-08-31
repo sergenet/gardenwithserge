@@ -1162,7 +1162,22 @@ async function handlePayPalPayment(membershipType, billingCycle, event) {
     if (loadingSpinner) loadingSpinner.style.display = 'block';
     
     try {
-        throw new Error('PayPal checkout is unavailable until server-side verification is implemented.');
+        const checkoutAttemptId = window.crypto && typeof window.crypto.randomUUID === 'function'
+            ? window.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+        const response = await fetch('/api/checkout/paypal', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ membershipType, billingCycle, checkoutAttemptId })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.url) throw new Error(payload.error || 'Unable to start PayPal checkout');
+        const checkoutUrl = new URL(payload.url);
+        if (checkoutUrl.protocol !== 'https:' || !['www.paypal.com', 'www.sandbox.paypal.com'].includes(checkoutUrl.hostname)) {
+            throw new Error('Invalid PayPal checkout destination');
+        }
+        window.location.assign(checkoutUrl.href);
 
     } catch (error) {
         // Show user-friendly error message

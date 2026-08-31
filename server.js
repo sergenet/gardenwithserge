@@ -22,6 +22,13 @@ const {
     isStripeSubscriptionEntitled,
 } = require('./lib/payment-policy');
 const {
+    inspectPayPalPlanPayload,
+    isAllowedPayPalApprovalUrl,
+    isHandledPayPalEventType,
+    isPayPalSubscriptionEntitled,
+    paypalApiBase,
+} = require('./lib/paypal-policy');
+const {
     sendWelcomeEmail,
     verifyUnsubscribeToken,
 } = require('./lib/mailer');
@@ -50,6 +57,11 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
 const ENABLE_STRIPE_AUTO_REFUND = String(process.env.ENABLE_STRIPE_AUTO_REFUND || 'false').toLowerCase() === 'true';
 const COMMERCE_ENABLED = String(process.env.COMMERCE_ENABLED || 'false').toLowerCase() === 'true';
+const PAYPAL_ENABLED = String(process.env.PAYPAL_ENABLED || 'false').toLowerCase() === 'true';
+const PAYPAL_ENVIRONMENT = String(process.env.PAYPAL_ENVIRONMENT || 'live').toLowerCase() === 'sandbox' ? 'sandbox' : 'live';
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
+const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || '';
+const PAYPAL_WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID || '';
 const PUBLIC_SITE_URL = String(process.env.PUBLIC_SITE_URL || 'https://www.gardenwithserge.com').replace(/\/+$/, '');
 const FREE_DAILY_LIMIT = 3;
 const ADMIN_DASHBOARD_PASSWORD = process.env.ADMIN_DASHBOARD_PASSWORD || '';
@@ -72,6 +84,19 @@ const PRICE_ID_TO_MEMBERSHIP = Object.fromEntries(
     Object.values(STRIPE_PLANS).filter((plan) => plan.priceId).map((plan) => [plan.priceId, plan.entitlement])
 );
 const STRIPE_PRICE_CONFIGURATION_COMPLETE = Object.values(STRIPE_PLANS).every((plan) => Boolean(plan.priceId));
+const PAYPAL_PLANS = {
+    'basic:monthly': { planId: process.env.PAYPAL_PLAN_BASIC_MONTHLY || '', membershipType: 'basic', billingCycle: 'monthly', entitlement: 'basic_monthly', unitAmount: 499, intervalUnit: 'MONTH' },
+    'basic:yearly': { planId: process.env.PAYPAL_PLAN_BASIC_YEARLY || '', membershipType: 'basic', billingCycle: 'yearly', entitlement: 'basic_yearly', unitAmount: 4790, intervalUnit: 'YEAR' },
+    'green-thumb:monthly': { planId: process.env.PAYPAL_PLAN_GREEN_THUMB_MONTHLY || '', membershipType: 'green-thumb', billingCycle: 'monthly', entitlement: 'green_thumb_monthly', unitAmount: 999, intervalUnit: 'MONTH' },
+    'green-thumb:yearly': { planId: process.env.PAYPAL_PLAN_GREEN_THUMB_YEARLY || '', membershipType: 'green-thumb', billingCycle: 'yearly', entitlement: 'green_thumb_yearly', unitAmount: 9590, intervalUnit: 'YEAR' },
+};
+const PAYPAL_PLAN_ID_TO_MEMBERSHIP = Object.fromEntries(
+    Object.values(PAYPAL_PLANS).filter((plan) => plan.planId).map((plan) => [plan.planId, plan.entitlement])
+);
+const PAYPAL_CONFIGURATION_COMPLETE = Boolean(
+    PAYPAL_CLIENT_ID && PAYPAL_CLIENT_SECRET && PAYPAL_WEBHOOK_ID
+    && Object.values(PAYPAL_PLANS).every((plan) => Boolean(plan.planId))
+);
 
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
@@ -362,6 +387,21 @@ async function ensureAppSchema() {
         `);
 
         await connection.execute(`
+            CREATE TABLE IF NOT EXISTS payment_subscriptions (
+                provider VARCHAR(32) NOT NULL,
+                subscription_id VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                membership_type VARCHAR(64) NOT NULL,
+                status VARCHAR(64) NOT NULL,
+                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (provider, subscription_id),
+                KEY idx_subscription_email_provider (email, provider),
+                KEY idx_subscription_status (status)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        `);
+
+        await connection.execute(`
             CREATE TABLE IF NOT EXISTS newsletter_subscribers (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 email VARCHAR(255) NOT NULL,
@@ -611,6 +651,38 @@ async function consumeDailyUsage(subjectKey, tier, limit) {
     });
 }
 
+async function upsertPaymentSubscription(provider, subscriptionId, email, membershipType, status) {
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+    const normalizedProvider = String(provider || '').trim().toLowerCase();
+    const normalizedId = String(subscriptionId || '').trim();
+    if (!normalizedEmail || !normalizedProvider || !normalizedId || !membershipType || !status) return;
+    await withDb((connection) => connection.execute(
+        `INSERT INTO payment_subscriptions
+         (provider, subscription_id, email, membership_type, status)
+         VALUES (?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE email = VALUES(email), membership_type = VALUES(membership_type),
+            status = VALUES(status), updated_at = NOW()`,
+        [normalizedProvider, normalizedId, normalizedEmail, membershipType, String(status)]
+    ));
+}
+
+async function lookupLatestPaymentSubscriptionByEmail(provider, email) {
+    const normalizedProvider = String(provider || '').trim().toLowerCase();
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+    if (!normalizedProvider || !normalizedEmail) return null;
+    return withDb(async (connection) => {
+        const [rows] = await connection.execute(
+            `SELECT provider, subscription_id, email, membership_type, status
+             FROM payment_subscriptions
+             WHERE provider = ? AND email = ?
+               AND status NOT IN ('CANCELLED', 'EXPIRED')
+             ORDER BY (status = 'ACTIVE') DESC, updated_at DESC LIMIT 1`,
+            [normalizedProvider, normalizedEmail]
+        );
+        return rows.length ? rows[0] : null;
+    });
+}
+
 async function createBillingRequest(requestType, email, provider, membershipType, reason, status, details) {
     return withDb(async (connection) => {
         const [result] = await connection.execute(
@@ -653,6 +725,133 @@ function requireAdminAuth(req, res, next) {
     }
 
     return next();
+}
+
+let paypalAccessTokenCache = { token: '', expiresAt: 0 };
+
+async function paypalAccessToken() {
+    if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+        throw new Error('PayPal credentials are not configured.');
+    }
+    if (paypalAccessTokenCache.token && paypalAccessTokenCache.expiresAt > Date.now() + 60_000) {
+        return paypalAccessTokenCache.token;
+    }
+    const credentials = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
+    const response = await fetch(`${paypalApiBase(PAYPAL_ENVIRONMENT)}/v1/oauth2/token`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Basic ${credentials}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Accept: 'application/json',
+        },
+        body: 'grant_type=client_credentials',
+        timeout: 15_000,
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.access_token) throw new Error(`PayPal OAuth ${response.status}`);
+    const expiresIn = Math.max(60, Number(payload.expires_in) || 300);
+    paypalAccessTokenCache = {
+        token: String(payload.access_token),
+        expiresAt: Date.now() + (expiresIn * 1000),
+    };
+    return paypalAccessTokenCache.token;
+}
+
+async function paypalRequest(method, endpointPath, jsonBody = null, options = {}) {
+    const token = await paypalAccessToken();
+    const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    };
+    if (options.requestId) headers['PayPal-Request-Id'] = options.requestId;
+    const response = await fetch(`${paypalApiBase(PAYPAL_ENVIRONMENT)}${endpointPath}`, {
+        method,
+        headers,
+        body: jsonBody === null ? undefined : JSON.stringify(jsonBody),
+        timeout: 20_000,
+    });
+    const text = await response.text();
+    let payload;
+    try {
+        payload = JSON.parse(text);
+    } catch {
+        payload = {};
+    }
+    if (!response.ok) throw new Error(`PayPal API ${response.status}`);
+    return payload;
+}
+
+async function inspectPayPalPlan(plan) {
+    if (!plan.planId) return { configured: false, valid: false };
+    try {
+        const payload = await paypalRequest('GET', `/v1/billing/plans/${encodeURIComponent(plan.planId)}`);
+        return inspectPayPalPlanPayload(payload, plan);
+    } catch (error) {
+        logEvent('PayPal plan readiness check failed', { errorType: error.name, entitlement: plan.entitlement });
+        return { configured: true, valid: false };
+    }
+}
+
+async function verifyPayPalWebhookEvent(rawBody, headers) {
+    if (!PAYPAL_WEBHOOK_ID) return false;
+    let webhookEvent;
+    try {
+        webhookEvent = JSON.parse(rawBody.toString('utf8'));
+    } catch {
+        return false;
+    }
+    const required = {
+        transmission_id: headers['paypal-transmission-id'],
+        transmission_time: headers['paypal-transmission-time'],
+        cert_url: headers['paypal-cert-url'],
+        auth_algo: headers['paypal-auth-algo'],
+        transmission_sig: headers['paypal-transmission-sig'],
+    };
+    if (Object.values(required).some((value) => !value)) return false;
+    const result = await paypalRequest('POST', '/v1/notifications/verify-webhook-signature', {
+        ...required,
+        webhook_id: PAYPAL_WEBHOOK_ID,
+        webhook_event: webhookEvent,
+    });
+    return result.verification_status === 'SUCCESS';
+}
+
+function paypalSubscriptionIdentity(subscription) {
+    const email = subscription && subscription.subscriber ? subscription.subscriber.email_address : null;
+    const membershipType = subscription ? PAYPAL_PLAN_ID_TO_MEMBERSHIP[subscription.plan_id] || null : null;
+    return {
+        email: email ? String(email).trim().toLowerCase() : null,
+        membershipType,
+    };
+}
+
+async function syncPayPalSubscription(subscriptionId) {
+    const subscription = await paypalRequest('GET', `/v1/billing/subscriptions/${encodeURIComponent(subscriptionId)}`);
+    const { email, membershipType } = paypalSubscriptionIdentity(subscription);
+    if (!email || !membershipType || !subscription.id || !subscription.status) {
+        throw new Error('PayPal subscription could not be mapped to a configured membership.');
+    }
+    const active = isPayPalSubscriptionEntitled(subscription.status) ? 1 : 0;
+    await upsertPaymentSubscription('paypal', subscription.id, email, membershipType, subscription.status);
+    if (active || ['SUSPENDED', 'CANCELLED', 'EXPIRED'].includes(String(subscription.status).toUpperCase())) {
+        await upsertMembership(email, membershipType, 'paypal', active);
+    }
+    return { subscription, email, membershipType, active };
+}
+
+async function attemptPayPalCancelByEmail(email, immediate, reason) {
+    const record = await lookupLatestPaymentSubscriptionByEmail('paypal', email);
+    if (!record) return { ok: false, code: 'subscription_not_found' };
+    if (!immediate) return { ok: false, code: 'period_end_requires_manual_review' };
+    await paypalRequest(
+        'POST',
+        `/v1/billing/subscriptions/${encodeURIComponent(record.subscription_id)}/cancel`,
+        { reason: String(reason || 'Cancelled at the member request').slice(0, 128) }
+    );
+    await upsertPaymentSubscription('paypal', record.subscription_id, record.email, record.membership_type, 'CANCELLED');
+    await upsertMembership(record.email, record.membership_type, 'paypal', 0);
+    return { ok: true, mode: 'immediate', subscriptionId: record.subscription_id, status: 'CANCELLED' };
 }
 
 async function stripeRequest(method, endpointPath, formData = null, options = {}) {
@@ -892,6 +1091,53 @@ app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), asyn
     }
 });
 
+app.post('/api/webhooks/paypal', express.raw({ type: 'application/json' }), async (req, res) => {
+    let claimedPayPalEventId = null;
+    try {
+        if (!PAYPAL_CONFIGURATION_COMPLETE) {
+            return res.status(503).json({ error: 'PayPal webhook processing is not configured.' });
+        }
+        const verified = await verifyPayPalWebhookEvent(req.body, req.headers);
+        if (!verified) return res.status(400).json({ error: 'Invalid PayPal webhook signature.' });
+
+        const event = JSON.parse(req.body.toString('utf8'));
+        const type = String(event.event_type || '');
+        if (!event.id || !type) return res.status(400).json({ error: 'Invalid PayPal event.' });
+        if (!isHandledPayPalEventType(type)) {
+            return res.status(200).json({ ok: true, ignored: true });
+        }
+
+        const isNewEvent = await withDb(async (connection) => {
+            const [result] = await connection.execute(
+                'INSERT IGNORE INTO payment_events (provider, event_id, event_type) VALUES (?, ?, ?)',
+                ['paypal', String(event.id), type]
+            );
+            return result.affectedRows === 1;
+        });
+        if (!isNewEvent) return res.status(200).json({ ok: true, duplicate: true });
+        claimedPayPalEventId = String(event.id);
+
+        const resource = event.resource && typeof event.resource === 'object' ? event.resource : null;
+        const subscriptionId = resource && resource.id ? String(resource.id) : '';
+        if (!subscriptionId) throw new Error('PayPal event did not contain a subscription id.');
+        await syncPayPalSubscription(subscriptionId);
+        return res.status(200).json({ ok: true });
+    } catch (err) {
+        if (claimedPayPalEventId) {
+            try {
+                await withDb((connection) => connection.execute(
+                    'DELETE FROM payment_events WHERE provider = ? AND event_id = ?',
+                    ['paypal', claimedPayPalEventId]
+                ));
+            } catch {
+                logEvent('Failed to release PayPal event claim');
+            }
+        }
+        logEvent('PayPal webhook processing failed', { errorType: err.name });
+        return res.status(500).json({ error: 'Webhook processing failed' });
+    }
+});
+
 app.use(express.json({ limit: '256kb', strict: true }));
 
 app.get('/admin', adminLimiter, requireAdminAuth, (req, res) => {
@@ -946,6 +1192,11 @@ app.get('/api/admin/commerce-readiness', adminLimiter, requireAdminAuth, async (
     const entries = await Promise.all(Object.entries(STRIPE_PLANS).map(async ([name, plan]) => [name, await inspectStripePlan(plan)]));
     const plans = Object.fromEntries(entries);
     const allPricesValid = Object.values(plans).every((plan) => plan.valid);
+    const paypalEntries = PAYPAL_CONFIGURATION_COMPLETE
+        ? await Promise.all(Object.entries(PAYPAL_PLANS).map(async ([name, plan]) => [name, await inspectPayPalPlan(plan)]))
+        : Object.entries(PAYPAL_PLANS).map(([name, plan]) => [name, { configured: Boolean(plan.planId), valid: false }]);
+    const paypalPlans = Object.fromEntries(paypalEntries);
+    const allPayPalPlansValid = Object.values(paypalPlans).every((plan) => plan.valid);
     return res.json({
         commerceEnabled: COMMERCE_ENABLED,
         mode,
@@ -955,6 +1206,16 @@ app.get('/api/admin/commerce-readiness', adminLimiter, requireAdminAuth, async (
         allPricesValid,
         readyForSandboxTest: mode === 'test' && Boolean(STRIPE_WEBHOOK_SECRET) && allPricesValid,
         plans,
+        paypal: {
+            enabled: PAYPAL_ENABLED,
+            environment: PAYPAL_ENVIRONMENT,
+            credentialsConfigured: Boolean(PAYPAL_CLIENT_ID && PAYPAL_CLIENT_SECRET),
+            webhookConfigured: Boolean(PAYPAL_WEBHOOK_ID),
+            allPlansConfigured: Object.values(PAYPAL_PLANS).every((plan) => Boolean(plan.planId)),
+            allPlansValid: allPayPalPlansValid,
+            ready: COMMERCE_ENABLED && PAYPAL_ENABLED && PAYPAL_CONFIGURATION_COMPLETE && allPayPalPlansValid,
+            plans: paypalPlans,
+        },
     });
 });
 
@@ -1065,7 +1326,7 @@ app.get('/api/commerce/config', (req, res) => {
     return res.json({
         enabled: COMMERCE_ENABLED,
         stripe: COMMERCE_ENABLED && Boolean(STRIPE_SECRET_KEY) && Boolean(STRIPE_WEBHOOK_SECRET) && STRIPE_PRICE_CONFIGURATION_COMPLETE,
-        paypal: false,
+        paypal: COMMERCE_ENABLED && PAYPAL_ENABLED && PAYPAL_CONFIGURATION_COMPLETE,
     });
 });
 
@@ -1104,6 +1365,50 @@ app.post('/api/checkout/stripe', async (req, res) => {
     } catch (error) {
         logEvent('Stripe checkout creation failed', { errorType: error.name, membershipType, billingCycle });
         return res.status(502).json({ error: 'Unable to start Stripe checkout.' });
+    }
+});
+
+app.post('/api/checkout/paypal', async (req, res) => {
+    if (!COMMERCE_ENABLED || !PAYPAL_ENABLED) {
+        return res.status(503).json({ error: 'PayPal checkout is temporarily unavailable.', code: 'PAYPAL_DISABLED' });
+    }
+    if (!PAYPAL_CONFIGURATION_COMPLETE) {
+        return res.status(503).json({ error: 'PayPal checkout is not configured.', code: 'PAYPAL_NOT_CONFIGURED' });
+    }
+    const membershipType = String(req.body.membershipType || '').trim();
+    const billingCycle = String(req.body.billingCycle || '').trim();
+    const checkoutAttemptId = String(req.body.checkoutAttemptId || '').trim();
+    const plan = PAYPAL_PLANS[`${membershipType}:${billingCycle}`];
+    if (!plan || !/^[A-Za-z0-9._-]{16,100}$/.test(checkoutAttemptId)) {
+        return res.status(400).json({ error: 'Invalid checkout request.' });
+    }
+    try {
+        const readiness = await inspectPayPalPlan(plan);
+        if (!readiness.valid) {
+            return res.status(503).json({ error: 'The selected PayPal plan is unavailable.', code: 'PAYPAL_PLAN_INVALID' });
+        }
+        const subscription = await paypalRequest('POST', '/v1/billing/subscriptions', {
+            plan_id: plan.planId,
+            custom_id: checkoutAttemptId,
+            application_context: {
+                brand_name: 'Garden with Serge',
+                locale: 'en-US',
+                shipping_preference: 'NO_SHIPPING',
+                user_action: 'SUBSCRIBE_NOW',
+                return_url: `${PUBLIC_SITE_URL}/payment-success.html?provider=paypal&type=${encodeURIComponent(membershipType)}&cycle=${encodeURIComponent(billingCycle)}`,
+                cancel_url: `${PUBLIC_SITE_URL}/payment-cancel.html`,
+            },
+        }, { requestId: `gws-${crypto.createHash('sha256').update(checkoutAttemptId).digest('hex').slice(0, 32)}` });
+        const approval = Array.isArray(subscription.links)
+            ? subscription.links.find((link) => link && link.rel === 'approve')
+            : null;
+        if (!approval || !isAllowedPayPalApprovalUrl(approval.href, PAYPAL_ENVIRONMENT)) {
+            throw new Error('Unexpected PayPal approval destination.');
+        }
+        return res.json({ url: approval.href });
+    } catch (error) {
+        logEvent('PayPal checkout creation failed', { errorType: error.name, membershipType, billingCycle });
+        return res.status(502).json({ error: 'Unable to start PayPal checkout.' });
     }
 });
 
@@ -1163,6 +1468,31 @@ app.get('/api/membership/confirm-stripe-session', async (req, res) => {
     }
 });
 
+app.get('/api/membership/confirm-paypal-subscription', async (req, res) => {
+    try {
+        if (!COMMERCE_ENABLED || !PAYPAL_ENABLED) {
+            return res.status(503).json({ error: 'PayPal checkout is temporarily unavailable.', code: 'PAYPAL_DISABLED' });
+        }
+        if (!PAYPAL_CONFIGURATION_COMPLETE) {
+            return res.status(503).json({ error: 'PayPal checkout is not configured.', code: 'PAYPAL_NOT_CONFIGURED' });
+        }
+        const subscriptionId = String(req.query.subscription_id || '').trim();
+        if (!/^I-[A-Z0-9]+$/i.test(subscriptionId)) {
+            return res.status(400).json({ error: 'A valid subscription_id is required.' });
+        }
+        const result = await syncPayPalSubscription(subscriptionId);
+        if (!result.active) {
+            return res.status(409).json({ error: 'The PayPal subscription is not active yet.' });
+        }
+        const tier = tierFromMembershipType(result.membershipType);
+        setMemberCookie(res, issueMemberToken(result.email, tier));
+        return res.json({ success: true, membershipType: result.membershipType, tier });
+    } catch (err) {
+        logEvent('PayPal subscription confirmation failed', { errorType: err.name });
+        return res.status(502).json({ error: 'PayPal subscription confirmation failed' });
+    }
+});
+
 app.post('/api/subscription/cancel-request', async (req, res) => {
     try {
         const access = await resolveAccessContext(req);
@@ -1189,6 +1519,14 @@ app.post('/api/subscription/cancel-request', async (req, res) => {
                 }
             } catch (err) {
                 attempt = { ok: false, code: 'stripe_error', message: err.message };
+                status = 'pending_manual';
+            }
+        } else if (membership.paymentProvider === 'paypal') {
+            try {
+                attempt = await attemptPayPalCancelByEmail(email, immediate, reason);
+                status = attempt.ok ? 'processed' : 'pending_manual';
+            } catch (err) {
+                attempt = { ok: false, code: 'paypal_error' };
                 status = 'pending_manual';
             }
         }
@@ -1227,7 +1565,7 @@ app.post('/api/refund-request', async (req, res) => {
         let status = 'received';
         let attempt = { ok: false, code: 'manual_review' };
 
-        if (ENABLE_STRIPE_AUTO_REFUND && (membership.paymentProvider === 'stripe' || STRIPE_SECRET_KEY)) {
+        if (ENABLE_STRIPE_AUTO_REFUND && (membership.paymentProvider === 'stripe' || (!membership.paymentProvider && STRIPE_SECRET_KEY))) {
             try {
                 const amountCents = amount ? Math.round(Number(amount) * 100) : null;
                 attempt = await attemptStripeRefundByEmail(email, amountCents);

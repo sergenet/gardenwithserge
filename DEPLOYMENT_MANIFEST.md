@@ -10,6 +10,7 @@ Passenger target: `/home/sergbcqk/garden`
 - `package.json`
 - `package-lock.json`
 - `admin-billing-requests.html`
+- `admin-dashboard.html`
 - `lib/**`
 - `public/404.html`
 - `public/ai-limitations.html`
@@ -50,4 +51,4 @@ Passenger target: `/home/sergbcqk/garden`
 3. Build the release only from the allowlist above.
 4. Preserve a server-side rollback archive.
 5. Upload, install exact production dependencies, and restart Passenger.
-6. Verify health/readiness, canonical routes, 404s, headers, CORS, policies, sitemap, and fail-closed commerce.
+6. Verify health/readiness, canonical routes, 404s, headers, CORS, policies, sitemap, and provider-specific commerce gates.

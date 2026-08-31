@@ -18,6 +18,9 @@ test('commerce fails closed and webhooks are replay protected', () => {
     assert.match(server, /confirm-stripe-session[\s\S]*COMMERCE_DISABLED/);
     assert.match(server, /CREATE TABLE IF NOT EXISTS payment_events/);
     assert.match(server, /INSERT IGNORE INTO payment_events/);
+    assert.match(server, /PAYPAL_ENABLED.*false/);
+    assert.match(server, /verify-webhook-signature/);
+    assert.match(server, /CREATE TABLE IF NOT EXISTS payment_subscriptions/);
     assert.doesNotMatch(server, /success:\s*true,\s*email,/s);
     const paymentButtons = [...index.matchAll(/<button class="payment-half [^"]+"[^>]*>/g)];
     assert.equal(paymentButtons.length, 8);
@@ -55,7 +58,7 @@ test('private admin console reports commerce readiness without displaying identi
     const dashboard = fs.readFileSync(path.join(root, 'admin-dashboard.html'), 'utf8');
     assert.match(dashboard, /Commerce readiness/);
     assert.match(dashboard, /\/api\/admin\/commerce-readiness/);
-    assert.match(dashboard, /Keys and Stripe identifiers are never displayed/);
+    assert.match(dashboard, /Keys and payment-provider identifiers are never displayed/);
     assert.doesNotMatch(dashboard, /price_[A-Za-z0-9]+|sk_(?:live|test)_/);
 });
 
@@ -63,8 +66,20 @@ test('payment success page waits for verified entitlement and uses local assets 
     const successPage = fs.readFileSync(path.join(root, 'public', 'payment-success.html'), 'utf8');
     assert.match(successPage, /Verifying your membership/);
     assert.match(successPage, /confirm-stripe-session/);
+    assert.match(successPage, /confirm-paypal-subscription/);
     assert.match(successPage, /!response\.ok\|\|!payload\.success/);
     assert.doesNotMatch(successPage, /cdn\.tailwindcss|unpkg\.com|Payment Successful!|confirmation email has been sent/i);
+});
+
+test('PayPal checkout is server-created, plan-validated, and disabled independently', () => {
+    const appSource = fs.readFileSync(path.join(root, 'public', 'app.js'), 'utf8');
+    assert.match(server, /app\.post\('\/api\/checkout\/paypal'/);
+    assert.match(server, /inspectPayPalPlan\(plan\)/);
+    assert.match(server, /isAllowedPayPalApprovalUrl/);
+    assert.match(server, /paypal: COMMERCE_ENABLED && PAYPAL_ENABLED && PAYPAL_CONFIGURATION_COMPLETE/);
+    assert.match(appSource, /\/api\/checkout\/paypal/);
+    assert.doesNotMatch(appSource, /PAYPAL_CLIENT_SECRET|P-[A-Z0-9]{8,}/);
+    assert.match(server, /ENABLE_STRIPE_AUTO_REFUND && \(membership\.paymentProvider === 'stripe' \|\| \(!membership\.paymentProvider && STRIPE_SECRET_KEY\)\)/);
 });
 
 test('unknown API and page requests have explicit 404 handlers', () => {

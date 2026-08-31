@@ -15,3 +15,7 @@ Production credentials belong only in cPanel environment variables or owner-only
 3. Do not overwrite cPanel environment variables or the owner-only secret files during rollback.
 4. Run `npm run check:production`, verify both health and readiness endpoints, and confirm the expected live content and security headers.
 5. Keep commerce disabled unless a separate payment test plan passes with provider test-mode credentials and verified webhook lifecycle handling.
+
+## PayPal activation gate
+
+Keep `PAYPAL_ENABLED=false` until the live client credentials and webhook ID are installed, all four configured plans pass exact live API validation, the webhook endpoint is subscribed to the supported subscription lifecycle events, and existing PayPal subscriber status has been reconciled. Stripe can remain enabled independently. PayPal refunds remain manual unless a verified capture-to-member ledger is added.

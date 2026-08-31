@@ -12,7 +12,7 @@
 <body>
 <main><section class="card" aria-live="polite">
     <h1 id="title">Verifying your membership</h1>
-    <p id="message">Stripe returned you to Garden with Serge. We are confirming the completed subscription before granting member access.</p>
+    <p id="message">Your payment provider returned you to Garden with Serge. We are confirming the completed subscription before granting member access.</p>
     <div class="status" id="status">Pending verification</div>
     <dl>
         <dt>Plan</dt><dd id="membership-plan">Membership</dd>
@@ -21,17 +21,17 @@
     <h2>What happens now</h2>
     <ul>
         <li>This page does not create or repeat a payment.</li>
-        <li>Member access is granted only after the server verifies a completed Stripe subscription.</li>
-        <li>If confirmation is delayed, retain your Stripe receipt and use Billing Support.</li>
+        <li>Member access is granted only after the server verifies an active subscription with the payment provider.</li>
+        <li>If confirmation is delayed, retain your payment receipt and use Billing Support.</li>
     </ul>
     <div class="actions"><a class="primary" href="/">Back to Garden</a><a href="/billing-support.html">Billing Support</a><a href="mailto:contact@gardenwithserge.com">Contact</a></div>
 </section></main>
 <script>
-const params=new URLSearchParams(window.location.search),sessionId=params.get('session_id'),type=params.get('type'),cycle=params.get('cycle');
+const params=new URLSearchParams(window.location.search),provider=params.get('provider')==='paypal'?'paypal':'stripe',sessionId=params.get('session_id'),token=params.get('token'),subscriptionId=params.get('subscription_id')||(/^I-[A-Z0-9]+$/i.test(token||'')?token:null),type=params.get('type'),cycle=params.get('cycle');
 const planNames={basic:'Basic Membership','green-thumb':'Green Thumb Membership'},cycleNames={monthly:'Monthly',yearly:'Yearly'};
 document.getElementById('membership-plan').textContent=planNames[type]||'Membership';
 document.getElementById('billing-cycle').textContent=cycleNames[cycle]||'Subscription';
-async function confirmMembership(){const title=document.getElementById('title'),message=document.getElementById('message'),status=document.getElementById('status');if(!sessionId){title.textContent='Confirmation link incomplete';message.textContent='No Stripe Checkout Session was supplied. No payment was attempted by this page.';status.textContent='Unable to verify';status.classList.add('warn');return}try{const response=await fetch(`/api/membership/confirm-stripe-session?session_id=${encodeURIComponent(sessionId)}`,{credentials:'same-origin',cache:'no-store'});const payload=await response.json().catch(()=>({}));if(!response.ok||!payload.success)throw new Error('not confirmed');title.textContent='Membership confirmed';message.textContent='Your completed Stripe subscription was verified and member access is active in this browser.';status.textContent='Active'}catch{title.textContent='Confirmation pending';message.textContent='We could not confirm the subscription yet. Stripe may still have completed the payment; this page did not attempt another charge. Please wait briefly, then return through your Stripe receipt or contact Billing Support.';status.textContent='Not yet verified';status.classList.add('warn')}}
+async function confirmMembership(){const title=document.getElementById('title'),message=document.getElementById('message'),status=document.getElementById('status'),confirmationId=provider==='paypal'?subscriptionId:sessionId;if(!confirmationId){title.textContent='Confirmation link incomplete';message.textContent='No payment-provider confirmation identifier was supplied. No payment was attempted by this page.';status.textContent='Unable to verify';status.classList.add('warn');return}try{const endpoint=provider==='paypal'?`/api/membership/confirm-paypal-subscription?subscription_id=${encodeURIComponent(confirmationId)}`:`/api/membership/confirm-stripe-session?session_id=${encodeURIComponent(confirmationId)}`,response=await fetch(endpoint,{credentials:'same-origin',cache:'no-store'}),payload=await response.json().catch(()=>({}));if(!response.ok||!payload.success)throw new Error('not confirmed');title.textContent='Membership confirmed';message.textContent=`Your active ${provider==='paypal'?'PayPal':'Stripe'} subscription was verified and member access is active in this browser.`;status.textContent='Active'}catch{title.textContent='Confirmation pending';message.textContent='We could not confirm the subscription yet. The provider may still have completed it; this page did not attempt another charge. Please wait briefly, then return through your payment receipt or contact Billing Support.';status.textContent='Not yet verified';status.classList.add('warn')}}
 confirmMembership();
 </script>
 </body>
