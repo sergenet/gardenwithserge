@@ -9,20 +9,58 @@
 <!-- Social Sharing: Open Graph & Twitter -->
 <meta property="og:title" content="AI Plant Photo Guidance & Gardening Guides | Garden with Serge">
 <meta property="og:description" content="AI-generated plant identification and care guidance with practical gardening guides. Verify important treatment decisions locally.">
-<meta property="og:image" content="https://www.gardenwithserge.com/hero-garden-pathway.jpg">
 <meta property="og:url" content="https://www.gardenwithserge.com/">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="https://www.gardenwithserge.com/hero-garden-pathway.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="AI Plant Photo Guidance & Gardening Guides">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.gardenwithserge.com/hero-garden-pathway.jpg">
 <meta name="twitter:title" content="AI Plant Photo Guidance & Gardening Guides | Garden with Serge">
 <meta name="twitter:description" content="AI-generated plant identification and care guidance with practical gardening guides. Verify important treatment decisions locally.">
-<meta name="twitter:image" content="https://www.gardenwithserge.com/hero-garden-pathway.jpg">
 
+<!-- Schema.org: Organization + WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.gardenwithserge.com/#organization",
+      "name": "Garden with Serge",
+      "url": "https://www.gardenwithserge.com/",
+      "description": "AI plant photo identification and care guidance alongside practical gardening guides for real garden problems.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.gardenwithserge.com/favicon.png",
+        "width": 36,
+        "height": 36
+      },
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=61576359017023"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.gardenwithserge.com/#website",
+      "name": "Garden with Serge",
+      "url": "https://www.gardenwithserge.com/",
+      "description": "AI plant photo guidance and practical gardening guides.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://www.gardenwithserge.com/#organization"
+      }
+    }
+  ]
+}
+</script>
 <!-- Favicon -->
 <link class="favicon-icon" rel="icon" type="image/png" href="favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Plant Photo Guidance & Gardening Guides | Garden with Serge</title>
-    <link rel="stylesheet" href="/styles.css?v=2">
+    <link rel="stylesheet" href="/styles.css?v=3">
     <script defer src="/vendor/lucide.min.js?v=1"></script>
     <style>
         /* Enhanced mobile-first responsive design with forced mobile behavior */
@@ -317,6 +355,17 @@
             margin-left: 12px;
         }
     </style>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0467059729557007"
+     crossorigin="anonymous"></script>
+  <!-- Google tag (gtag.js) - GA4 property for gardenwithserge.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-52BQHQ8HL1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-52BQHQ8HL1');
+  </script>
 </head>
 <body class="scroll-smooth container-mobile" dir="ltr">
     <!-- Enhanced Mobile-First Navigation Header -->
@@ -382,6 +431,9 @@
     <button onclick="scrollToSection('plant-doctor')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-purple-600 hover:bg-purple-700">
         <span id="nav-plant-doctor">Plant Dr.</span>
     </button>
+    <a href="/about.html" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-emerald-700 hover:bg-emerald-800">
+        <span id="nav-about">About</span>
+    </a>
     <button onclick="scrollToSection('home')" class="px-4 py-2 text-sm font-medium text-white rounded-md transition-colors duration-200 bg-green-500 hover:bg-green-600">
         <span id="nav-home">Home</span>
     </button>
@@ -417,6 +469,9 @@
         <button onclick="scrollToSection('plant-doctor')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-purple-600 hover:bg-purple-700 touch-target">
             <span id="mobile-nav-plant-doctor">Plant Dr.</span>
         </button>
+        <a href="/about.html" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-emerald-700 hover:bg-emerald-800 touch-target block">
+            <span id="mobile-nav-about">About</span>
+        </a>
         <button onclick="scrollToSection('home')" class="w-full text-left px-6 py-4 text-lg font-medium text-white rounded-lg transition-colors bg-green-500 hover:bg-green-600 touch-target">
             <span id="mobile-nav-home">Home</span>
         </button>
@@ -519,11 +574,20 @@
                             </svg>
                             <span id="btn-troubleshoot-guide">Troubleshooting Guide</span>
                         </a>
+                        <a href="/why-are-my-plant-leaves-turning-yellow.html" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow hover:shadow-lg transition-all duration-200">
+                            <span id="btn-yellow-leaves-guide">Why Leaves Turn Yellow</span>
+                        </a>
                         <a href="/indoor-plants-guide.html" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow hover:shadow-lg transition-all duration-200">
                             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             <span id="btn-indoor-guide">Indoor Plants Guide</span>
+                        </a>
+                        <a href="/sunpatiens-care-guide.html" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow hover:shadow-lg transition-all duration-200">
+                            <span id="btn-sunpatiens-guide">SunPatiens Care Guide</span>
+                        </a>
+                        <a href="/crabapple-tree-problems.html" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 hover:bg-green-800 text-white font-semibold shadow hover:shadow-lg transition-all duration-200">
+                            <span id="btn-crabapple-guide">Crabapple Tree Problems</span>
                         </a>
                     </div>
                 </div>
@@ -1525,7 +1589,7 @@
                                     
                                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                                         <label for="plant-photo-input" class="cursor-pointer">
-                                            <span id="upload-file-btn" class="bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors inline-block touch-target">
+                                            <span id="upload-file-btn" class="animate-pulse bg-green-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors inline-block touch-target">
                                                 Upload File
                                             </span>
                                             <input 
@@ -1550,7 +1614,7 @@
                                     <img id="preview-image" src="" width="640" height="480" alt="Plant photo preview" class="max-w-full h-64 sm:h-80 object-cover rounded-lg mx-auto mb-4">
                                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                                         <button onclick="analyzeImage()" id="analyze-btn" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors touch-target">
-                                            Analyze Plant
+                                            Identify Plant
                                         </button>
                                        <button id="remove-image-btn" onclick="removeImage()" class="bg-gray-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors touch-target">Remove Image</button>
                                     </div>
@@ -1558,6 +1622,8 @@
                             </div>
 <!-- ...snip everything above for brevity... -->
 <!-- Plant Identification Step -->
+
+
 <div id="identification-step" class="hidden">
     <div class="text-center">
         <i data-lucide="search" class="h-16 w-16 text-green-600 mx-auto mb-4"></i>
@@ -1567,6 +1633,24 @@
             <p id="identified-plant" class="text-gray-700 mb-2">We identified your plant as:</p>
             <p id="identified-plant-name" class="text-2xl font-bold text-green-800"></p>
         </div>
+
+        <!-- Friendly Email Capture -->
+        <div id="friendly-email-capture" class="bg-blue-50 rounded-lg p-5 mb-6 border border-blue-100 flex flex-col sm:flex-row items-center gap-4">
+            <div class="flex-1 text-left w-full">
+                <h4 class="font-bold text-blue-900 mb-1 flex items-center gap-2">
+                    <i data-lucide="mail" class="w-5 h-5"></i> Save this result
+                </h4>
+                <p class="text-blue-700 text-sm">Get a free PDF care guide for this plant sent straight to your inbox.</p>
+            </div>
+            <div class="w-full sm:w-auto flex flex-col">
+                <div class="flex gap-2">
+                    <input type="email" id="friendly-email-input" placeholder="Email address" class="w-full sm:w-64 px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="submitFriendlyEmail()" id="friendly-email-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 whitespace-nowrap touch-target">Send</button>
+                </div>
+                <p id="friendly-email-success" class="text-green-700 font-bold text-sm hidden mt-2 text-center sm:text-left">🎉 Sent! Check your inbox.</p>
+            </div>
+        </div>
+
         
         <div class="mb-6">
             <p id="is-this-correct" class="text-gray-700 mb-4">Is this identification correct?</p>
@@ -1704,13 +1788,17 @@
                 <div>
                     <h4 id="footer-quick-links-title" class="text-lg font-semibold text-white mb-4">Quick Links</h4>
                     <ul class="space-y-2">
+                        <li><a href="/about.html" id="footer-about-serge" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">About Serge</a></li>
                         <li><button onclick="scrollToSection('home')" id="footer-home" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Home</button></li>
                         <li><button onclick="scrollToSection('garden-styles')" id="footer-garden-styles" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Garden Styles</button></li>
                         <li><button onclick="scrollToSection('plant-care')" id="footer-plant-care" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Plant Care</button></li>
                         <li><button onclick="scrollToSection('plant-doctor')" id="footer-plant-doctor" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Plant Doctor</button></li>
                         <li><a href="/plant-disease-guide.html" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Disease Guide</a></li>
                         <li><a href="/plant-troubleshooting.html" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Troubleshooting</a></li>
+                        <li><a href="/why-are-my-plant-leaves-turning-yellow.html" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Yellow Leaves</a></li>
                         <li><a href="/indoor-plants-guide.html" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Indoor Plants</a></li>
+                        <li><a href="/tomato-blossom-end-rot-causes-and-fixes.html" id="footer-tomato-guide" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Tomato Blossom End Rot</a></li>
+                        <li><a href="/container-gardening-for-beginners.html" id="footer-container-guide" class="text-gray-300 hover:text-green-400 transition-colors text-left touch-target">Container Gardening</a></li>
                     </ul>
                 </div>
                 
@@ -1732,6 +1820,7 @@
             <!-- Copyright -->
             <div class="border-t border-gray-700 pt-8 mt-8 text-center">
                 <nav aria-label="Legal" class="mb-4 flex flex-wrap justify-center gap-4 text-sm">
+                    <a class="text-gray-300 hover:text-white" id="footer-legal-about" href="/about.html">About</a>
                     <a class="text-gray-300 hover:text-white" href="/privacy.html">Privacy</a>
                     <a class="text-gray-300 hover:text-white" href="/terms.html">Terms</a>
                     <a class="text-gray-300 hover:text-white" href="/ai-limitations.html">AI limitations</a>
@@ -1744,8 +1833,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="translations.min.js?v=10"></script>
-    <script src="app.min.js?v=18"></script>
+    <script src="translations.min.js?v=14"></script>
+    <script src="app.min.js?v=21"></script>
     <script>
         // Initialize Lucide icons after page load
         document.addEventListener('DOMContentLoaded', function() {

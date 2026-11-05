@@ -7,9 +7,14 @@
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:title" content="AI Plant Identifier and Plant Doctor | Garden with Serge">
   <meta property="og:description" content="Identify a plant from a photo, review confidence and care guidance, and access member disease-analysis options with clear AI limitations.">
-  <meta property="og:image" content="https://www.gardenwithserge.com/favicon.png">
   <meta property="og:url" content="https://www.gardenwithserge.com/plant-doctor.html">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://www.gardenwithserge.com/garden-share-card-1200x630.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AI Plant Identifier and Plant Doctor">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.gardenwithserge.com/garden-share-card-1200x630.jpg">
   <link rel="canonical" href="https://www.gardenwithserge.com/plant-doctor.html">
   <link rel="icon" type="image/png" href="/favicon.png">
   
@@ -68,6 +73,15 @@
       margin: 1.5rem 0;
       text-align: center;
     }
+    
+    @keyframes pd-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.9; transform: scale(1.02); }
+    }
+    .file-upload-label {
+        animation: pd-pulse 2s infinite;
+    }
+
     .file-upload-label {
       display: inline-flex;
       align-items: center;
@@ -228,6 +242,17 @@
         "item": "https://www.gardenwithserge.com/plant-doctor.html"
       }
     ]
+  </script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0467059729557007"
+     crossorigin="anonymous"></script>
+  <!-- Google tag (gtag.js) - GA4 property for gardenwithserge.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-52BQHQ8HL1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-52BQHQ8HL1');
   </script>
 </head>
 <body>
@@ -518,6 +543,21 @@
         }
         plantData = await res.json();
 
+        // --- EMAIL GATE ---
+        if (!localStorage.getItem('gws_email_captured')) {
+            const email = prompt("Plant Identified! Enter your email to see the result and get our weekly care guides:");
+            if (email && email.includes('@')) {
+                fetch('/api/newsletter-signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email: email, utm_source: 'meta_plant_id'})
+                });
+                localStorage.setItem('gws_email_captured', 'true');
+            }
+        }
+        // --- END EMAIL GATE ---
+
+
         let nameToShow = plantData.plantName || 'Unknown';
         let lowerName = nameToShow.toLowerCase().trim();
         const translatedUnknown = getTranslation('unknown-plant', 'Unknown plant');
@@ -559,6 +599,13 @@
         btn.disabled = false;
         btn.innerText = getTranslation('pd-btn-yes', 'Yes, analyze health');
 
+        if (res.status === 403) {
+          const upgradeMsg = getTranslation('upgrade-basic-prompt', 'Disease analysis is a premium feature. Upgrade to Basic Membership ($4.99/month) for unlimited plant identification and expert disease analysis.');
+          if (confirm(upgradeMsg + '\n\nClick OK to view membership plans.')) {
+            window.location.href = '/premium-guides.php';
+          }
+          return;
+        }
         if (!res.ok) { 
           alert(getTranslation('pd-alert-failed-analyze', 'Failed to analyze plant health.')); 
           return; 
