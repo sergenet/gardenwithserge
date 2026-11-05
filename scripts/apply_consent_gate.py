@@ -39,18 +39,36 @@ GTAG_RE = re.compile(
     re.S,
 )
 
+# .htaccess marks every .js/.css "public, max-age=31536000, immutable", so a
+# changed consent.js would never reach anyone who already has it. Bump this
+# whenever consent.js or consent.css changes, as app.min.js?v=N already does.
+CONSENT_VERSION = "2"
+
 GATE = (
     '  <!-- AdSense and GA4 are loaded by consent.js only after the visitor accepts. -->\n'
-    '  <link rel="stylesheet" href="/consent.css">\n'
-    '  <script src="/consent.js" defer></script>\n'
+    '  <link rel="stylesheet" href="/consent.css?v=' + CONSENT_VERSION + '">\n'
+    '  <script src="/consent.js?v=' + CONSENT_VERSION + '" defer></script>\n'
 )
+
+
+def version_refs(path: Path, raw: str, dry_run: bool) -> str:
+    """Add ?v=N to consent.css / consent.js links that lack one."""
+    out = raw
+    out = re.sub(r'(/consent\.css)(?!\?v=)', r'\1?v=' + CONSENT_VERSION, out)
+    out = re.sub(r'(/consent\.js)(?!\?v=)', r'\1?v=' + CONSENT_VERSION, out)
+    if out == raw:
+        return "skip (already gated)"
+    if not dry_run:
+        with open(path, "w", encoding="utf-8", newline="") as handle:
+            handle.write(out)
+    return "versioned refs (v%s)" % CONSENT_VERSION
 
 
 def process(path: Path, dry_run: bool) -> str:
     with open(path, encoding="utf-8", newline="") as handle:
         raw = handle.read()
     if "consent.js" in raw:
-        return "skip (already gated)"
+        return version_refs(path, raw, dry_run)
 
     original = raw
     raw, n_ads = ADS_RE.subn("", raw)

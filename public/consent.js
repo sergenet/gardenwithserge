@@ -14,7 +14,7 @@
 
   var STORAGE_KEY = 'gardenConsent';
   var AD_CLIENT = 'ca-pub-0467059729557007';
-  var GA_ID = 'G-52BQHQ8HL1';
+  var GA_ID = 'G-2HEWWETS7Y';
   var LOADED_FLAG = '__garden_third_party_loaded';
   var QUEUE = [];
   var banner = null;
